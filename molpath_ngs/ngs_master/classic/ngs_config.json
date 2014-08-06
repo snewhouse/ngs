@@ -1,6 +1,6 @@
 {
     "pipeline": {
-        "default": {
+        "default": {  // PE illumina TruSeq3
             "trimmomatic":[
                 "ILLUMINACLIP:${ngs_trimmomatic}/adapters/TruSeq3-${sample_librarytype}.fa:2:30:10",
                 "LEADING:3",

@@ -5,6 +5,28 @@ from subprocess import PIPE, call
 import logging
 from collections import deque
 
+# subprocess wrapper for bash scripts
+def run_script(script, stdin=None):
+    """Returns (stdout, stderr), raises error on non-zero return code"""
+    # Note: by using a list here (['bash', ...]) you avoid quoting issues, as the
+    # arguments are passed in exactly this order (spaces, quotes, and newlines won't
+    # cause problems):
+    proc = Popen(['bash', '-c', script], stdout=PIPE, stderr=PIPE, stdin=PIPE)
+    stdout, stderr = proc.communicate()
+    if proc.returncode:
+        raise ScriptException(proc.returncode, stdout, stderr, script)
+    return stdout, stderr
+
+# exception class for the above
+class ScriptException(Exception):
+    def __init__(self, returncode, stdout, stderr, script):
+        self.returncode = returncode
+        self.stdout = stdout
+        self.stderr = stderr
+        Exception.__init__('Error in script')
+
+
+# parse tab delimited file
 def getColumns(inFile, delim="\t", header=True):
     """
     Get columns of data from inFile. The order of the rows is respected

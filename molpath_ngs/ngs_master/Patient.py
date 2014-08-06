@@ -3,6 +3,7 @@
 
 import sys
 import datetime
+import json
 
 '''
 Fastq_file_prefix
@@ -45,7 +46,7 @@ class Patients(list):
         return
 
 
-class Patient(object):
+class Patient:
 
     __slots__ = ("Fastq_file_prefix","ReadGroup_sample_RGSM",
         "ReadGroup_id_RGID","ReadGroup_library_RGLB",
@@ -57,25 +58,32 @@ class Patient(object):
         # additional attributes
         )
 
-
     def __init__(self, sline):
-        args = sline.strip().split("\t")
-        try:
-            assert len(args) == 19
-        except:
-            print >> sys.stderr, '##', sline, '##'
-            raise Exception('Patient data parsing error')
-        # read fields
-        for i in range(len(args)):
-            setattr(self, Patient.__slots__[i], args[i])
+        if isinstance(sline, dict):
+            try:
+                assert len(sline) == len(self.__slots__)
+            except:
+                print >> sys.stderr, '##', sline, '##'
+                raise Exception('Patient data parsing error (from JSON)')
+            # read fields
+            for k,v in sline.items():
+                setattr(self, k, v)
+        else:
+            args = sline.strip().split("\t")
+            try:
+                assert len(args) == len(self.__slots__)
+            except:
+                print >> sys.stderr, '##', sline, '##'
+                raise Exception('Patient data parsing error')
+            # read fields
+            for i in range(len(args)):
+                setattr(self, Patient.__slots__[i], args[i])
         return
 
     def __repr__(self):
         fields = zip(Patient.__slots__, \
          [ getattr(self, Patient.__slots__[i]) for i in range(len(Patient.__slots__)) ])
-
-        print >> sys.stderr, self.wd()
-
+        #print >> sys.stderr, self.wd()
         return "\n".join(['{1:>30} {0:>2} {2:<40}'.format(i, *f) for i,f in enumerate(fields)])
 
     def __str__(self):
@@ -98,12 +106,17 @@ class Patient(object):
             return True
         return selfDate < otherDate
 
+    def save(self,outfile):
+        with open(outfile, 'w') as outf:
+            json.dump(self.__dict__, outf)
+        return
+
     # workdir (BAM_)
     def wd(self):
         return '/'.join([self.BAM_dir.rstrip('/'), self.uniqueID()])
 
     # some shortcuts
-    def fastq_prefix(self):
+    def fastq_names(self):
         return self.Fastq_file_prefix
 
     def RGSM(self):
@@ -142,9 +155,26 @@ class Patient(object):
             return True
         return False
 
+    def librarytype(self):
+        try:
+            assert type(self.PE) is int and self.PE in [0,1]
+        except AssertionError:
+            raise Exception("PE parameter error")
+        if self.PE == 1:
+            return 'PE'
+        return 'SE'
+
+    def analysis(self):
+        return 'default'
+
 
 if __name__ == "__main__":
     patients = Patients(sys.stdin)
     for patient in patients:
+        patient.save('sample.json')
+        with open('sample.json') as fh:
+            js = json.load(fh)
+            patient2 = Patient(js)
         print patient
+        print patient2
         print repr(patient)

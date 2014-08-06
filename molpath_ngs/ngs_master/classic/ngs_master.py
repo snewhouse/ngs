@@ -40,8 +40,7 @@ from optparse import OptionParser
 
 from ngsEasy.Patient import Patients
 from ngsEasy.helpers import syscall, sgecall
-#import ngsEasy.pipeline as mp  # adaptation as a ruffus pipeline (incompatible with the docker containerisation)
-import ngsEasy.molpath as mp  # the old school bash script based pipeline (all submitted at once)
+import ngsEasy.molpath.classic as mp  # the old school bash script based pipeline (all submitted at once)
 
 
 # setup pipeline environment (this has to be streamlined)
@@ -101,16 +100,15 @@ def molpathClassic(p):
 
     # pipeline (auto-adds job dependencies / work only for linear pipeline)
     mp.trimAdapters(p,sge)
-    mp.mapReads(p,sge)
-
+    mp.mapReadsNovoalign(p,sge)
+    mp.mapReadsStampy(p,sge)
 
     sge.setResources(multithread=4, vmem=8)
     mp.sam2bam(p,sge)
     mp.sortBam(p,sge)
 
-
-
-    ## addreplaceReadgroups
+    sge.setResources(multithread=1, vmem=8)
+    mp.addReplaceReadGroups(p,sge)
 
     ## mark duplicates
 
@@ -121,7 +119,7 @@ def molpathClassic(p):
     ## PrintReads (recalibration)
     ## BaseRecalibrator POST-recalibration
 
-    # stampy/platypus
+    # platypus
 
     #
 
@@ -165,10 +163,8 @@ if __name__=="__main__":
         for i, patient in enumerate(patients):
             print i, patient
             print repr(patient)
-
             # setup pipeline jobs
             molpathClassic(patient)
-
 
 
 
