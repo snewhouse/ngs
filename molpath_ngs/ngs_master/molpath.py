@@ -89,7 +89,7 @@ if options.verbose:
 #   read requirements/includes
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 import json
-from Patient import Patients
+from Patient import Patients, Patient
 
 # read pipeline parameters
 logger.info("reading configuration from %s", options.pipepar)
@@ -97,6 +97,7 @@ with open(options.pipepar) as pp:
     pipeconfig = json.load(pp)
 
 # read patient files
+inputfiles = []
 for patientfile in args:
     # read sample/patient data
     with open(patientfile) as fh:
@@ -113,13 +114,27 @@ for patientfile in args:
         except OSError:
             pass
         else:
-            # write configurations
             configfile = patient.wd()+'/.molpath'
             patient.save(configfile)
 
         # check fastQ files and symlink to sample file
+        try:
+            assert all([os.path.isfile(fname) for fname in patient.fastq()])
+        except AssertionError:
+            print patient.fastq()
+            raise Exception("Cannot find all FastQ files")
 
-        # set input files
+        # symlink with uniqueID
+        try:
+            symlink = zip(patient.fastq(),patient.linkedfastq())
+            for sl in symlink:
+                os.symlink(*sl)
+        except OSError:
+            pass
+        except:
+            raise
+        # add linked fastq
+        inputfiles.append(patient.linkedfastq())
 
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
@@ -175,18 +190,18 @@ def trimmomatic(input_files, output_files):
     # load configurations
     p = loadConfiguration(input_files[0])
     # configure job
-    job_name = 'trimmomatic'+p.uid()
+    job_name = 'trimmomatic'+p.RGSM()
     cmd = ' '.join([
-        config['software']['java_v1_7'] + '/java',
-        '-XX:ParallelGCThreads=4 -Xmx', str(config['resources']['trimmomatic']['java_mem'])+'g',
-        '-jar', config['software']['trimmomatic'],
+        pipeconfig['software']['java_v1_7'] + '/java',
+        '-XX:ParallelGCThreads=4 -Xmx', str(pipeconfig['resources']['trimmomatic']['java_mem'])+'g',
+        '-jar', pipeconfig['software']['trimmomatic'],
         p.librarytype(),
         '-phred64',
-        '-trimlog', p.uid()+'.trimming.log',
-        '-threads', config['resources']['trimmomatic']['cpu'],
+        '-trimlog', p.RGSM()+'.trimming.log',
+        '-threads', pipeconfig['resources']['trimmomatic']['cpu'],
         ' '.join(input_files),
         ' '.join(output_files),
-        ' '.join(config['pipeline'][p.analysis()]['trimmomatic']) ])
+        ' '.join(pipeconfig['pipeline'][p.analysis()]['trimmomatic']) ])
     wd = p.wd()
     # run on cluster
     if sge:
@@ -263,14 +278,13 @@ elif options.flowchart:
     output_format = os.path.splitext(options.flowchart)[1][1:]
     pipeline_printout_graph (open(options.flowchart, "w"),
                              output_format,
-                             [combineBlastResults],
+                             [trimmomatic],
                              no_key_legend = True)
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   Run Pipeline
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 else:
-    pipeline_run([combineBlastResults],  multiprocess = options.jobs,
-                        logger = logger, verbose=options.verbose)
+    pipeline_run([trimmomatic],  multiprocess = options.jobs, logger = logger, verbose=options.verbose)
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   Cleanly end drmaa session

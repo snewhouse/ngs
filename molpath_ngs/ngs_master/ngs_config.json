@@ -26,7 +26,8 @@
         "novo":"/share/apps/novocraft_current/bin/",
         "samtools":"/share/apps/samtools_0.1.18/bin",
         "java_v1_7":"/share/java/jdk1.7.0/bin",
-        "annovar": "/isilon/irods_a/datasets_res/Vault/annovar_2013Aug23"
+        "annovar": "/isilon/irods_a/datasets_res/Vault/annovar_2013Aug23",
+        "trimmomatic": "/usr/local/pipeline/Trimmomatic-0.32/trimmomatic-0.32.jar"
 
     },
     "reference": {

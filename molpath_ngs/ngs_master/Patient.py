@@ -115,9 +115,14 @@ class Patient:
     def wd(self):
         return '/'.join([self.BAM_dir.rstrip('/'), self.uniqueID()])
 
-    # some shortcuts
-    def fastq_names(self):
-        return self.Fastq_file_prefix
+    def fastq(self):
+        return [ '/'.join([self.Fastq_dir,x.strip()]) for x in self.Fastq_file_prefix.split(',') ]
+
+    def linkedfastq(self):
+        linkedfq = []
+        for i, x in enumerate(self.fastq()):
+            linkedfq.append('/'.join([self.wd(), self.RGSM()+'_'+str(i+1)+'.fastq']))
+        return linkedfq
 
     def RGSM(self):
         return self.ReadGroup_sample_RGSM
