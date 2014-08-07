@@ -6,25 +6,28 @@ import datetime
 import json
 
 '''
-Fastq_file_prefix
-ReadGroup_sample_RGSM
-ReadGroup_id_RGID
-ReadGroup_library_RGLB
-ReadGroup_platform_RGPL
-ReadGroup_platform_unit_RGPU
-ReadGroup_SeqCentre_RGCN
-ReadGroup_Desc_RGDS
-ReadGroup_runDate_RGDT
-QUAL
-Pipeline
-PE
+ProjectID
+SampleID/PatientID (RGSM)
+FASTQ1
+FASTQ2
+
+ Concat ReadGroup_id_RGID
+    ReadGroup_library_RGLB
+ pull from fastq ReadGroup_platform_RGPL
+ pull from fastq ReadGroup_platform_unit_RGPU
+     ReadGroup_SeqCentre_RGCN
+     ReadGroup_Desc_RGDS
+     ReadGroup_runDate_RGDT
+XXX QUAL
+ANALYSIS Pipeline
+XXX PE
 bed_list
 bed_type
-email_bioinf
-Fastq_dir
-BAM_dir
-pipeline_dir
-sleep
+XXX email_bioinf
+PIPECONFIG Fastq_dir
+PIPECONFIG BAM_dir
+PIPECONFIG pipeline_dir
+XXX sleep
 '''
 
 class Patients(list):
@@ -136,7 +139,9 @@ class Patient:
     def RGPL(self):
         return self.ReadGroup_platform_RGPL.lower()
 
-    def RGPU(self):
+    def RGPU(self, setnew=None):
+        if setnew:
+            self.ReadGroup_platform_unit_RGPU = setnew
         return self.ReadGroup_platform_unit_RGPU
 
     def RGCN(self):

@@ -3,15 +3,14 @@
 __doc__=="""
 #############################################################################################
 # NGS pipeline for molecular diagnostics (can be dockerized)                                #
-# -- Organisation: Viapath LLC (and KCL/SLaM/NHS)                                           #
-# -- Date: 06/08/2014                                                                       #
+# -- Organisation: KCL/SLaM/NHS/Viapath                                           #
+# -- Date: 07/08/2014                                                                       #
 #############################################################################################
 """
 __author__ = "David Brawand, Stephen Newhouse, Amos Folarin, Aditi Gulati"
-__copyright__ = "LGPL"
 __credits__ = ['Stephen Newhouse', 'Amos Folarin', 'Aditi Gulati']
 __license__ = "LGPL"
-__version__ = "1.4"
+__version__ = "0.9"
 __maintainer__ = "David Brawand"
 __email__ = "dbrawand@nhs.net, stephen.j.newhouse@gmail.com, amosfolarin@gmail.com, aditi.gulati@nhs.net"
 __status__ = "Development"  # ["Prototype", "Development",  "Production"]
@@ -35,25 +34,22 @@ usage = "usage: %prog [options] <sample descriptions>"
 parser = OptionParser(version="%prog 0.1", usage=usage)
 
 #   mandatory options
-parser.add_option("-p", dest="pipepar", default='ngs_config.json',metavar="STRING", help="Pipeline parameters (ngs_config.json)")
-parser.add_option("-l", dest="logfile", default=None,             metavar="STRING", help="logfile (default STDERR)")
+parser.add_option("-p", dest="pipepar", default='ngs_config.json',metavar="STRING", \
+    help="Pipeline parameters (ngs_config.json)")
+parser.add_option("-l", dest="logfile", default=None,             metavar="STRING", \
+    help="logfile (default STDERR)")
 #   general options: verbosity / logging
-parser.add_option("-v", dest="verbose", action="count", default=0, help="Print more detailed messages (eg. -vvv)")
+parser.add_option("-v", dest="verbose", action="count", default=0, \
+    help="Print more detailed messages (eg. -vvv)")
 #   pipeline
-parser.add_option("-j", "--jobs", dest="jobs",
-                  default=1,
-                  metavar="jobs",
-                  type="int",
-                  help="Specifies the number of jobs (operations) to run in parallel.")
-parser.add_option("--flowchart", dest="flowchart",
-                  metavar="FILE",
-                  type="string",
+parser.add_option("-j", "--jobs", dest="jobs", default=2, metavar="INT", type="int", \
+    help="Specifies the number of jobs (operations) to run in parallel.")
+parser.add_option("--flowchart", dest="flowchart", metavar="FILE", type="string", \
                   help="Print flowchart of the pipeline to FILE. Flowchart format "
                        "depends on extension. Alternatives include ('.dot', '.jpg', "
                        "'*.svg', '*.png' etc). Formats other than '.dot' require "
                        "the dot program to be installed (http://www.graphviz.org/).")
-parser.add_option("-n", "--just_print", dest="just_print",
-                    action="store_true", default=False,
+parser.add_option("-n", "--just_print", dest="just_print", action="store_true", default=False, \
                     help="Only print a trace (description) of the pipeline. "
                          " The level of detail is set by --verbose.")
 
@@ -89,44 +85,58 @@ if options.verbose:
 #   read requirements/includes
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 import json
-from Patient import Patients, Patient
+from NGSJobs import NGSJobs, NGSJob
 
 # read pipeline parameters
 logger.info("reading configuration from %s", options.pipepar)
 with open(options.pipepar) as pp:
     pipeconfig = json.load(pp)
 
-# read patient files
+# read ngsjob files
 inputfiles = []
-for patientfile in args:
-    # read sample/patient data
-    with open(patientfile) as fh:
-        patients = Patients(fh)
+for ngsjobfile in args:
+    # read sample/ngsjob data
+    with open(ngsjobfile) as fh:
+        ngsjobs = NGSJobs(fh)
 
-    # print patient data in readable format
-    for i, patient in enumerate(patients):
-        print i, patient
-        print repr(patient)
+    # print ngsjob data in readable format
+    for i, ngsjob in enumerate(ngsjobs):
+        print i, ngsjob
+        #print repr(ngsjob)
+
+        # check fastQ files and extract read group data (as available)
+        try:
+            assert all([os.path.isfile(fname) for fname in ngsjob.fastq()])
+        except AssertionError:
+            print ngsjob.fastq()
+            raise Exception("Cannot find all FastQ files")
+
+        # get ReadGroupPlatformUnit from file and check if reads are paired
+        firstlines = []
+        for fastq in ngsjob.fastq():
+            with open('myfile.txt', 'r') as f:
+                firstlines.append(f.readline().split(' ')[0])
+        try:
+            assert len(set(firstlines))==1
+        except:
+            logger.error('Different headers in FastQ file')
+        else:
+            #@M00675:4:000000000-A544D:1:1101:19085:2412 1:N:0:3
+            rgpu = firstlines[0][1:firstlines[0].find(':')]
+            ngsjob.RGPU(rgpu)
 
         # make target directories and write configuration
         try:
-            os.mkdir(patient.wd())
+            os.mkdir(ngsjob.wd())
         except OSError:
             pass
         else:
-            configfile = patient.wd()+'/.molpath'
-            patient.save(configfile)
-
-        # check fastQ files and symlink to sample file
-        try:
-            assert all([os.path.isfile(fname) for fname in patient.fastq()])
-        except AssertionError:
-            print patient.fastq()
-            raise Exception("Cannot find all FastQ files")
+            configfile = ngsjob.wd()+'/.molpath'
+            ngsjob.save(configfile)
 
         # symlink with uniqueID
         try:
-            symlink = zip(patient.fastq(),patient.linkedfastq())
+            symlink = zip(ngsjob.fastq(),ngsjob.linkedfastq())
             for sl in symlink:
                 os.symlink(*sl)
         except OSError:
@@ -134,8 +144,7 @@ for patientfile in args:
         except:
             raise
         # add linked fastq
-        inputfiles.append(patient.linkedfastq())
-
+        inputfiles.append(ngsjob.linkedfastq())
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   Start DRMAA session if available
@@ -162,8 +171,8 @@ def loadConfiguration(fi, configfile='.molpath'):
     except:
         raise Exception("Could not load configuration (%s)" % configpath+configfile)
     else:
-        patient_config = Patient(json.load(fh))
-    return patient_config
+        ngsjob_config = NGSJob(json.load(fh))
+    return ngsjob_config
 
 def run_cmd(cmd_str):
     """
@@ -193,12 +202,13 @@ def trimmomatic(input_files, output_files):
     job_name = 'trimmomatic'+p.RGSM()
     cmd = ' '.join([
         pipeconfig['software']['java_v1_7'] + '/java',
-        '-XX:ParallelGCThreads=4 -Xmx', str(pipeconfig['resources']['trimmomatic']['java_mem'])+'g',
+        '-XX:ParallelGCThreads='+str(pipeconfig['resources']['trimmomatic']['cpu']),
+        '-Xmx'+str(pipeconfig['resources']['trimmomatic']['java_mem'])+'g',
         '-jar', pipeconfig['software']['trimmomatic'],
         p.librarytype(),
         '-phred64',
         '-trimlog', p.RGSM()+'.trimming.log',
-        '-threads', pipeconfig['resources']['trimmomatic']['cpu'],
+        '-threads', str(pipeconfig['resources']['trimmomatic']['cpu']),
         ' '.join(input_files),
         ' '.join(output_files),
         ' '.join(pipeconfig['pipeline'][p.analysis()]['trimmomatic']) ])
@@ -220,7 +230,7 @@ def trimmomatic(input_files, output_files):
             raise Exception("\n".join(map(str,["Failed to run:",cmd,err,stdout_res,stderr_res])))
     # fallback
     else:
-        print cmd
+        run_cmd(cmd)
 
     for ofi in output_files:
         with open(ofi,'w') as fh:
@@ -267,7 +277,7 @@ def stampy(input_files, output_files):
 #   Print list of tasks
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 if options.just_print:
-    pipeline_printout(sys.stdout, [combineBlastResults], verbose=options.verbose)
+    pipeline_printout(sys.stdout, [trimmomatic], verbose=options.verbose)
 
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
@@ -284,7 +294,7 @@ elif options.flowchart:
 #   Run Pipeline
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 else:
-    pipeline_run([trimmomatic],  multiprocess = options.jobs, logger = logger, verbose=options.verbose)
+    pipeline_run([trimmomatic], forcedtorun_tasks = [trimmomatic], multiprocess = options.jobs, logger = logger, verbose=options.verbose)
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   Cleanly end drmaa session

@@ -2,7 +2,7 @@
     "pipeline": {
         "default": {
             "trimmomatic":[
-                "ILLUMINACLIP:${ngs_trimmomatic}/adapters/TruSeq3-${sample_librarytype}.fa:2:30:10",
+                "ILLUMINACLIP:/usr/local/pipeline/Trimmomatic-0.32/adapters/TruSeq3-PE-2.fa:2:30:10",
                 "LEADING:3",
                 "TRAILING:3",
                 "SLIDINGWINDOW:4:15",
@@ -25,7 +25,7 @@
         "gatk":"/share/apps/gatk_2.7-2",
         "novo":"/share/apps/novocraft_current/bin/",
         "samtools":"/share/apps/samtools_0.1.18/bin",
-        "java_v1_7":"/share/java/jdk1.7.0/bin",
+        "java_v1_7":"/usr/bin",
         "annovar": "/isilon/irods_a/datasets_res/Vault/annovar_2013Aug23",
         "trimmomatic": "/usr/local/pipeline/Trimmomatic-0.32/trimmomatic-0.32.jar"
 
@@ -53,7 +53,7 @@
     "resources": {
         "trimmomatic": {
             "cpu": 4,
-            "java_mem": 4
+            "java_mem": 1
         },
         "novo": {
             "cpu": 8,
