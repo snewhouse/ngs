@@ -11,188 +11,158 @@ SampleID/PatientID (RGSM)
 FASTQ1
 FASTQ2
 
- Concat ReadGroup_id_RGID
-    ReadGroup_library_RGLB
- pull from fastq ReadGroup_platform_RGPL
- pull from fastq ReadGroup_platform_unit_RGPU
-     ReadGroup_SeqCentre_RGCN
-     ReadGroup_Desc_RGDS
-     ReadGroup_runDate_RGDT
-XXX QUAL
-ANALYSIS Pipeline
-XXX PE
-bed_list
-bed_type
-XXX email_bioinf
-PIPECONFIG Fastq_dir
-PIPECONFIG BAM_dir
-PIPECONFIG pipeline_dir
-XXX sleep
+NGStype     (RGPL, WGS/WEX/TGS, RGLB)
+NGSanalysis (BED, analysis)
+
+ReadGroup_SeqCentre_RGCN
+ReadGroup_Desc_RGDS
+ReadGroup_runDate_RGDT
+
+
+AUTOMATIC RGPU (from fastq)
+AUTOMATIC RGID (RGSM.NGStype.NGSanalysis.${DATE})
+AUTOMATIC PE
+
+IMPLICIT RGLB
+IMPLICIT RGPL
+IMPLICIT RGDS
 '''
 
-class Patients(list):
-    def __init__(self, fh, delim='\t', strict=True):
+# parses NGSjobs file (checks field order)
+class NGSjobs(list):
+    def __init__(self, fh, delim='\t'):
         self.fields = []  # must be concordant to patient slots
         # parser with sanity check
         for lineNum, line in enumerate(fh):
             if lineNum == 0:
                 # header
                 self.fields = line.rstrip().split(delim)
-                if strict:
-                    #check if header equal slots
-                    try:
-                        assert all([ x[0]==x[1] for x in zip(self.fields, Patient.__slots__) ])
-                    except AssertionError:
-                        logging.error("Fields in configuration file are wrong")
             else:
-                self.append(Patient(line))
+                # deserialize into hash
+                data = dict(zip(self.fields, line.rstrip().split(delim)))
+                self.append(NGSjob(data))
         return
 
 
-class Patient:
+class NGSjob:
 
-    __slots__ = ("Fastq_file_prefix","ReadGroup_sample_RGSM",
-        "ReadGroup_id_RGID","ReadGroup_library_RGLB",
-        "ReadGroup_platform_RGPL","ReadGroup_platform_unit_RGPU",
-        "ReadGroup_SeqCentre_RGCN","ReadGroup_Desc_RGDS",
-        "ReadGroup_runDate_RGDT","QUAL","Pipeline","PE","bed_list",
-        "bed_type","email_bioinf","Fastq_dir","BAM_dir","pipeline_dir",
-        "sleep"
-        # additional attributes
+    __slots__ = (
+        "projectID",  #dev/diag/res
+        "sampleID",  #RGSM
+        "runID",  # worksheetID
+        "sampleSheet", # runconfig
+        "ngsType",  # RGPL(ILLUMINA), RGLB(WGS/WEX/TGS), RGDS(bait_liver), RGCN(molpath)
+        "ngsAnalysis",  # (BED, analysis)
+        "cleanup",  # remove intermediary files
+        "FASTQ1",  # from sampleSheet
+        "FASTQ2",  # from sampleSheet
+        "RGPU", # from FASTQ
+        "RGCN", # from ngsType
+        "RGLB", # from ngsType
+        "RGPL", # from ngsType
+        "RGDS", # from ngsType
+        "RGDT", # from sampleSheet
+        "RGID" # from (RGSM.NGStype.NGSanalysis.RGDT)
         )
 
-    def __init__(self, sline):
-        if isinstance(sline, dict):
+    # GENERIC INIT
+    def __init__(self, *data):
+        for i, d in enumerate(data):
+            # check if keys are valid
             try:
-                assert len(sline) == len(self.__slots__)
-            except:
-                print >> sys.stderr, '##', sline, '##'
-                raise Exception('Patient data parsing error (from JSON)')
-            # read fields
-            for k,v in sline.items():
-                setattr(self, k, v)
-        else:
-            args = sline.strip().split("\t")
-            try:
-                assert len(args) == len(self.__slots__)
-            except:
-                print >> sys.stderr, '##', sline, '##'
-                raise Exception('Patient data parsing error')
-            # read fields
-            for i in range(len(args)):
-                setattr(self, Patient.__slots__[i], args[i])
+                unkown = set(d.keys()).difference(set(self.__slots__))
+                assert len(unkown)==0
+            except AssertionError:
+                    raise Exception('ERROR: configuration field: ' + ",".join(unkown))
+            # set initial values (None)
+            for s in self.__slots__:
+                try:
+                    setattr(self, s, d[s])
+                except KeyError:
+                    if i==0:
+                        setattr(self, s, None)
+                    else:
+                        pass
         return
 
     def __repr__(self):
-        fields = zip(Patient.__slots__, \
-         [ getattr(self, Patient.__slots__[i]) for i in range(len(Patient.__slots__)) ])
+        fields = zip(NGSjob.__slots__, \
+         [ getattr(self, NGSjob.__slots__[i]) for i in range(len(NGSjob.__slots__)) ])
         #print >> sys.stderr, self.wd()
-        return "\n".join(['{1:>30} {0:>2} {2:<40}'.format(i, *f) for i,f in enumerate(fields)])
+        return "\n".join(['{1:>30} {0:>2} {2:<40}'.format(i, *f) for i,f in enumerate(fields)]+[''])
 
     def __str__(self):
-        return '< Patient: {:_^50} {:<30} {:<30} {:<10} >'.format(
-            getattr(self, Patient.__slots__[2]),
-            getattr(self, Patient.__slots__[3]),
-            getattr(self, Patient.__slots__[1]),
-            getattr(self, Patient.__slots__[8]),
+        return '< NGSjob: {:_^50} {:<30} {:<30} {:<10} >'.format(
+            getattr(self, NGSjob.__slots__[1]),
+            getattr(self, NGSjob.__slots__[0]),
+            getattr(self, NGSjob.__slots__[4]),
+            getattr(self, NGSjob.__slots__[6]),
             )
 
     def __getitem__(self, key):
         return getattr(self, key)
 
+    def save(self,outfile):  # write to JSON
+        with open(outfile, 'w') as outf:
+            json.dump(self.__dict__, outf)
+        return
+
+    # Dependent on slot names
     def __lt__(self, other):  # sort by time year-month-day
         try:
-            selfDate = tuple(map(int, self.ReadGroup_runDate_RGDT.split("-")[:3]))
-            otherDate = tuple(map(int, other.ReadGroup_runDate_RGDT.split("-")[:3]))
+            selfDate = tuple(map(int, self.runDate.split("-")[:3]))
+            otherDate = tuple(map(int, other.runDate.split("-")[:3]))
         except:
             logging.warning("date sorting error: not YYYY-MM-DD")
             return True
         return selfDate < otherDate
 
-    def save(self,outfile):
-        with open(outfile, 'w') as outf:
-            json.dump(self.__dict__, outf)
-        return
-
-    # workdir (BAM_)
-    def wd(self):
-        return '/'.join([self.BAM_dir.rstrip('/'), self.uniqueID()])
+    def wd(self):  # work dir
+        return self.projectID+'/'+self.sampleID
 
     def fastq(self):
-        return [ '/'.join([self.Fastq_dir,x.strip()]) for x in self.Fastq_file_prefix.split(',') ]
+        return [ self.FASTQ1, self.FASTQ2 ]
 
-    def linkedfastq(self):
-        linkedfq = []
-        for i, x in enumerate(self.fastq()):
-            linkedfq.append('/'.join([self.wd(), self.RGSM()+'_'+str(i+1)+'.fastq']))
-        return linkedfq
-
-    def RGSM(self):
-        return self.ReadGroup_sample_RGSM
-
-    def RGID(self):
-        return self.ReadGroup_id_RGID
-
-    def RGLB(self):
-        return self.ReadGroup_library_RGLB
-
-    def RGPL(self):
-        return self.ReadGroup_platform_RGPL.lower()
-
-    def RGPU(self, setnew=None):
-        if setnew:
-            self.ReadGroup_platform_unit_RGPU = setnew
-        return self.ReadGroup_platform_unit_RGPU
-
-    def RGCN(self):
-        return self.ReadGroup_SeqCentre_RGCN
-
-    def RGDS(self):
-        return self.ReadGroup_Desc_RGDS
-
-    def RGDT(self):
-        return self.ReadGroup_runDate_RGDT
-
-    def uniqueID(self):  # sample_name
-        return self.RGSM() + self.RGLB() + self.RGPL() + self.RGDT()
-
-    def isPE(self):
-        try:
-            self.PE = int(self.PE)
-            assert self.PE in [0,1]
-        except AssertionError:
-            raise Exception("PE parameter not 0 or 1")
-        except:
-            raise
-
-        if self.PE == 1:
-            return True
-        return False
+    # get/set ReadGroup
+    def RG(self,field):
+        if field.upper() == 'SM':
+            return self.sampleID
+        if field.upper() == 'ID':
+            return "_".join([self.sampleID, self.ngsType, self.ngsAnalysis. self.RGDT])
+        if field.upper() == 'DT':
+            return self.runDate
+        if field.upper() == 'PL':
+            return self.RGPL
+        if field.upper() == 'LB':
+            return self.RGLB
+        if field.upper() == 'DS':
+            return self.RGDS
+        if field.upper() == 'PU':
+            return self.RGPU
+        if field.upper() == 'CN':
+            return self.RGCN
+        else:
+            raise Exception('unknown RG field: %s' % field)
 
     def librarytype(self):
-        try:
-            self.PE = int(self.PE)
-            assert self.PE in [0,1]
-        except AssertionError:
-            raise Exception("PE parameter not 0 or 1")
-        except:
-            raise
-
-        if self.PE == 1:
+        if self.FASTQ2:
             return 'PE'
         return 'SE'
 
-    def analysis(self):
-        return 'default'
-
 
 if __name__ == "__main__":
-    patients = Patients(sys.stdin)
-    for patient in patients:
-        patient.save('sample.json')
+    jobs = NGSjobs(sys.stdin)
+    for job in jobs:
+        job.save('sample.json')
         with open('sample.json') as fh:
             js = json.load(fh)
-            patient2 = Patient(js)
-        print patient
-        print patient2
-        print repr(patient)
+            job2 = NGSjob(js)
+            job3 = NGSjob(js,{"something":"", "sampleID":"field", "RGDS": "new_center", 'sampleID': "different sample"})
+        job3.save('sample.json')
+        with open('sample.json') as fh:
+            js = json.load(fh)
+            job4 = NGSjob(js)
+        print repr(job)
+        print repr(job2)
+        print repr(job3)
+        print repr(job4)

@@ -33,15 +33,19 @@ from optparse import OptionParser
 usage = "usage: %prog [options] <sample descriptions>"
 parser = OptionParser(version="%prog 0.1", usage=usage)
 
-#   mandatory options
-parser.add_option("-p", dest="pipepar", default='ngs_config.json',metavar="STRING", \
-    help="Pipeline parameters (ngs_config.json)")
-parser.add_option("-l", dest="logfile", default=None,             metavar="STRING", \
-    help="logfile (default STDERR)")
+#   configuration files
+parser.add_option("-p", dest="pipeconfig", default='pipeline_config.json',metavar="STRING", \
+    help="Pipeline parameters (pipeline_config.json)")
+parser.add_option("-n", dest="ngsconfig", default='ngs_config.json',metavar="STRING", \
+    help="Workflow configuration (ngs_config.json)")
+
 #   general options: verbosity / logging
 parser.add_option("-v", dest="verbose", action="count", default=0, \
     help="Print more detailed messages (eg. -vvv)")
-#   pipeline
+parser.add_option("-l", dest="logfile", default=None,             metavar="STRING", \
+    help="logfile (default STDERR)")
+
+#   pipeline run options
 parser.add_option("-j", "--jobs", dest="jobs", default=2, metavar="INT", type="int", \
     help="Specifies the number of jobs (operations) to run in parallel.")
 parser.add_option("--flowchart", dest="flowchart", metavar="FILE", type="string", \
@@ -88,63 +92,91 @@ import json
 from NGSJobs import NGSJobs, NGSJob
 
 # read pipeline parameters
-logger.info("reading configuration from %s", options.pipepar)
-with open(options.pipepar) as pp:
-    pipeconfig = json.load(pp)
+logger.info("reading configuration from %s", options.pipeconfig)
+with open(options.pipeconfig) as pconf:
+    pipeconfig = json.load(pconf)
 
-# read ngsjob files
-inputfiles = []
+# read workflows
+logger.info("reading workflows from %s", options.ngsconfig)
+with open(options.ngsconfig) as nconf:
+    ngsconfig = json.load(nconf)
+
+# read sample/ngsjob data
+ngsjobs = []
 for ngsjobfile in args:
-    # read sample/ngsjob data
     with open(ngsjobfile) as fh:
-        ngsjobs = NGSJobs(fh)
+        ngsjobs += NGSJobs(fh)
 
-    # print ngsjob data in readable format
-    for i, ngsjob in enumerate(ngsjobs):
-        print i, ngsjob
-        #print repr(ngsjob)
+#88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
+#   setup jobs (collect additional parameters, check files, make directories, write config)
+#88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
+inputfiles = []
 
-        # check fastQ files and extract read group data (as available)
-        try:
-            assert all([os.path.isfile(fname) for fname in ngsjob.fastq()])
-        except AssertionError:
-            print ngsjob.fastq()
-            raise Exception("Cannot find all FastQ files")
+# print ngsjob data in readable format
+for i, ngsjob in enumerate(ngsjobs):
+    print i, ngsjob
 
-        # get ReadGroupPlatformUnit from file and check if reads are paired
-        firstlines = []
-        for fastq in ngsjob.fastq():
-            with open('myfile.txt', 'r') as f:
-                firstlines.append(f.readline().split(' ')[0])
-        try:
-            assert len(set(firstlines))==1
-        except:
-            logger.error('Different headers in FastQ file')
-        else:
-            #@M00675:4:000000000-A544D:1:1101:19085:2412 1:N:0:3
-            rgpu = firstlines[0][1:firstlines[0].find(':')]
-            ngsjob.RGPU(rgpu)
+    # samplesheet?
+    # fastq files?
+    # add info from config files
 
-        # make target directories and write configuration
-        try:
-            os.mkdir(ngsjob.wd())
-        except OSError:
-            pass
-        else:
-            configfile = ngsjob.wd()+'/.molpath'
-            ngsjob.save(configfile)
+    # check if requirements met for pipeline run?
 
-        # symlink with uniqueID
-        try:
-            symlink = zip(ngsjob.fastq(),ngsjob.linkedfastq())
-            for sl in symlink:
-                os.symlink(*sl)
-        except OSError:
-            pass
-        except:
-            raise
-        # add linked fastq
-        inputfiles.append(ngsjob.linkedfastq())
+    # get metadata from FastQ,
+
+
+    ngsjob.completeWith()
+
+    #
+    # COMPLETE FROM AVAILABLE DATA
+    #
+    ## from sample and worksheet
+    ### fastqfile
+
+    ## from FastQ
+
+
+
+    # check fastQ files and extract read group data (as available)
+    try:
+        assert all([os.path.isfile(fname) for fname in ngsjob.fastq()])
+    except AssertionError:
+        print ngsjob.fastq()
+        raise Exception("Cannot find all FastQ files")
+
+    # get ReadGroupPlatformUnit from file and check if reads are paired
+    firstlines = []
+    for fastq in ngsjob.fastq():
+        with open('myfile.txt', 'r') as f:
+            firstlines.append(f.readline().split(' ')[0])
+    try:
+        assert len(set(firstlines))==1
+    except:
+        logger.error('Different headers in FastQ files')
+    else:
+        #@M00675:4:000000000-A544D:1:1101:19085:2412 1:N:0:3
+        ngsjob.RGPU = firstlines[0][1:firstlines[0].find(':')]
+
+    # make target directories and write configuration
+    targetDir = '/'.join([ pipeconfig["paths"]["analysis"], ngsjob.wd() ])
+    try:
+        os.mkdir( targetDir )
+    except OSError:
+        pass
+    else:
+        ngsjob.save(targetDir+'/.molpath')
+
+    # symlink withx
+    try:
+        symlink = zip(ngsjob.fastq(),ngsjob.linkedfastq())
+        for sl in symlink:
+            os.symlink(*sl)
+    except OSError:
+        pass
+    except:
+        raise
+    # add linked fastq
+    inputfiles.append(ngsjob.linkedfastq())
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   Start DRMAA session if available
@@ -190,29 +222,13 @@ def run_cmd(cmd_str):
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 from ruffus import *
 
-# this filters the fastq
-@transform(inputfiles,
-            formatter("(?P<PAIR>[^\.]+)\.fastq", "(?P<PAIR>[^\.]+)\.fastq"),
-            ["{PAIR[0]}.filtered.fastq", "{PAIR[0]}.unpaired.fastq",
-             "{PAIR[1]}.filtered.fastq", "{PAIR[1]}.unpaired.fastq"])
-def trimmomatic(input_files, output_files):
+@transform([inputfiles,trimmomatic],suffix('.fastq'),'_fastqc.html')
+def fastQC(input_files,output_files):
     # load configurations
     p = loadConfiguration(input_files[0])
     # configure job
-    job_name = 'trimmomatic'+p.RGSM()
-    cmd = ' '.join([
-        pipeconfig['software']['java_v1_7'] + '/java',
-        '-XX:ParallelGCThreads='+str(pipeconfig['resources']['trimmomatic']['cpu']),
-        '-Xmx'+str(pipeconfig['resources']['trimmomatic']['java_mem'])+'g',
-        '-jar', pipeconfig['software']['trimmomatic'],
-        p.librarytype(),
-        '-phred64',
-        '-trimlog', p.RGSM()+'.trimming.log',
-        '-threads', str(pipeconfig['resources']['trimmomatic']['cpu']),
-        ' '.join(input_files),
-        ' '.join(output_files),
-        ' '.join(pipeconfig['pipeline'][p.analysis()]['trimmomatic']) ])
-    wd = p.wd()
+    job_name = 'fastqc'+p.RGSM()
+    cmd = " ".join([ "fastqc", "--noextract", "--outdir="+p.wd(), ' '.join(input_files) ])
     # run on cluster
     if sge:
         try:
@@ -232,12 +248,53 @@ def trimmomatic(input_files, output_files):
     else:
         run_cmd(cmd)
 
-    for ofi in output_files:
-        with open(ofi,'w') as fh:
-            fh.write('dummy')
-            pass
-    print input_files, output_files
-    return
+# this filters the fastq
+@posttask (touch_file( 'trimming.completed' ))
+@transform(inputfiles,
+            formatter("(?P<PAIR>[^\.]+)\.fastq", "(?P<PAIR>[^\.]+)\.fastq"),
+            ["{PAIR[0]}.filtered.fastq", "{PAIR[0]}.unpaired.fastq",
+             "{PAIR[1]}.filtered.fastq", "{PAIR[1]}.unpaired.fastq"])
+def trimmomatic(input_files, output_files):
+    # load configurations
+    p = loadConfiguration(input_files[0])
+    # configure job
+    job_name = 'trimmomatic'+p.RGSM()
+    cmd = ' '.join([
+        pipeconfig['software']['java'],
+        '-XX:ParallelGCThreads='+str(pipeconfig['resources']['trimmomatic']['cpu']),
+        '-Xmx'+str(pipeconfig['resources']['trimmomatic']['java_mem'])+'g',
+        '-jar', pipeconfig['software']['trimmomatic'],
+        p.librarytype(),
+        '-phred64',
+        '-trimlog', p.RGSM()+'.trimming.log',
+        '-threads', str(pipeconfig['resources']['trimmomatic']['cpu']),
+        ' '.join(input_files),
+        ' '.join(output_files),
+        ' '.join(ngsconfig['analysis'][p.ngsAnalysis]['config']['trimmomatic']) ])
+    wd = p.wd()
+    # run on cluster
+    if sge:
+        try:
+            stdout_res, stderr_res  = run_job(cmd,
+                                                job_name          = job_name,
+                                                logger            = logger,
+                                                drmaa_session     = sge[0],
+                                                run_locally       = False,
+                                                job_other_options = "-q short.q",
+                                                job_script_directory = "test_dir",
+                                                job_environment={ 'BASH_ENV' : '~/.bashrc' },
+                                                retain_job_scripts = True,
+                                                working_directory = wd )
+        except error_drmaa_job as err:
+            raise Exception("\n".join(map(str,["Failed to run:",cmd,err,stdout_res,stderr_res])))
+    # fallback
+    else:
+        run_cmd(cmd)
+    # for ofi in output_files:
+    #     with open(ofi,'w') as fh:
+    #         fh.write('dummy')
+    #         pass
+    # print input_files, output_files
 
 '''
 @transform(trimmomatic,
