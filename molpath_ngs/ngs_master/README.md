@@ -28,3 +28,6 @@ ngsType
     RGDS
 ngsAnalysis
     cleanupIntermediary
+
+# FASTQ naming convention
+ ngsjob.FASTQ1 = ngsjob.sampleID + '_' + ngsjob.worksheetID +'_'+'_1.fastq'

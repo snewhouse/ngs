@@ -65,6 +65,21 @@ class NGSjob:
         "RGID" # from (RGSM.NGStype.NGSanalysis.RGDT)
         )
 
+    required = (
+        "projectID",  #dev/diag/res
+        "sampleID",  #RGSM
+        "runID",  # worksheetID
+        "ngsType",  # RGPL(ILLUMINA), RGLB(WGS/WEX/TGS), RGDS(bait_liver), RGCN(molpath)
+        "ngsAnalysis",  # (BED, analysis)
+        "FASTQ1",  # from sampleSheet
+        "RGPU", # from FASTQ
+        "RGCN", # from ngsType
+        "RGLB", # from ngsType
+        "RGPL", # from ngsType
+        "RGDS", # from ngsType
+        "RGDT", # from sampleSheet
+    )
+
     # GENERIC INIT
     def __init__(self, *data):
         for i, d in enumerate(data):
@@ -120,14 +135,22 @@ class NGSjob:
     def wd(self):  # work dir
         return self.projectID+'/'+self.sampleID
 
-    def fastq(self):
-        return [ self.FASTQ1, self.FASTQ2 ]
+    def fastq(self,basepath=None):
+        if basepath:
+            fullfastqpath = [ '/'.join([e.rstrip('/'), self.FASTQ1]) ]
+            if self.FASTQ2:
+                fullfastqpath.append('/'.join([e.rstrip('/'), self.FASTQ2]))
+
+        else:
+            return [ self.FASTQ1, self.FASTQ2 ]
 
     # get/set ReadGroup
     def RG(self,field):
         if field.upper() == 'SM':
             return self.sampleID
         if field.upper() == 'ID':
+            if self.RGID:
+                return RGID
             return "_".join([self.sampleID, self.ngsType, self.ngsAnalysis. self.RGDT])
         if field.upper() == 'DT':
             return self.runDate
@@ -149,6 +172,13 @@ class NGSjob:
             return 'PE'
         return 'SE'
 
+    # returns true if requirements are met
+    def unmetRequirements(self):
+        unmet = []
+        for r in required:
+            if not getattr(self, r):
+                unmet.append(r)
+        return unmet
 
 if __name__ == "__main__":
     jobs = NGSjobs(sys.stdin)

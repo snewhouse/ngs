@@ -5,10 +5,30 @@
             "RGPL": "ILLUMINA",
             "RGLB": "TAS",
             "RGDS": "redcell_baitCapture"
+        },
+        "test": {
+            "RGCN": "MolPath",
+            "RGPL": "ILLUMINA",
+            "RGLB": "TAS",
+            "RGDS": "haloplex"
         }
     },
     "ngsanalysis": {
         "default": {
+            "BED": {
+                "file": "",
+                "type": ""
+            },
+            "config": {
+                "trimmomatic":[
+                    "ILLUMINACLIP:/usr/local/pipeline/Trimmomatic-0.32/adapters/TruSeq3-PE-2.fa:2:30:10",
+                    "LEADING:3",
+                    "TRAILING:3",
+                    "SLIDINGWINDOW:4:15",
+                    "MINLEN:36"]
+            }
+        },
+        "test": {
             "BED": {
                 "file": "",
                 "type": ""

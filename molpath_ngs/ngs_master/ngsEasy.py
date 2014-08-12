@@ -3,7 +3,7 @@
 __doc__=="""
 #############################################################################################
 # NGS pipeline for molecular diagnostics (can be dockerized)                                #
-# -- Organisation: KCL/SLaM/NHS/Viapath                                           #
+# -- Organisation: KCL/SLaM/NHS/Viapath                                                     #
 # -- Date: 07/08/2014                                                                       #
 #############################################################################################
 """
@@ -46,14 +46,14 @@ parser.add_option("-l", dest="logfile", default=None,             metavar="STRIN
     help="logfile (default STDERR)")
 
 #   pipeline run options
-parser.add_option("-j", "--jobs", dest="jobs", default=2, metavar="INT", type="int", \
+parser.add_option("--jobs", dest="jobs", default=2, metavar="INT", type="int", \
     help="Specifies the number of jobs (operations) to run in parallel.")
 parser.add_option("--flowchart", dest="flowchart", metavar="FILE", type="string", \
                   help="Print flowchart of the pipeline to FILE. Flowchart format "
                        "depends on extension. Alternatives include ('.dot', '.jpg', "
                        "'*.svg', '*.png' etc). Formats other than '.dot' require "
                        "the dot program to be installed (http://www.graphviz.org/).")
-parser.add_option("-n", "--just_print", dest="just_print", action="store_true", default=False, \
+parser.add_option("--just_print", dest="just_print", action="store_true", default=False, \
                     help="Only print a trace (description) of the pipeline. "
                          " The level of detail is set by --verbose.")
 
@@ -89,7 +89,7 @@ if options.verbose:
 #   read requirements/includes
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 import json
-from NGSJobs import NGSJobs, NGSJob
+from NGSjob import NGSjobs, NGSjob
 
 # read pipeline parameters
 logger.info("reading configuration from %s", options.pipeconfig)
@@ -105,7 +105,7 @@ with open(options.ngsconfig) as nconf:
 ngsjobs = []
 for ngsjobfile in args:
     with open(ngsjobfile) as fh:
-        ngsjobs += NGSJobs(fh)
+        ngsjobs += NGSjobs(fh)
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   setup jobs (collect additional parameters, check files, make directories, write config)
@@ -116,25 +116,71 @@ inputfiles = []
 for i, ngsjob in enumerate(ngsjobs):
     print i, ngsjob
 
-    # samplesheet?
-    # fastq files?
-    # add info from config files
+    # get fastq names
+    try:
+        assert self.projectID and sampleID and worksheetID
+    except AssertionError:
+        logger.error('Need project, sample and worksheet ID')
+    else:
+        if not ngsjob.FASTQ1:
+            ngsjob.FASTQ1 = ngsjob.sampleID + '_' + ngsjob.worksheetID +'_1.fastq'
+            ngsjob.FASTQ2 = ngsjob.sampleID + '_' + ngsjob.worksheetID +'_2.fastq'
+
+    # test if FASTQ files exist
+    for fastq in ngsjob.fastq(pipeconfig['path']['fastq']):
+        try:
+            assert os.path.isfile(fastq)
+        except:
+            logger.error("FASTQ file %s does not exist" % fastq)
+
+    # get platform unit (machine identifier)
+    if not ngsjob.RGPU:
+        # get ReadGroupPlatformUnit from file and check if reads are paired
+        firstlines = []
+        for fastq in ngsjob.fastq(pipeconfig['path']['fastq']):
+            with open(fastq, 'r') as f:
+                firstlines.append(f.readline().split(' ')[0])
+        try:
+            assert len(set(firstlines))==1
+        except:
+            logger.error('Different headers in FastQ files')
+        else:
+            #@M00675:4:000000000-A544D:1:1101:19085:2412 1:N:0:3
+            ngsjob.RGPU = firstlines[0][1:firstlines[0].find(':')]
+
+    if not ngsjob.RGDT:
+        if ngsjob.sampleSheet:
+
+            try:
+                fh = open(ngsjob.sampleSheet)
+            except:
+                logger.error("cannot find samplesheet file %s" % ngsjob.sampleSheet)
+            else:
+                for line in fh:
+                    if line.
+            finally:
+                fh.close()
+        else:
+            logger.warn("no RunDate (RGDT) available, using FastQ file timetamp")
+            import os, time
+            (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(ngsjobs.fastq())
+            print "FASTQ1 last modified: %s" % time.ctime(mtime)
+            (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(file)
+            print "FASTQ1 last modified: %s" % time.ctime(mtime)
 
     # check if requirements met for pipeline run?
+    try:
+        missing = ngsjob.unmetRequirements()
+        assert len(missing)==0
+    except AssertionError:
+        logger.error("requirements not met %s" % ','.join(missing))
 
-    # get metadata from FastQ,
 
-
-    ngsjob.completeWith()
 
     #
     # COMPLETE FROM AVAILABLE DATA
     #
     ## from sample and worksheet
-    ### fastqfile
-
-    ## from FastQ
-
 
 
     # check fastQ files and extract read group data (as available)
@@ -144,18 +190,6 @@ for i, ngsjob in enumerate(ngsjobs):
         print ngsjob.fastq()
         raise Exception("Cannot find all FastQ files")
 
-    # get ReadGroupPlatformUnit from file and check if reads are paired
-    firstlines = []
-    for fastq in ngsjob.fastq():
-        with open('myfile.txt', 'r') as f:
-            firstlines.append(f.readline().split(' ')[0])
-    try:
-        assert len(set(firstlines))==1
-    except:
-        logger.error('Different headers in FastQ files')
-    else:
-        #@M00675:4:000000000-A544D:1:1101:19085:2412 1:N:0:3
-        ngsjob.RGPU = firstlines[0][1:firstlines[0].find(':')]
 
     # make target directories and write configuration
     targetDir = '/'.join([ pipeconfig["paths"]["analysis"], ngsjob.wd() ])
@@ -290,11 +324,55 @@ def trimmomatic(input_files, output_files):
     # fallback
     else:
         run_cmd(cmd)
-    # for ofi in output_files:
-    #     with open(ofi,'w') as fh:
-    #         fh.write('dummy')
-    #         pass
-    # print input_files, output_files
+
+# ALIGNER
+### @collate(animals, regex(r"(.+)\.(.+)\.animal"),  r"\2.results")
+
+@posttask (touch_file( 'alignment.completed' ))
+@transform(inputfiles,
+            formatter("(?P<PAIR>[^\.]+)\.fastq"),
+            "{PAIR[0]}.filtered.fastq")
+def alignment(input_files, output_files):
+    print input_files
+    print output_files
+    sys.exit()
+
+    # load configurations
+    p = loadConfiguration(input_files[0])
+    # configure job
+    job_name = 'trimmomatic'+p.RGSM()
+    cmd = ' '.join([
+        pipeconfig['software']['java'],
+        '-XX:ParallelGCThreads='+str(pipeconfig['resources']['trimmomatic']['cpu']),
+        '-Xmx'+str(pipeconfig['resources']['trimmomatic']['java_mem'])+'g',
+        '-jar', pipeconfig['software']['trimmomatic'],
+        p.librarytype(),
+        '-phred64',
+        '-trimlog', p.RGSM()+'.trimming.log',
+        '-threads', str(pipeconfig['resources']['trimmomatic']['cpu']),
+        ' '.join(input_files),
+        ' '.join(output_files),
+        ' '.join(ngsconfig['analysis'][p.ngsAnalysis]['config']['trimmomatic']) ])
+    wd = p.wd()
+    # run on cluster
+    if sge:
+        try:
+            stdout_res, stderr_res  = run_job(cmd,
+                                                job_name          = job_name,
+                                                logger            = logger,
+                                                drmaa_session     = sge[0],
+                                                run_locally       = False,
+                                                job_other_options = "-q short.q",
+                                                job_script_directory = "test_dir",
+                                                job_environment={ 'BASH_ENV' : '~/.bashrc' },
+                                                retain_job_scripts = True,
+                                                working_directory = wd )
+        except error_drmaa_job as err:
+            raise Exception("\n".join(map(str,["Failed to run:",cmd,err,stdout_res,stderr_res])))
+    # fallback
+    else:
+        run_cmd(cmd)
+
 
 '''
 @transform(trimmomatic,
