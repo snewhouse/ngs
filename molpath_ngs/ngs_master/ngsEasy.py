@@ -19,7 +19,7 @@ __status__ = "Development"  # ["Prototype", "Development",  "Production"]
 #   basdic imports and paths
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 
-import os, sys, re
+import os, sys, re, time
 import subprocess
 
 exe_path = os.path.split(os.path.abspath(sys.argv[0]))[0]
@@ -42,7 +42,7 @@ parser.add_option("-n", dest="ngsconfig", default='ngs_config.json',metavar="STR
 #   general options: verbosity / logging
 parser.add_option("-v", dest="verbose", action="count", default=0, \
     help="Print more detailed messages (eg. -vvv)")
-parser.add_option("-l", dest="logfile", default=None,             metavar="STRING", \
+parser.add_option("-l", dest="logfile", default=None, metavar="STRING", \
     help="logfile (default STDERR)")
 
 #   pipeline run options
@@ -148,25 +148,29 @@ for i, ngsjob in enumerate(ngsjobs):
             #@M00675:4:000000000-A544D:1:1101:19085:2412 1:N:0:3
             ngsjob.RGPU = firstlines[0][1:firstlines[0].find(':')]
 
-    if not ngsjob.RGDT:
-        if ngsjob.sampleSheet:
-
-            try:
-                fh = open(ngsjob.sampleSheet)
-            except:
-                logger.error("cannot find samplesheet file %s" % ngsjob.sampleSheet)
-            else:
-                for line in fh:
-                    if line.
-            finally:
-                fh.close()
+    if not ngsjob.RGDT and ngsjob.sampleSheet:
+        try:
+            fh = open(ngsjob.sampleSheet)
+        except:
+            logger.error("cannot find samplesheet file %s" % ngsjob.sampleSheet)
         else:
-            logger.warn("no RunDate (RGDT) available, using FastQ file timetamp")
-            import os, time
-            (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(ngsjobs.fastq())
-            print "FASTQ1 last modified: %s" % time.ctime(mtime)
-            (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(file)
-            print "FASTQ1 last modified: %s" % time.ctime(mtime)
+            for line in fh:
+                mm = line.match('Date\s+(\d+)\D+(\d+)\D+(\d+)')
+                if mm:
+                    if len(mm.group(1))==4 and len(mm.group(3))<=2:
+                        ngsjob.RGDT = mm.group(1) +
+                    elif:
+                        ngsjob.RGDT = mm.group(1)
+            if not ngsjob.RGDT:
+                logger.warn("cannot parse date, use YYYY-MM-DD in samplesheet/RGDT")
+        finally:
+            fh.close()
+    # fallback for RGDT
+    if not ngsjob.RGDT:
+        logger.warn("no RunDate (RGDT) available, using FastQ file timetamp")
+        filetime = lambda x: time.strftime('%Y-%m-%d', time.localtime(min(os.path.getmtime(x),os.path.getctime(x))))
+        ngsjob.RGDT = filetime(ngsjobs.fastq(pipeconfig['path']['fastq'])[0])
+        print >> sys.stderr, "FASTQ1 last modified: %s" % ngsjob.RGDT  # get earlier date as moving between filesystems could make ctime>mtime
 
     # check if requirements met for pipeline run?
     try:
@@ -175,34 +179,23 @@ for i, ngsjob in enumerate(ngsjobs):
     except AssertionError:
         logger.error("requirements not met %s" % ','.join(missing))
 
-
-
-    #
-    # COMPLETE FROM AVAILABLE DATA
-    #
-    ## from sample and worksheet
-
-
-    # check fastQ files and extract read group data (as available)
-    try:
-        assert all([os.path.isfile(fname) for fname in ngsjob.fastq()])
-    except AssertionError:
-        print ngsjob.fastq()
-        raise Exception("Cannot find all FastQ files")
-
+    logger.info("Data check successful. Setting up analysis")
 
     # make target directories and write configuration
     targetDir = '/'.join([ pipeconfig["paths"]["analysis"], ngsjob.wd() ])
     try:
-        os.mkdir( targetDir )
-    except OSError:
-        pass
+        os.makedirs(targetDir, 0777)
+    except OSError as err:
+        if "[Errno 17]" in err:  # exists
+            logger.warn("directory %s exists" % targetDir)
+        else:
+            logger.error("directory %s creation error: %s" % (targetDir, err))
     else:
         ngsjob.save(targetDir+'/.molpath')
 
-    # symlink withx
+    # symlink with x
     try:
-        symlink = zip(ngsjob.fastq(),ngsjob.linkedfastq())
+        symlink = zip(ngsjob.fastq(pipeconfig['path']['fastq']),ngsjob.fastq(pipeconfig['path']['analysis']))
         for sl in symlink:
             os.symlink(*sl)
     except OSError:

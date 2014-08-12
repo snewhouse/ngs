@@ -77,7 +77,7 @@ class NGSjob:
         "RGLB", # from ngsType
         "RGPL", # from ngsType
         "RGDS", # from ngsType
-        "RGDT", # from sampleSheet
+        "RGDT" # from sampleSheet
     )
 
     # GENERIC INIT
@@ -128,18 +128,17 @@ class NGSjob:
             selfDate = tuple(map(int, self.runDate.split("-")[:3]))
             otherDate = tuple(map(int, other.runDate.split("-")[:3]))
         except:
-            logging.warning("date sorting error: not YYYY-MM-DD")
             return True
         return selfDate < otherDate
 
     def wd(self):  # work dir
-        return self.projectID+'/'+self.sampleID
+        return self.projectID+'/'+self.sampleID + '/' + self.worksheetID
 
     def fastq(self,basepath=None):
         if basepath:
-            fullfastqpath = [ '/'.join([e.rstrip('/'), self.FASTQ1]) ]
+            fullfastqpath = [ '/'.join([basepath.rstrip('/'), self.FASTQ1]) ]
             if self.FASTQ2:
-                fullfastqpath.append('/'.join([e.rstrip('/'), self.FASTQ2]))
+                fullfastqpath.append('/'.join([basepath.rstrip('/'), self.FASTQ2]))
 
         else:
             return [ self.FASTQ1, self.FASTQ2 ]
@@ -150,7 +149,7 @@ class NGSjob:
             return self.sampleID
         if field.upper() == 'ID':
             if self.RGID:
-                return RGID
+                return self.RGID
             return "_".join([self.sampleID, self.ngsType, self.ngsAnalysis. self.RGDT])
         if field.upper() == 'DT':
             return self.runDate
