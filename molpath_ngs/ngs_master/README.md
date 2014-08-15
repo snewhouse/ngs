@@ -1,0 +1,41 @@
+setup aligner parameter (including sanity check)
+
+
+
+Pipeline Bash Scripts
+====================================
+- ...coming soon...
+- easyngs_full.v1.0.sh
+- aln,gatk_clean,var-call,sv-call,var-anno,full,full_nogatk
+
+Descriptions  
+config file set up  
+
+
+molpath.py parameter dependencies
+
+## parameters
+### sample file
+projectID
+sampleID
+worksheetID
+    RGID
+    FASTQ1
+    FASTQ2
+        RGPU
+sampleSheet(FILE)
+    RGDT
+ngsType
+    RGLB
+    RGCN
+    RGPL
+    RGDS
+ngsAnalysis
+    cleanupIntermediary
+
+# FASTQ naming convention
+ ngsjob.FASTQ1 = ngsjob.sampleID + '_' + ngsjob.worksheetID +'_'+'_1.fastq'
+
+# field aliases
+runDate: RGDT
+runID: worksheetID

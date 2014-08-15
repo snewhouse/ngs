@@ -1,4 +1,4 @@
-########################################################################
+#########################################################################
 # -- Author: Amos Folarin                                               #
 # -- Author: Stephen J Newhouse                                         #
 # -- Organisation: KCL/SLaM                                             #
@@ -42,7 +42,6 @@
 #
 # The system looks something like this:
 #
-#
 #>     [ ngseasy  container ]... x n
 #>     |
 #>     |____[ storage container ]  #reference genomes
@@ -53,31 +52,33 @@
 #
 
 
-#------------------------------------------------------------------------
-# RUN CONTAINER:
-# ># docker -t --name='ngs_store_box' <storage_container_image>  
-#------------------------------------------------------------------------
-
 
 #------------------------------------------------------------------------
 # BUILDING THE DOCKER IMAGE FROM THIS Dockerfile:
+# download this Dockerfile into a clean directory e.g. build_dir
+# Due to licencing, you should get your own versions of:
+# 
+# 1) Download the compressed files into the build_dir, then edit the lines
+# of the Dockerfile to the correct versions of ANNOVAR and GATK
+#   * novoalign http://www.novocraft.com/
+#   * Stampy http://www.well.ox.ac.uk/project-stampy
+#   * GATK https://www.broadinstitute.org/gatk/
+#   * ANNOVAR http://www.openbioinformatics.org/annovar/
+#
 # 2) $ cd build_dir
 # 3) $ sudo docker build --tag <repo-name:tag> .
 #------------------------------------------------------------------------
 
 # Base image will be Trusty
-FROM ubuntu:trusty
+FROM afolarin/vis-reports
 
 # Maintainer Amos Folarin
 MAINTAINER Amos Folarin amosfolarin@gmail.com
 
-# Required basic stuff, make, gcc, wget etc
-RUN apt-get update
-
-#------------------------------------------------------------------------------
+#------------------------------------------------------------------------
 # VOLUMES and VOLUME CONTAINERS
 # Mount a volume external to the container to store stuff that needs to persist
-#------------------------------------------------------------------------------
+#------------------------------------------------------------------------
 #------ Pass in the config file via another volume, mount host pwd
 # You should mount the pwd when you launch docker, and then make sure the config file 
 # resides in pwd.
@@ -103,50 +104,27 @@ RUN apt-get update
 #   $ docker run -v /*host*/data/reference:/media/ngsEasy/data/reference
 
 
-
-#------------------------------------------------------------------------------
-# USER SETUP
-#------------------------------------------------------------------------------
-# Create a pipeline user:pipeman and group:ngsgroup
-RUN useradd -m -s /bin/bash pipeman && cd /home/pipeman && echo "#bash config file for user pipeman" >> /home/pipeman/.bashrc
-RUN groupadd ngsgroup
-RUN usermod -G ngsgroup pipeman
+#------------------------- NGS PIPELINE ----------------------------------
+# needs updating 
+RUN cd /usr/local/pipeline \
+    && git clone https://github.com/KHP-Informatics/ngs.git \
+    && sed -i '$aPATH=${PATH}:/usr/local/pipeline/ngs/molpath_ngs:/usr/local/pipeline/ngs/molpath_ngs/ngs_master_scripts' /home/pipeman/.bashrc \
 
 
-
-#------------------------------------------------------------------------------
-# STORAGE VOLUME SETUP (access with --volumes-from <ngs_storage>)
-#------------------------------------------------------------------------------
-VOLUME ["/media/ngsEasy/data/reference"]
+#-------------------------------PERMISSIONS--------------------------
+RUN chmod -R 755 /usr/local/pipeline/*
 
 
-#------------------------------------------------------------------------------
-# Put the Reference Genome here, compressed, the pipeilne must uncompress
-#------------------------------------------------------------------------------
-ADD reference_genomes.tar.gz /media/ngsEasy/data/reference_genomes.tar.gz
+# Cleanup the temp dir
+RUN rm -rf /tmp/*
 
 
-#------------------------------------------------------------------------------
-# PORTs
-# ports are hard coded
-#------------------------------------------------------------------------------
-EXPOSE 34567
+# change to bash for the default entrypoint. You can override ENTRYPOINT and CMD now in docker run.
+ENTRYPOINT /bin/bash
 
-
-
-#------------------------------------------------------------------------------
-# ENTRY and CMD spawn a process to keep container running for the duration 
-# of the pipeline run
-# TODO: might be nice to have something that listens for all pipeline containers
-# for a lifesign and stop when all containers don't requrie it? for the moment
-# a simple process to watch the container's main volume size is ok.
-#------------------------------------------------------------------------------
-
-#default command for entrypoint
-CMD ["/usr/bin/du", "-sh" , "/media/ngsEasy/data/" ]
-
-#default entrypoint report value of CMD to terminal, can override with --entrypoint
-ENTRYPOINT ["/usr/bin/watch", "-n", "60"]
+# Launch the pipeline through a command this will be a default executaion of the pipeline 
+# and can be overridden with # docker run
+# CMD ["/usr/local/pipeline/molpath_ngs/ngs_master_scripts/xxxxx"]
 
 
 
