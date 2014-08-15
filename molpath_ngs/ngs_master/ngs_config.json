@@ -19,28 +19,43 @@
                 "file": "",
                 "type": ""
             },
-            "config": {
-                "trimmomatic":[
-                    "ILLUMINACLIP:/usr/local/pipeline/Trimmomatic-0.32/adapters/TruSeq3-PE-2.fa:2:30:10",
-                    "LEADING:3",
-                    "TRAILING:3",
-                    "SLIDINGWINDOW:4:15",
-                    "MINLEN:36"]
-            }
+            "vcf":{
+                "minDP": 60,
+                "minQ": 30
+            },
+            "platypus": {
+                "minReads": 60,
+                "filterDuplicates": 0
+            },
+            "trimmomatic":[
+                "ILLUMINACLIP:/usr/local/pipeline/Trimmomatic-0.32/adapters/TruSeq3-PE-2.fa:2:30:10",
+                "LEADING:3",
+                "TRAILING:3",
+                "MINLEN:36"],
+            "aligner": "bowtie2",
+            "rmdup": false
         },
         "test": {
             "BED": {
                 "file": "",
                 "type": ""
             },
-            "config": {
-                "trimmomatic":[
-                    "ILLUMINACLIP:/usr/local/pipeline/Trimmomatic-0.32/adapters/TruSeq3-PE-2.fa:2:30:10",
-                    "LEADING:3",
-                    "TRAILING:3",
-                    "SLIDINGWINDOW:4:15",
-                    "MINLEN:36"]
-            }
+            "vcf":{
+                "minDP": 60,
+                "minQ": 30
+            },
+            "platypus": {
+                "minReads": 60,
+                "filterDuplicates": 0
+            },
+            "trimmomatic":[
+                "ILLUMINACLIP:/usr/local/pipeline/Trimmomatic-0.32/adapters/TruSeq3-PE-2.fa:2:30:10",
+                "LEADING:3",
+                "TRAILING:3",
+                "SLIDINGWINDOW:4:15",
+                "MINLEN:36"],
+            "aligner": "bwa",
+            "rmdup": false
         }
     }
 }

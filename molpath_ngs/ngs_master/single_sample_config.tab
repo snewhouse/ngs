@@ -1,2 +1,0 @@
-projectID	sampleID	FASTQ1	FASTQ2	ngsType	ngsAnalysis	runDate	cleanup
-devtest	sample1	L2-1_S1_L001_R1_001.fastq	L2-1_S1_L001_R2_001.fastq	capturepanel	default	2010-02-30	True

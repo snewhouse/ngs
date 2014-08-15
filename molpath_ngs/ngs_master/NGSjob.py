@@ -4,6 +4,7 @@
 import sys
 import datetime
 import json
+import hashlib
 
 '''
 ProjectID
@@ -30,13 +31,22 @@ IMPLICIT RGDS
 
 # parses NGSjobs file (checks field order)
 class NGSjobs(list):
+
+    __aliases__ = {
+        'runDate': 'RGDT',
+        'sampleID': 'RGSM',
+        'worksheetID': 'runID',
+        'samplesheet': 'sampleSheet'
+     } # field aliases
+
     def __init__(self, fh, delim='\t'):
         self.fields = []  # must be concordant to patient slots
         # parser with sanity check
         for lineNum, line in enumerate(fh):
             if lineNum == 0:
-                # header
-                self.fields = line.rstrip().split(delim)
+                # header replace aliases
+                self.fields = [ NGSjobs.__aliases__[x] if x in NGSjobs.__aliases__.keys() \
+                    else x for x in line.rstrip().split(delim) ]
             else:
                 # deserialize into hash
                 data = dict(zip(self.fields, line.rstrip().split(delim)))
@@ -48,7 +58,7 @@ class NGSjob:
 
     __slots__ = (
         "projectID",  #dev/diag/res
-        "sampleID",  #RGSM
+        "RGSM",  #sampleID
         "runID",  # worksheetID
         "sampleSheet", # runconfig
         "ngsType",  # RGPL(ILLUMINA), RGLB(WGS/WEX/TGS), RGDS(bait_liver), RGCN(molpath)
@@ -62,22 +72,23 @@ class NGSjob:
         "RGPL", # from ngsType
         "RGDS", # from ngsType
         "RGDT", # from sampleSheet
-        "RGID" # from (RGSM.NGStype.NGSanalysis.RGDT)
+        "RGID", # from (RGSM.NGStype.NGSanalysis.RGDT)
+        "_inputfiles" # the FASTQ files to start with, can be anonymized filename
         )
 
-    required = (
+    __required__ = (
         "projectID",  #dev/diag/res
-        "sampleID",  #RGSM
+        "RGSM",  #sampleID
         "runID",  # worksheetID
-        "ngsType",  # RGPL(ILLUMINA), RGLB(WGS/WEX/TGS), RGDS(bait_liver), RGCN(molpath)
-        "ngsAnalysis",  # (BED, analysis)
-        "FASTQ1",  # from sampleSheet
+        "RGDT", # from sampleSheet
         "RGPU", # from FASTQ
         "RGCN", # from ngsType
         "RGLB", # from ngsType
         "RGPL", # from ngsType
         "RGDS", # from ngsType
-        "RGDT" # from sampleSheet
+        #"ngsType",  # RGPL(ILLUMINA), RGLB(WGS/WEX/TGS), RGDS(bait_liver), RGCN(molpath)
+        "ngsAnalysis",  # (BED, analysis)
+        "FASTQ1"  # from sampleSheet
     )
 
     # GENERIC INIT
@@ -88,7 +99,7 @@ class NGSjob:
                 unkown = set(d.keys()).difference(set(self.__slots__))
                 assert len(unkown)==0
             except AssertionError:
-                    raise Exception('ERROR: configuration field: ' + ",".join(unkown))
+                    raise Exception('ERROR: configuration field unkown: ' + ",".join(unkown))
             # set initial values (None)
             for s in self.__slots__:
                 try:
@@ -107,12 +118,16 @@ class NGSjob:
         return "\n".join(['{1:>30} {0:>2} {2:<40}'.format(i, *f) for i,f in enumerate(fields)]+[''])
 
     def __str__(self):
-        return '< NGSjob: {:_^50} {:<30} {:<30} {:<10} >'.format(
-            getattr(self, NGSjob.__slots__[1]),
-            getattr(self, NGSjob.__slots__[0]),
-            getattr(self, NGSjob.__slots__[4]),
-            getattr(self, NGSjob.__slots__[6]),
-            )
+        try:
+            return '< NGSjob: {:}:{:}:{:} {:<10} >'.format(
+                getattr(self, NGSjob.__required__[0]),
+                getattr(self, NGSjob.__required__[1]),
+                getattr(self, NGSjob.__required__[2]),
+                getattr(self, NGSjob.__required__[3]),
+                )
+        except:
+            print >> sys.stderr, dir(self)
+            raise
 
     def __getitem__(self, key):
         return getattr(self, key)
@@ -132,27 +147,47 @@ class NGSjob:
         return selfDate < otherDate
 
     def wd(self):  # work dir
-        return self.projectID+'/'+self.sampleID + '/' + self.worksheetID
+        return self.projectID+'/'+self.RGSM + '/' + self.runID
+
+    def setRGID(self,rgid=None):  # unique identifyer
+        if rgid:
+            self.RGID = rgid
+        elif not self.RGID:
+            try:
+                assert self.projectID and self.RGSM and self.runID and self.RGDT
+            except AssertionError:
+                raise Exception("Cannot generate unique identifyer (RGID)")
+            except:
+                raise
+            else:
+                self.RGID = hashlib.md5(''.join([self.projectID, self.RGSM, self.runID, self.RGDT])).hexdigest()[:8]
+        else:
+            pass  # won't overwrite
+        return
 
     def fastq(self,basepath=None):
         if basepath:
-            fullfastqpath = [ '/'.join([basepath.rstrip('/'), self.FASTQ1]) ]
-            if self.FASTQ2:
-                fullfastqpath.append('/'.join([basepath.rstrip('/'), self.FASTQ2]))
-
+            return [ '/'.join([basepath.rstrip('/'), self.FASTQ1]), \
+                     '/'.join([basepath.rstrip('/'), self.FASTQ2]) ]
         else:
             return [ self.FASTQ1, self.FASTQ2 ]
+
+    def inputfiles(self,basepath=None):
+        if basepath:  # set the inputfiles
+            self._inputfiles =  [ '/'.join([basepath.rstrip('/'), self.RG('ID')+"_1.fastq"]), \
+                     '/'.join([basepath.rstrip('/'), self.RG('ID')+"_2.fastq"]) ]
+        return self._inputfiles
 
     # get/set ReadGroup
     def RG(self,field):
         if field.upper() == 'SM':
-            return self.sampleID
+            return self.RGSM
         if field.upper() == 'ID':
             if self.RGID:
                 return self.RGID
-            return "_".join([self.sampleID, self.ngsType, self.ngsAnalysis. self.RGDT])
+            return "_".join([self.RGSM, self.ngsType, self.ngsAnalysis, self.RGDT])
         if field.upper() == 'DT':
-            return self.runDate
+            return self.RGDT
         if field.upper() == 'PL':
             return self.RGPL
         if field.upper() == 'LB':
@@ -174,7 +209,7 @@ class NGSjob:
     # returns true if requirements are met
     def unmetRequirements(self):
         unmet = []
-        for r in required:
+        for r in NGSjob.__required__:
             if not getattr(self, r):
                 unmet.append(r)
         return unmet
@@ -186,7 +221,7 @@ if __name__ == "__main__":
         with open('sample.json') as fh:
             js = json.load(fh)
             job2 = NGSjob(js)
-            job3 = NGSjob(js,{"something":"", "sampleID":"field", "RGDS": "new_center", 'sampleID': "different sample"})
+            job3 = NGSjob(js,{"something":"", "sampleID":"field", "RGDS": "new_center", 'RGSM': "different sample"})
         job3.save('sample.json')
         with open('sample.json') as fh:
             js = json.load(fh)

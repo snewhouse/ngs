@@ -1,3 +1,7 @@
+setup aligner parameter (including sanity check)
+
+
+
 Pipeline Bash Scripts
 ====================================
 - ...coming soon...
@@ -31,3 +35,7 @@ ngsAnalysis
 
 # FASTQ naming convention
  ngsjob.FASTQ1 = ngsjob.sampleID + '_' + ngsjob.worksheetID +'_'+'_1.fastq'
+
+# field aliases
+runDate: RGDT
+runID: worksheetID
