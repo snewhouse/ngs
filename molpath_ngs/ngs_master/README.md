@@ -1,4 +1,6 @@
-setup aligner parameter (including sanity check)
+
+reference variants have to be in order: DBSNP,HapMap,1000Gomni!!! 
+
 
 
 

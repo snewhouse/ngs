@@ -66,14 +66,18 @@ class NGSjob:
         "cleanup",  # remove intermediary files
         "FASTQ1",  # from sampleSheet
         "FASTQ2",  # from sampleSheet
-        "RGPU", # from FASTQ
-        "RGCN", # from ngsType
-        "RGLB", # from ngsType
-        "RGPL", # from ngsType
-        "RGDS", # from ngsType
-        "RGDT", # from sampleSheet
-        "RGID", # from (RGSM.NGStype.NGSanalysis.RGDT)
-        "_inputfiles" # the FASTQ files to start with, can be anonymized filename
+        "RGPU",  # from FASTQ
+        "RGCN",  # from ngsType
+        "RGLB",  # from ngsType
+        "RGPL",  # from ngsType
+        "RGDS",  # from ngsType
+        "RGDT",  # from sampleSheet
+        "RGID",  # from (RGSM.NGStype.NGSanalysis.RGDT)
+        "_inputfiles",  # the FASTQ files to start with, can be anonymized filename
+        "_sample",  # from filename
+        "_run_id",  # from filename
+        "_lane",  # from filename
+        "_pair"  # from filename
         )
 
     __required__ = (

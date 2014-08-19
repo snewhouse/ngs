@@ -6,14 +6,16 @@
     },
     "software": {
         "java": "/usr/bin/java",
+        "fastqc": "/usr/local/pipeline/FastQC/fastqc",
         "trimmomatic": "/usr/local/pipeline/Trimmomatic-0.32/trimmomatic-0.32.jar",
         "picard": "/usr/local/pipeline/picard-tools-1.115/",
-        "samtools": "/usr/local/pipeline/samtools-0.1.19/samtools",
+        "samtools": "/usr/local/pipeline/samtools-1.0/samtools",
         "vcftools": "/usr/local/pipeline/vcftools_0.1.12b/bin/vcftools",
+        "bcftools": "/usr/local/pipeline/bcftools/bcftools",
         "stampy": "/usr/local/pipeline/stampy-1.0.23/stampy.py",
         "bwa": "/usr/local/pipeline/bwa-0.7.10/bwa",
         "bowtie2": "/usr/local/pipeline/bowtie2-2.2.3/bowtie2",
-        "gatk": "/usr/local/pipeline/GenomeAnalysisTK-3.1/GenomeAnalysisTK.jar",
+        "gatk": "/usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar",
         "platypus": "/usr/local/pipeline/Platypus_0.7.4/Platypus.py",
 
         "novoalign": "/usr/local/pipeline/novoalign/ngsNovoalign",
@@ -29,10 +31,20 @@
             "sequence": "/usr/local/pipeline/genome/chr11.fasta"
         },
         "indels": [
+            "/usr/local/pipeline/references/Mills_and_1000G_gold_standard.indels.b37.chr11.vcf",
+            "/usr/local/pipeline/references/1000G_phase1.indels.b37.chr11.vcf"
+        ],
+        "indels_backup": [
             "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/Mills_and_1000G_gold_standard.indels.b37.vcf",
             "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/1000G_phase1.indels.b37.vcf"
         ],
         "snps": [
+            "/usr/local/pipeline/references/dbsnp_137.b37.chr11.vcf",
+            "/usr/local/pipeline/references/hapmap_3.3.b37.chr11.vcf",
+            "/usr/local/pipeline/references/1000G_omni2.5.b37.chr11.vcf",
+            "/usr/local/pipeline/references/1000G_phase1.snps.high_confidence.b37.chr11.vcf"
+        ],
+        "snps_backup": [
             "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/dbsnp_137.b37.vcf",
             "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/hapmap_3.3.b37.vcf",
             "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/1000G_omni2.5.b37.vcf",
@@ -71,46 +83,34 @@
         },
         "gatk": {
             "RTC": {
-                "mem": 6,
-                "cpu": 2,
-                "java_mem": 4,
-                "nt": 2
+                "mem": 6, "cpu": 2, "java_mem": 4, "nt": 2
             },
             "IR": {
-                "mem":6,
-                "cpu": 4,
-                "java_mem":4
+                "mem":6, "cpu": 4, "java_mem":4
             },
             "BR": {
-                "mem":6,
-                "cpu": 4,
-                "java_mem":4,
-                "nct": 8
+                "mem":6, "cpu": 4, "java_mem":4, "nct": 8
             },
             "PR": {
-                "mem": 6,
-                "cpu": 1,
-                "java_mem": 4,
-                "nct": 4
+                "mem": 6, "cpu": 1, "java_mem": 4, "nct": 4
             },
             "AC": {
-                "mem": 4,
-                "cpu": 1,
-                "java_mem": 4
+                "mem": 4, "cpu": 1, "java_mem": 4
             },
             "UG": {
-                "mem": 18,
-                "cpu": 4,
-                "java_mem": 16,
-                "nct": 6,
-                "nt": 4
+                "mem": 2, "cpu": 2, "java_mem": 2, "nct": 3, "nt": 2
+            },
+            "UG_backup": {
+                "mem": 18, "cpu": 4, "java_mem": 16, "nct": 6, "nt": 4
             },
             "HC": {
-                "mem": 18,
-                "cpu": 4,
-                "java_mem": 16,
-                "nct": 6,
-                "nt": 4
+                "mem": 2, "cpu": 2, "java_mem": 2, "nct": 3, "nt": 2
+            },
+            "HC_backup": {
+                "mem": 18, "cpu": 4, "java_mem": 16, "nct": 6, "nt": 4
+            },
+           "VR": {
+                "mem": 6, "cpu": 2, "java_mem": 4, "nt": 2
             }
         },
         "platypus": {
