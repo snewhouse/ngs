@@ -51,4 +51,5 @@ for normal/tumor cancer panels use:
 Variantfilter:
     bcftools filter
 
+deduplicate in platypus?
 
