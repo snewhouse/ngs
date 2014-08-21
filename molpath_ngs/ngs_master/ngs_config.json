@@ -15,38 +15,25 @@
     },
     "ngsanalysis": {
         "default": {
-            "BED": {
-                "file": "",
-                "type": ""
-            },
+            "bed": "",
             "vcf":{
                 "minDP": 60,
                 "minQ": 30
             },
-            "platypus": {
-                "minReads": 60,
-                "filterDuplicates": 0
-            },
-            "trimmomatic":[
-                "ILLUMINACLIP:/usr/local/pipeline/Trimmomatic-0.32/adapters/TruSeq3-PE-2.fa:2:30:10",
-                "LEADING:3",
-                "TRAILING:3",
-                "MINLEN:36"],
-            "aligner": "bowtie2",
-            "rmdup": false
-        },
-        "test": {
-            "BED": {
-                "file": "",
-                "type": ""
-            },
-            "vcf":{
-                "minDP": 60,
-                "minQ": 30
+            "variantfilter": {
+                "UG": "%MIN(DP)<60 && %AVG(GQ[*])<30",
+                "HC": "%MIN(DP)<60 && %AVG(GQ[*])<30",
+                "PL": "%MIN(TR)<60 && %AVG(GQ[*])<30",
+                "ST": "%MIN(DP)<60",
+                "FB": "%MIN(DP)<60"
             },
             "platypus": {
-                "minReads": 60,
+                "minReads": 30,
                 "filterDuplicates": 0
+            },
+            "freebayes": {
+                "minObs": 5,
+                "useDuplicates": true
             },
             "trimmomatic":[
                 "ILLUMINACLIP:/usr/local/pipeline/Trimmomatic-0.32/adapters/TruSeq3-PE-2.fa:2:30:10",
@@ -54,7 +41,36 @@
                 "TRAILING:3",
                 "SLIDINGWINDOW:4:15",
                 "MINLEN:36"],
-            "aligner": "bwa",
+            "aligner": "bowtie2",
+            "rmdup": false
+        },
+        "test": {
+            "bed": "/Users/dbrawand/ngs/molpath_ngs/ngs_master/fastq/test.bed",
+            "vcf":{
+                "minDP": 60,
+                "minQ": 30
+            },
+            "variantfilter": {
+                "UG": "%MIN(DP)<60 && %AVG(GQ[*])<30",
+                "HC": "%MIN(DP)<60 && %AVG(GQ[*])<30",
+                "PL": "%MIN(TR)<60 && %AVG(GQ[*])<30",
+                "ST": "%MIN(DP)<60",
+                "FB": "%MIN(DP)<60"
+            },
+            "platypus": {
+                "minReads": 30,
+                "filterDuplicates": 0
+            },
+            "freebayes": {
+                "minObs": 5,
+                "useDuplicates": true
+            },
+            "trimmomatic":[
+                "ILLUMINACLIP:/usr/local/pipeline/Trimmomatic-0.32/adapters/TruSeq3-PE-2.fa:2:30:10",
+                "LEADING:3",
+                "TRAILING:3",
+                "MINLEN:36"],
+            "aligner": "bowtie2",
             "rmdup": false
         }
     }

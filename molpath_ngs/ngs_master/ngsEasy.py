@@ -423,8 +423,6 @@ def ngsEasy_checkPaired(input_files,output_file):
         logger.critical('FastQ are not paired or incomplete. Please check.')
         sys.exit(1)
 
-
-
 #--------------------
 # FASTQC prefiltering
 #--------------------
@@ -942,86 +940,8 @@ def ngsEasy_unifiedGenotyper(input_file,output_file):
     else:
         run_cmd(cmd)
 
-'''
-THIS ONLY WORKS IF ENOUGH VARIANTS ARE PRESENT
-@transform(ngsEasy_unifiedGenotyper,suffix('.vcf'),'.recalibrated.vcf')
-def ngsEasy_variantRecalibratorUG(input_file, output_file):
-    basepath = input_file[:input_file.rfind('/')]
-    p = loadConfiguration(basepath)
-    recal_file = input_file+'.recal'
-    tranches_file = input_file+'.tranches'
-    # recalibrateSNP, apply, recalibrateIndels, apply
-    cmds = [
-        ("VariantRecalibrator", " ".join([
-            pipeconfig['software']['java'],
-            '-Xmx'+str(pipeconfig['resources']['gatk']['VR']['java_mem'])+'g',
-            '-Djava.io.tmpdir='+'/'.join([pipeconfig['path']['analysis'], p.wd(), 'tmp']),
-            '-jar', pipeconfig['software']['gatk'],
-            '-T', 'VariantRecalibrator',
-            '-R', pipeconfig['reference']['genome']['sequence'],
-            '-nt', str(pipeconfig['resources']['gatk']['VR']['nt']),
-            '-input', input_file,
-            '-resource:dbsnp,known=true,training=false,truth=false,prior=6.0', pipeconfig['reference']['snps'][0],
-            '-resource:hapmap,known=false,training=true,truth=true,prior=15.0', pipeconfig['reference']['snps'][1],
-            '-resource:omni,known=false,training=true,truth=false,prior=12.0', pipeconfig['reference']['snps'][2],
-            '-an QD', '-an HaplotypeScore', '-an MQRankSum', '-an ReadPosRankSum', '-an FS', '-an MQ',
-            '-mode', 'BOTH',
-            '-recalFile', recal_file,
-            '-tranchesFile', tranches_file,
-            '-rscriptFile', input_file+'.recalplots.R'
-        ])),
-        ("ApplyRecalibration", " ".join([
-            pipeconfig['software']['java'],
-            '-Xmx'+str(pipeconfig['resources']['gatk']['VR']['java_mem'])+'g',
-            '-Djava.io.tmpdir='+'/'.join([pipeconfig['path']['analysis'], p.wd(), 'tmp']),
-            '-jar', pipeconfig['software']['gatk'],
-            '-T', 'ApplyRecalibration',
-            '-R', pipeconfig['reference']['genome']['sequence'],
-            '-input', input_file,
-            '--ts_filter_level', '99.0',
-           '-tranchesFile', tranches_file,
-           '-recalFile', recal_file,
-           '-mode', 'BOTH',
-           '-o', output_file
-        ]))
-    ]
-    # run recalibration
-    for cmdname, cmd in cmds:
-        logger.info('Running %s' % cmdname)
-        print >> sys.stderr, cmd
-        continue
-        if sge:
-            run_sge(cmd,
-                jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
-                fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-                cpu=1, mem=2)
-        else:
-            run_cmd(cmd)
-'''
-
-#@transform(ngsEasy_variantRecalibratorUG, suffix('.vcf'), '.filtered.vcf')
-@transform(ngsEasy_unifiedGenotyper, suffix('.vcf'), '.filtered.vcf')
-def ngsEasy_siteFilterUG(input_file,output_file):
-    p = loadConfiguration(input_file[:input_file.rfind('/')])
-    cmd = " ".join([
-        pipeconfig['software']['vcftools'],
-        '--vcf',input_file,
-        '--recode',
-        '--recode-INFO-all',
-        '--min-meanDP', str(ngsconfig['ngsanalysis'][p.ngsAnalysis]['vcf']['minDP']),
-        '--minQ', str(ngsconfig['ngsanalysis'][p.ngsAnalysis]['vcf']['minQ']),
-        '--stdout', '>', output_file
-        ])
-    if sge:
-        run_sge(cmd,
-            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
-            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
-    else:
-        run_cmd(cmd)
-
 #--------------------
-# Haplotype Calling HC and recalibration
+# Haplotype Calling HC
 #--------------------
 @follows(ngsEasy_indexRecalibratedBam)
 @transform(ngsEasy_recalibrateBam, suffix('.recal.bam'), '.HC.vcf')
@@ -1076,190 +996,195 @@ def ngsEasy_haplotypeCaller(input_file,output_file):
     else:
         run_cmd(cmd)
 
-'''
-ONLY WORKS IF ENOUGH VARIANTS PRESENT
-@transform(ngsEasy_haplotypeCaller,suffix('.vcf'),'.recalibrated.vcf')
-def ngsEasy_variantRecalibratorHC(input_file, output_file):
-    basepath = input_file[:input_file.rfind('/')]
-    p = loadConfiguration(basepatg)
-    recal_file = basepath+'/'+input_file+'.recal'
-    tranches_file = basepath+'/'+input_file+'.tranches'
-    # recalibrateSNP, apply, recalibrateIndels, apply
-    cmd = [
-        " ".join([
-            pipeconfig['software']['java'],
-            '-Xmx'+str(pipeconfig['resources']['gatk']['VR']['java_mem'])+'g',
-            '-Djava.io.tmpdir='+'/'.join([pipeconfig['path']['analysis'], p.wd(), 'tmp']),
-            '-jar', pipeconfig['software']['gatk'],
-            '-T', 'VariantRecalibrator',
-            '-R', pipeconfig['reference']['genome']['sequence'],
-            '-nt', str(pipeconfig['resources']['gatk']['VR']['nt']),
-            '-input', input_file,
-            '-resource:dbsnp,known=true,training=false,truth=false,prior=6.0', pipeconfig['reference']['snps'][0],
-            '-resource:hapmap,known=false,training=true,truth=true,prior=15.0', pipeconfig['reference']['snps'][1],
-            '-resource:omni,known=false,training=true,truth=false,prior=12.0', pipeconfig['reference']['snps'][2],
-            '-an QD', '-an HaplotypeScore', '-an MQRankSum', '-an ReadPosRankSum', '-an FS', '-an MQ', '-an InbreedingCoeff',
-            '-mode', 'BOTH',
-            '-recalFile', recal_file,
-            '-tranchesFile', tranches_file,
-            '-rscriptFile', +input_file+'.recalplots.R'
-        ]),
-        " ".join([
-            pipeconfig['software']['java'],
-            '-Xmx'+str(pipeconfig['resources']['gatk']['VR']['java_mem'])+'g',
-            '-Djava.io.tmpdir='+'/'.join([pipeconfig['path']['analysis'], p.wd(), 'tmp']),
-            '-jar', pipeconfig['software']['gatk'],
-            '-T', 'ApplyRecalibration',
-            '-R', pipeconfig['reference']['genome']['sequence'],
-            '-input', input_file,
-            '--ts_filter_level', '99.0',
-           '-tranchesFile', tranches_file,
-           '-recalFile', recal_file,
-           '-mode', 'BOTH',
-           '-o', output_file
-        ])
-    ]
-    # run recalibration
-    for cmd in cmds:
-        if sge:
-            run_sge(cmd,
-                jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
-                fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-                cpu=1, mem=2)
-        else:
-            run_cmd(cmd)
-'''
-
-#@transform(ngsEasy_variantRecalibratorHC, suffix('.vcf'), '.filtered.vcf')
-@transform(ngsEasy_haplotypeCaller, suffix('.vcf'), '.filtered.vcf')
-def ngsEasy_siteFilterHC(input_file,output_file):
-    p = loadConfiguration(input_file[:input_file.rfind('/')])
-    cmd = " ".join([
-        pipeconfig['software']['vcftools'],
-        '--vcf',input_file,
-        '--recode',
-        '--recode-INFO-all',
-        '--min-meanDP', str(ngsconfig['ngsanalysis'][p.ngsAnalysis]['vcf']['minDP']),
-        '--minQ', str(ngsconfig['ngsanalysis'][p.ngsAnalysis]['vcf']['minQ']),
-        '--stdout', '>', output_file
-        ])
-    if sge:
-        run_sge(cmd,
-            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
-            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
-    else:
-        run_cmd(cmd)
-
 #--------------------
 # mpileup variant calling
 #--------------------
 
 @follows(ngsEasy_indexRecalibratedBam)
 @transform(ngsEasy_recalibrateBam, suffix('.recal.bam'), '.ST.vcf')
-def ngsEasy_mpileup(input_file,output_file):
+def ngsEasy_samtoolsMpileup(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
     cmd = " ".join([
-        pipeconfig['software']['samtools'],
+        pipeconfig['software']['samtools1'],
         'mpileup',
-        '-vu',
+        '-vu',  # for samtools-1.0 (which doesnt index bams currently)
         '-f', pipeconfig['reference']['genome']['sequence'],
         input_file,
         '|',
         pipeconfig['software']['bcftools'],
         'call',
-        '-vm',
+        '-m',
+        #'-v', # variants only
         '-O v',
         '-o', output_file
         ])
-    print >> sys.stderr, cmd
-    #sys.exit('debug')
-
-
     if sge:
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['gatk']['HC']['cpu'], mem=pipeconfig['resources']['gatk']['HC']['mem'])
+            cpu=pipeconfig['resources']['samtools']['cpu'], mem=pipeconfig['resources']['samtools']['mem'])
     else:
         run_cmd(cmd)
 
-@transform(ngsEasy_mpileup, suffix('.vcf'), '.filtered.vcf')
-def ngsEasy_siteFilterST(input_file,output_file):
+#--------------------
+# platypus variant calling
+#--------------------
+@transform(ngsEasy_markDuplicates, suffix('.dupemk.bam'), '.PL.vcf')
+def ngsEasy_platypus(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
     cmd = " ".join([
-        pipeconfig['software']['vcftools'],
-        '--vcf',input_file,
-        '--recode',
-        '--recode-INFO-all',
-        '--min-meanDP', str(ngsconfig['ngsanalysis'][p.ngsAnalysis]['vcf']['minDP']),
-        '--minQ', str(ngsconfig['ngsanalysis'][p.ngsAnalysis]['vcf']['minQ']),
-        '--stdout', '>', output_file
-        ])
-    if sge:
-        run_sge(cmd,
-            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
-            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
-    else:
-        run_cmd(cmd)
-
-
-#--------------------
-# platypus haplotype calling
-#--------------------
-@transform(ngsEasy_markDuplicates, suffix('.bam'), '.PL.vcf')
-def ngsEasy_platypusCallVariants(input_file,output_file):
-    p = loadConfiguration(input_file[:input_file.rfind('/')])
-    cmd = " ".join([
+        'python',
         pipeconfig['software']['platypus'],
         'callVariants',
         '--bamFiles='+input_file,
         '--refFile='+pipeconfig['reference']['genome']['sequence'],
         '--output='+output_file,
-        #'--nCPU='+str(pipeconfig['resources']['platypus']['cpu']),
-        #'--minReads='+str(ngsconfig['ngsanalysis'][p.ngsAnalysis]['platypus']['minReads']),
-        #'--filterDuplicates='+str(ngsconfig['ngsanalysis'][p.ngsAnalysis]['platypus']['filterDuplicates']),
-        #'--trimOverlapping=1',
+        '--nCPU='+str(pipeconfig['resources']['platypus']['cpu']),
+        '--minReads='+str(ngsconfig['ngsanalysis'][p.ngsAnalysis]['platypus']['minReads']),
+        '--filterDuplicates='+str(ngsconfig['ngsanalysis'][p.ngsAnalysis]['platypus']['filterDuplicates']),
+        '--trimOverlapping=1',
+        '--outputRefCalls=1'
         ])
-
-    print >> sys.stderr, cmd
-    sys.exit(1)
-
     if sge:
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['gatk']['HC']['cpu'], mem=pipeconfig['resources']['gatk']['HC']['mem'])
+            cpu=pipeconfig['resources']['platypus']['cpu'], mem=pipeconfig['resources']['platypus']['mem'])
     else:
         run_cmd(cmd)
 
-@transform(ngsEasy_platypusCallVariants, suffix('.vcf'), '.filtered.vcf')
-def ngsEasy_siteFilterPL(input_file,output_file):
+#--------------------
+# freebayes variant calling
+#--------------------
+@transform(ngsEasy_markDuplicates, suffix('.dupemk.bam'), '.FB.vcf')
+def ngsEasy_freebayes(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
     cmd = " ".join([
-        pipeconfig['software']['vcftools'],
-        '--vcf',input_file,
-        '--recode',
-        '--recode-INFO-all',
-        '--min-meanDP', ngsconfig['ngsanalysis'][p.ngsAnalysis]['vcf']['minDP'],
-        '--minQ', ngsconfig['ngsanalysis'][p.ngsAnalysis]['vcf']['minQ'],
-        '--stdout', '>', output_file
+        pipeconfig['software']['freebayes'],
+        '-f', pipeconfig['reference']['genome']['sequence'],
+        '--report-monomorphic',
+        '-C', str(ngsconfig['ngsanalysis'][p.ngsAnalysis]['freebayes']['minObs']),
+        '{usedup}'.format(usedup="--use-duplicate-reads" if ngsconfig['ngsanalysis'][p.ngsAnalysis]['freebayes']['useDuplicates'] else ""),
+        '-v', output_file,
+        input_file
         ])
     if sge:
         run_sge(cmd,
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+            cpu=pipeconfig['resources']['freebayes']['cpu'], mem=pipeconfig['resources']['freebayes']['mem'])
+    else:
+        run_cmd(cmd)
+
+#--------------------
+# filter all VCFs (quality)
+#--------------------
+@transform([ngsEasy_unifiedGenotyper,ngsEasy_haplotypeCaller,ngsEasy_samtoolsMpileup,ngsEasy_platypus,ngsEasy_freebayes], regex(r'(.+)\.vcf'), r'\1.vcf.gz.tbi')
+#@collate([ngsEasy_unifiedGenotyper,ngsEasy_haplotypeCaller,ngsEasy_samtoolsMpileup], regex(r'(.+)\.vcf'), r'\1.filtered.bcf')
+def ngsEasy_indexVCF(input_file,output_file):
+
+    print 'INDEX', input_file
+    print 'INDEX', output_file
+
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
+    # quality filtering
+    cmds = [ [ pipeconfig['software']['bgzip'], '-c', input_file, '>', input_file+'.gz' ],
+        [ pipeconfig['software']['tabix'], input_file+'.gz' ] ]
+    # run job
+    for cmd in cmds:
+        if sge:
+            run_sge(' '.join(cmd),
+                jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+                fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+                cpu=1, mem=2)
+        else:
+            run_cmd(' '.join(cmd))
+
+@transform(ngsEasy_indexVCF, regex(r'(.+)\.vcf.gz.tbi'), r'\1.filtered.vcf')
+#@collate([ngsEasy_unifiedGenotyper,ngsEasy_haplotypeCaller,ngsEasy_samtoolsMpileup], regex(r'(.+)\.vcf'), r'\1.filtered.bcf')
+def ngsEasy_siteFilter(input_file,output_file):
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
+    # filter
+    filterstring = ['-s', 'LOWQUAL']  # low quality filter
+    m = re.match(r'.+\.(..)\.vcf\.gz\.tbi', input_file)  # for caller dependent filtering
+    try:
+        assert m
+    except:
+        logger.error('Cannot guess variant caller')
+    else:
+        varCaller = m.group(1)
+    # get exclusion (filtering) string
+    try:
+        assert len(ngsconfig['ngsanalysis'][p.ngsAnalysis]['variantfilter'][varCaller])>0
+    except AssertionError:
+        pass  # empty exclusion string
+    except IndexError:
+        logger.error('no filter string available for %s' % varCaller)  # no filter string for caller (configuration error)
+        sys.exit(1)
+    else:
+        filterstring += ['-e', r"'"+ngsconfig['ngsanalysis'][p.ngsAnalysis]['variantfilter'][varCaller]+r"'"]
+    # filtering
+    cmd = [
+        pipeconfig['software']['bcftools'],
+        'filter',
+        '-O', 'v',
+        '-o', output_file,
+        ' '.join(filterstring),
+        input_file.replace('.tbi','') ]
+    # run job
+    if sge:
+        run_sge(' '.join(cmd),
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
             cpu=1, mem=2)
     else:
-        run_cmd(cmd)
-
+        run_cmd(' '.join(cmd))
 
 #--------------------
-# merge VCFs
+# reduce VCF to target regions BCF (if TAS or EXO)
 #--------------------
+@transform(ngsEasy_siteFilter, suffix('.vcf'), '.bcf')
+#@collate([ngsEasy_unifiedGenotyper,ngsEasy_haplotypeCaller,ngsEasy_samtoolsMpileup], regex(r'(.+)\.vcf'), r'\1.filtered.bcf')
+def ngsEasy_regionFilterBCF(input_file,output_file):
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
+    cmd = [ 'cat', input_file, '|' ]
+    # reduce to target regions of targeted sequencing or exome
+    if ngsconfig['ngstype'][p.ngsType]['RGLB'].upper() in ['TAS','EXO']:
+        cmd += [
+            pipeconfig['software']['bedtools'],
+            'intersect',
+            '-header',
+            '-a', '-',
+            '-b', ngsconfig['ngsanalysis'][p.ngsAnalysis]['bed'],
+            '|'
+            ]
+    # convert to bcf
+    cmd += [
+        pipeconfig['software']['bcftools'],
+        'view',
+        '-O', 'b',
+        '-o', output_file
+        ]
+    # run job
+    if sge:
+        run_sge(' '.join(cmd),
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+            cpu=1, mem=2)
+    else:
+        run_cmd(' '.join(cmd))
+
+#--------------------
+# annotate w/SAVANT
+#--------------------
+
+
 '''
-@transform([ngsEasy_siteFilterUC,ngsEasy_siteFilterHC,ngsEasy_siteFilterPL],
+#--------------------
+# merge VCFs ?
+#--------------------
+
+@collate([ngsEasy_siteFilterUC,ngsEasy_siteFilterHC,ngsEasy_siteFilterPL],
     formatter("(?P<PAIR>[^\.]+)\.vcf"),
     ["{PAIR[0]}.merged.vcf"])
 def ngsEasy_mergeVCF(input_files, output_file):
@@ -1282,16 +1207,62 @@ def ngsEasy_mergeVCF(input_files, output_file):
         run_cmd(cmd)
 
 
+#--------------------
+# annotate (annovar)
+#--------------------
+# 19. Table_Annovar
 
+#--------------------
+# metrics
+#--------------------
+# 18. CollectMultipleMetrics
 # target metrics (picard)
 
+#--------------------
+# coverage
+#--------------------
 # 17. BedTools_DepthOfCoverage
-# 18. CollectMultipleMetrics
 
-# 19. Table_Annovar
+#--------------------
+# cleanup
+#--------------------
 # 20. Cleanup (structures data)
 
 # SAVANT
+
+
+
+#----------------------------------------------------------------------#
+# 17. BedTools_DepthOfCoverage
+#----------------------------------------------------------------------#
+
+qsub -o ${SGE_OUT} -e ${SGE_OUT} -q ${queue_name} -N DepthOfCoverage.${sample_name} -hold_jid PrintReads_BQSR.${sample_name} -l h_vmem=${gatk_h_vmem}G -M ${email_contact} -m beas ${ngs_pipeline}/ngs_BedTools_DepthOfCoverage.sh \
+${sample_name} ${sample_dir} ${sample_temp} ${bed_list} ${bed_type};
+
+
+#----------------------------------------------------------------------#
+# 18. CollectMultipleMetrics
+#----------------------------------------------------------------------#
+
+qsub -o ${SGE_OUT} -e ${SGE_OUT} -q ${queue_name} -N CollectMultipleMetrics.${sample_name} -hold_jid PrintReads_BQSR.${sample_name} -l h_vmem=${gatk_h_vmem}G -M ${email_contact} -m beas ${ngs_pipeline}/ngs_CollectMultipleMetrics.sh \
+${sample_name} ${sample_dir} ${sample_temp}
+
+
+
+#######################################################################
+## Variant annotations ################################################
+#######################################################################
+
+#----------------------------------------------------------------------#
+# 19. Table_Annovar
+#----------------------------------------------------------------------#
+
+qsub -o ${SGE_OUT} -e ${SGE_OUT} -q ${queue_name} -N annovar_HaplotypeCaller.${sample_name} -hold_jid VCFtoolsSiteFilter_HaplotypeCaller.${sample_name} \
+-l h_vmem=${gatk_h_vmem}G -M ${email_contact} -m beas ${ngs_pipeline}/ngs_table_annovar_HaplotypeCaller_hg19.sh ${sample_name} ${sample_dir} ${sample_temp} "HaplotypeCaller";
+
+qsub -o ${SGE_OUT} -e ${SGE_OUT} -q ${queue_name} -N annovar_UnifiedGenotyper.${sample_name} -hold_jid VCFtoolsSiteFilter_UnifiedGenotyper.${sample_name} \
+-l h_vmem=${gatk_h_vmem}G -M ${email_contact} -m beas ${ngs_pipeline}/ngs_table_annovar_UnifiedGenotyper_hg19.sh ${sample_name} ${sample_dir} ${sample_temp} "UnifiedGenotyper";
+
 
 
 ##---------------------- ALIGNMENT QC ----------------------##
@@ -1402,5 +1373,83 @@ else:
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 if sge:
     sge.exit()
+
+
+'''
+VARIANT RECALIBRATOR - ONLY WORKS IF ENOUGH VARIANTS PRESENT
+@transform(ngsEasy_haplotypeCaller,suffix('.vcf'),'.recalibrated.vcf')
+def ngsEasy_variantRecalibratorHC(input_file, output_file):
+    basepath = input_file[:input_file.rfind('/')]
+    p = loadConfiguration(basepatg)
+    recal_file = basepath+'/'+input_file+'.recal'
+    tranches_file = basepath+'/'+input_file+'.tranches'
+    # recalibrateSNP, apply, recalibrateIndels, apply
+    cmd = [
+        " ".join([
+            pipeconfig['software']['java'],
+            '-Xmx'+str(pipeconfig['resources']['gatk']['VR']['java_mem'])+'g',
+            '-Djava.io.tmpdir='+'/'.join([pipeconfig['path']['analysis'], p.wd(), 'tmp']),
+            '-jar', pipeconfig['software']['gatk'],
+            '-T', 'VariantRecalibrator',
+            '-R', pipeconfig['reference']['genome']['sequence'],
+            '-nt', str(pipeconfig['resources']['gatk']['VR']['nt']),
+            '-input', input_file,
+            '-resource:dbsnp,known=true,training=false,truth=false,prior=6.0', pipeconfig['reference']['snps'][0],
+            '-resource:hapmap,known=false,training=true,truth=true,prior=15.0', pipeconfig['reference']['snps'][1],
+            '-resource:omni,known=false,training=true,truth=false,prior=12.0', pipeconfig['reference']['snps'][2],
+            '-an QD', '-an HaplotypeScore', '-an MQRankSum', '-an ReadPosRankSum', '-an FS', '-an MQ', '-an InbreedingCoeff',
+            '-mode', 'BOTH',
+            '-recalFile', recal_file,
+            '-tranchesFile', tranches_file,
+            '-rscriptFile', +input_file+'.recalplots.R'
+        ]),
+        " ".join([
+            pipeconfig['software']['java'],
+            '-Xmx'+str(pipeconfig['resources']['gatk']['VR']['java_mem'])+'g',
+            '-Djava.io.tmpdir='+'/'.join([pipeconfig['path']['analysis'], p.wd(), 'tmp']),
+            '-jar', pipeconfig['software']['gatk'],
+            '-T', 'ApplyRecalibration',
+            '-R', pipeconfig['reference']['genome']['sequence'],
+            '-input', input_file,
+            '--ts_filter_level', '99.0',
+           '-tranchesFile', tranches_file,
+           '-recalFile', recal_file,
+           '-mode', 'BOTH',
+           '-o', output_file
+        ])
+    ]
+    # run recalibration
+    for cmd in cmds:
+        if sge:
+            run_sge(cmd,
+                jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+                fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+                cpu=1, mem=2)
+        else:
+            run_cmd(cmd)
+#@transform(ngsEasy_variantRecalibratorHC, suffix('.vcf'), '.filtered.vcf')
+
+VCFTOOLS VARIANT FILTER - NOW USING COLLATED FILES WITH BCFTOOLS FILTER
+@transform(ngsEasy_haplotypeCaller, suffix('.vcf'), '.filtered.vcf')
+def ngsEasy_siteFilterHC(input_file,output_file):
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
+    cmd = " ".join([
+        pipeconfig['software']['vcftools'],
+        '--vcf',input_file,
+        '--recode',
+        '--recode-INFO-all',
+        '--min-meanDP', str(ngsconfig['ngsanalysis'][p.ngsAnalysis]['vcf']['minDP']),
+        '--minQ', str(ngsconfig['ngsanalysis'][p.ngsAnalysis]['vcf']['minQ']),
+        '--stdout', '>', output_file
+        ])
+    if sge:
+        run_sge(cmd,
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+            cpu=1, mem=2)
+    else:
+        run_cmd(cmd)
+'''
+
 
 

@@ -9,14 +9,19 @@
         "fastqc": "/usr/local/pipeline/FastQC/fastqc",
         "trimmomatic": "/usr/local/pipeline/Trimmomatic-0.32/trimmomatic-0.32.jar",
         "picard": "/usr/local/pipeline/picard-tools-1.115/",
-        "samtools": "/usr/local/pipeline/samtools-1.0/samtools",
+        "samtools": "/usr/local/pipeline/samtools-0.1.19/samtools",
+        "samtools1": "/usr/local/pipeline/samtools-1.0/samtools",
+        "bedtools": "/usr/local/pipeline/bedtools2/bin/bedtools",
+        "tabix": "/usr/local/pipeline/samtools-1.0/htslib-1.0/tabix",
+        "bgzip":"/usr/local/pipeline/samtools-1.0/htslib-1.0/bgzip",
         "vcftools": "/usr/local/pipeline/vcftools_0.1.12b/bin/vcftools",
         "bcftools": "/usr/local/pipeline/bcftools/bcftools",
         "stampy": "/usr/local/pipeline/stampy-1.0.23/stampy.py",
         "bwa": "/usr/local/pipeline/bwa-0.7.10/bwa",
         "bowtie2": "/usr/local/pipeline/bowtie2-2.2.3/bowtie2",
         "gatk": "/usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar",
-        "platypus": "/usr/local/pipeline/Platypus_0.7.4/Platypus.py",
+        "platypus": "/usr/local/pipeline/Platypus/bin/Platypus.py",
+        "freebayes": "/usr/local/pipeline/freebayes/bin/freebayes",
 
         "novoalign": "/usr/local/pipeline/novoalign/ngsNovoalign",
         "novo": "/share/apps/novocraft_current/bin/",
@@ -116,6 +121,14 @@
         "platypus": {
             "cpu": 4,
             "mem": 8
+        },
+        "mpileup": {
+            "cpu": 1,
+            "mem": 4
+        },
+        "freebayes": {
+            "cpu": 1,
+            "mem": 4
         }
     }
 }

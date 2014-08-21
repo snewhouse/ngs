@@ -1,3 +1,3 @@
 projectID	sampleID	worksheetID	FASTQ1	FASTQ2	ngsType	ngsAnalysis	runDate	cleanup
-devtest	sample1	worksheetA	trunc1_1.fastq	trunc1_2.fastq	capturepanel	default	2010-02-30	True
-devtest	sample2	worksheetB	trunc3_1.fastq	trunc3_2.fastq	capturepanel	default	2011-12-31	False
+devtest	sample1	worksheetA	trunc1_1.fastq	trunc1_2.fastq	capturepanel	test	2010-02-30	True
+devtest	sample2	worksheetB	trunc3_1.fastq	trunc3_2.fastq	capturepanel	test	2011-12-31	False

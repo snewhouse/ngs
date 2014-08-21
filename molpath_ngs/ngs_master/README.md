@@ -41,3 +41,14 @@ ngsAnalysis
 # field aliases
 runDate: RGDT
 runID: worksheetID
+
+BEDtype
+WGS TAS EXO
+
+for normal/tumor cancer panels use:
+    Platypus.py --assemble=1
+
+Variantfilter:
+    bcftools filter
+
+
