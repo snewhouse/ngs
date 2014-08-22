@@ -1,8 +1,8 @@
 {
     "path": {
-        "ngstmp": "/Users/dbrawand/ngs/molpath_ngs/ngs_master/temp",
-        "fastq": "/Users/dbrawand/ngs/molpath_ngs/ngs_master/fastq",
-        "analysis": "/Users/dbrawand/ngs/molpath_ngs/ngs_master/test"
+        "ngstmp": "/Users/dbrawand/ngs/pEasy/temp",
+        "fastq": "/Users/dbrawand/ngs/pEasy/fastq",
+        "analysis": "/Users/dbrawand/ngs/pEasy/analysis"
     },
     "software": {
         "java": "/usr/bin/java",
@@ -22,6 +22,7 @@
         "gatk": "/usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar",
         "platypus": "/usr/local/pipeline/Platypus/bin/Platypus.py",
         "freebayes": "/usr/local/pipeline/freebayes/bin/freebayes",
+        "savant": "/usr/local/pipeline/savant-v1.1.0-complete/savant.py",
 
         "novoalign": "/usr/local/pipeline/novoalign/ngsNovoalign",
         "novo": "/share/apps/novocraft_current/bin/",
@@ -33,7 +34,8 @@
             "bwaindex":"/usr/local/pipeline/genome/chr11.fasta",
             "bowtie2index":"/usr/local/pipeline/genome/chr11",
             "novoindex":"/usr/local/pipeline/genome/chr11.fa.novoindex",
-            "sequence": "/usr/local/pipeline/genome/chr11.fasta"
+            "sequence": "/usr/local/pipeline/genome/chr11.fasta",
+            "dict":  "/usr/local/pipeline/genome/chr11.dict"
         },
         "indels": [
             "/usr/local/pipeline/references/Mills_and_1000G_gold_standard.indels.b37.chr11.vcf",

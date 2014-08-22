@@ -16,8 +16,21 @@ __maintainer__ = "David Brawand"
 __email__ = "dbrawand@nhs.net, stephen.j.newhouse@gmail.com, amosfolarin@gmail.com, aditi.gulati@nhs.net"
 __status__ = "Development"  # ["Prototype", "Development",  "Production"]
 
+
+
+switch_HC = False
+switch_FB = True
+switch_PL = True
+switch_ST = True
+switch_UG = False
+
+switch_WGS = False
+switch_TAS = True
+
+
+
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
-#   basdic imports and paths
+#   basic imports and paths
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 
 import os, sys, re, time
@@ -32,7 +45,7 @@ exe_path = os.path.split(os.path.abspath(sys.argv[0]))[0]
 from optparse import OptionParser
 
 usage = "usage: %prog [options] <sample descriptions>"
-parser = OptionParser(version="%prog 0.1", usage=usage)
+parser = OptionParser(version="%prog 1.0", usage=usage)
 
 #   configuration files
 parser.add_option("-p", dest="pipeconfig", default='pipeline_config.json',metavar="STRING", \
@@ -42,18 +55,18 @@ parser.add_option("-n", dest="ngsconfig", default='ngs_config.json',metavar="STR
 
 #   general options: verbosity / logging
 parser.add_option("-v", dest="verbose", action="count", default=1, \
-    help="verbosity (for ruffus meggages)"
+    help="verbosity (for ruffus messages)"
      "(eg. -vvv)")
 parser.add_option("-l", dest="logfile", default=None, metavar="STRING", \
     help="logfile (default STDERR only)")
 parser.add_option("-d" ,dest="debug", action='store_true', default=False,\
-    help="display DEBUG messages")
+    help="display DEBUG messages and temporarily disable method checksum flow control")
 
 #   pipeline run options
 parser.add_option("-t", dest="targettasks", default=None, metavar="task1,task2,...", \
     help="target tasks (run all tasks by default)")
 parser.add_option("-f", dest="forcedtasks", default=None, metavar="task1,task2,...", \
-    help="forced tasks (eg. to update)")
+    help="forced tasks (updates dependent tasks)")
 parser.add_option("--touch", dest="touch", default=False, action="store_true", \
     help="just touch")
 parser.add_option("--jobs", dest="jobs", default=1, metavar="INT", type="int", \
@@ -71,7 +84,7 @@ parser.add_option("--just_print", dest="just_print", action="store_true", defaul
 
 if len(args) == 0:
     parser.print_help()
-    parser.error("\nERROR: no sample file provided")
+    parser.error("\n\tno sample file provided")
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   Logger
@@ -125,8 +138,12 @@ for ngsjobfile in args:
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   setup jobs (collect additional parameters, check files, make directories, write config)
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
+from ngsEasy_helpers import *
+
 inputfiles = []
 cfg_file = '.molpath'
+
+
 
 # print ngsjob data in readable format
 for i, ngsjob in enumerate(ngsjobs):
@@ -349,6 +366,10 @@ def run_sge(cmd_str, jobname, fullwd, cpu=1, mem=2, runlocally=False, scriptdir=
     except error_drmaa_job as err:
         raise Exception("\n".join(map(str,["Failed to run:",cmd_str,err,stdout_res,stderr_res])))
 
+def dockerDispatch(cmd_str, run_container):
+    logger.debug("Running \"%s\" in container \"%s\"" % (cmd_str, run_container))
+    return
+
 def tail( f, window=4 ):
     BUFSIZ = 1024
     f.seek(0, 2)
@@ -400,8 +421,8 @@ def ngsEasy_checkPaired(input_files,output_file):
         firstmate =  (f.readline()[1:].split(' ')[0], tail(f)[1:].split('\n')[0].split(' ')[0])
     with open(input_files[1], 'r') as f:
         secondmate =  (f.readline()[1:].split(' ')[0], tail(f)[1:].split('\n')[0].split(' ')[0])
-    print firstmate
-    print secondmate
+    #print firstmate
+    #print secondmate
     # check if equal
     if firstmate[0] == secondmate[0] and firstmate[1] == secondmate[1]:
         # write info to file
@@ -447,6 +468,7 @@ def ngsEasy_prefilterFastQC(input_files,output_files):
 #--------------------
 #@posttask (touch_file( 'trimming.completed' ))
 @jobs_limit(4,'iolimit')  # limits jobs with high I/O
+@follows(ngsEasy_checkPaired)
 @transform(inputfiles,
             formatter("(?P<PAIR>[^\.]+)\.fastq", "(?P<PAIR>[^\.]+)\.fastq"),
             ["{PAIR[0]}.filtered.fastq", "{PAIR[1]}.filtered.fastq"])
@@ -463,7 +485,7 @@ def ngsEasy_trimmomatic(input_files, output_files):
         '-jar', pipeconfig['software']['trimmomatic'],
         p.librarytype(),
         '-phred64',
-        #'-trimlog', p.RG('SM')+'.trimming.log',
+        '-trimlog', input_files[0].replace('_1.fastq','.trimlog'),
         '-threads', str(pipeconfig['resources']['trimmomatic']['cpu']),
         ' '.join(input_files),
         ' '.join(filtered),
@@ -498,12 +520,14 @@ def ngsEasy_postfilterFastQC(input_files,output_files):
         run_cmd(cmd)
 
 #--------------------
-# QC report
+# read QC report
 #--------------------
 ###### ADD MERGE/COLLATE OF FASTQC and gerneate QC report
-@collate([ngsEasy_prefilterFastQC,ngsEasy_postfilterFastQC], regex(r'(.+)(\.filtered)?_fastqc\.zip'), r'\1.FASTQC')
-def ngsEasy_compareFastQC(input_files,output_file):
-    pass
+#@collate([ngsEasy_prefilterFastQC,ngsEasy_postfilterFastQC], regex(r'(.+)(\.filtered)?_fastqc\.zip'), r'\1.FASTQC')
+@merge([ngsEasy_prefilterFastQC,ngsEasy_postfilterFastQC], r'readQC.done')
+def ngsEasy_readQC(input_files,output_file):
+    # touch final file
+    with open(output_file,'a'): pass
     # unzip stats and merge files into report
     # check how many read remain (how many bases were lost?)
     # calculate ideal mean coverage (based on BED file)
@@ -512,9 +536,6 @@ def ngsEasy_compareFastQC(input_files,output_file):
 #--------------------
 # ALIGNMENT
 #--------------------
-### @collate(animals, regex(r"(.+)\.(.+)\.animal"),  r"\2.results")
-
-#@posttask (touch_file( 'alignment.completed' ))
 @transform(ngsEasy_trimmomatic, formatter("(?P<PAIR>[^\.]+)_1\.filtered\.fastq"), "{PAIR[0]}.sam")
 def ngsEasy_alignment(input_files, output_file):
     p = loadConfiguration(input_files[0][:input_files[0].rfind('/')])
@@ -699,6 +720,111 @@ def ngsEasy_markDuplicates(input_file,output_file):
         run_cmd(cmd)
 
 #--------------------
+# Alignment QC
+#--------------------
+
+@transform(ngsEasy_markDuplicates, suffix('.dupemk.bam'), \
+    ['.metrics.alignment_summary_metrics',
+    '.metrics.insert_size_metrics',
+    '.metrics.quality_distribution_metrics',
+    '.metrics.quality_distribution.pdf',
+    '.metrics.quality_by_cycle.pdf'])
+def ngsEasy_collectMultipleMetrics(input_file,output_files):
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
+    cmd = " ".join([
+        pipeconfig['software']['java'],
+        '-XX:ParallelGCThreads='+str(pipeconfig['resources']['picard']['cpu']),
+        '-Xmx'+str(pipeconfig['resources']['picard']['java_mem'])+'g',
+        '-jar', pipeconfig['software']['picard'].rstrip('/')+'/CollectMultipleMetrics.jar',
+        'TMP_DIR='+'/'.join([pipeconfig['path']['analysis'], p.wd(), 'tmp']),
+        'VALIDATION_STRINGENCY=SILENT',
+        'MAX_RECORDS_IN_RAM=100000',
+        'INPUT='+input_file,
+        'OUTPUT='+output_files[0][:output_files[0].rfind('.')],
+        'REFERENCE_SEQUENCE='+pipeconfig['reference']['genome']['sequence'],
+        'PROGRAM=CollectAlignmentSummaryMetrics',
+        'PROGRAM=CollectInsertSizeMetrics',
+        'PROGRAM=QualityScoreDistribution',
+        'PROGRAM=MeanQualityByCycle'
+        ])
+    if sge:
+        run_sge(cmd,
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+            cpu=1, mem=2)
+    else:
+        run_cmd(cmd)
+
+@active_if(switch_TAS)
+@follows(ngsEasy_collectMultipleMetrics)
+@transform(ngsEasy_markDuplicates, suffix('.dupemk.bam'), ['.metrics.TAS','.metrics.TAS.coverage'])
+def ngsEasy_collectTargetedPcrMetrics(input_file,output_files):
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
+    ampliconIntervals = ngsconfig['ngsanalysis'][p.ngsAnalysis]['tas']['bait_intervals']
+    targetIntervals = ngsconfig['ngsanalysis'][p.ngsAnalysis]['tas']['target_intervals']
+    # command
+    cmd = " ".join([
+        pipeconfig['software']['java'],
+        '-XX:ParallelGCThreads='+str(pipeconfig['resources']['picard']['cpu']),
+        '-Xmx'+str(pipeconfig['resources']['picard']['java_mem'])+'g',
+        '-jar', pipeconfig['software']['picard'].rstrip('/')+'/CollectTargetedPcrMetrics.jar',
+        'TMP_DIR='+'/'.join([pipeconfig['path']['analysis'], p.wd(), 'tmp']),
+        'VALIDATION_STRINGENCY=SILENT',
+        'MAX_RECORDS_IN_RAM=100000',
+        'REFERENCE_SEQUENCE='+pipeconfig['reference']['genome']['sequence'],
+        'AMPLICON_INTERVALS='+ampliconIntervals,
+        '{targets}'.format(targets='TARGET_INTERVALS='+targetIntervals if targetIntervals else ""),
+        'PER_TARGET_COVERAGE='+output_files[1],
+        'METRIC_ACCUMULATION_LEVEL='+'ALL_READS', # sample, library, read_group
+        'CUSTOM_AMPLICON_SET_NAME='+p.ngsType,
+        'INPUT='+input_file,
+        'OUTPUT='+output_files[0]
+        ])
+    if sge:
+        run_sge(cmd,
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+            cpu=1, mem=2)
+    else:
+        run_cmd(cmd)
+
+@active_if(switch_WGS)
+@transform(ngsEasy_markDuplicates, suffix('.dupemk.bam'), '.metrics.WGS')
+def ngsEasy_collectWgsMetrics(input_file,output_file):
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
+    cmd = " ".join([
+        pipeconfig['software']['java'],
+        '-XX:ParallelGCThreads='+str(pipeconfig['resources']['picard']['cpu']),
+        '-Xmx'+str(pipeconfig['resources']['picard']['java_mem'])+'g',
+        '-jar', pipeconfig['software']['picard'].rstrip('/')+'/CollectWgsMetrics.jar',
+        'TMP_DIR='+'/'.join([pipeconfig['path']['analysis'], p.wd(), 'tmp']),
+        'VALIDATION_STRINGENCY=SILENT',
+        'MAX_RECORDS_IN_RAM=100000',
+        'INPUT='+input_file,
+        'OUTPUT='+output_file,
+        'REFERENCE_SEQUENCE='+pipeconfig['reference']['genome']['sequence'],
+        'MINIMUM_MAPPING_QUALITY='+20,
+        'MINIMUM_BASE_QUALITY='+20,
+        'COVERAGE_CAP='+1000
+        ])
+    if sge:
+        run_sge(cmd,
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+            cpu=1, mem=2)
+    else:
+        run_cmd(cmd)
+
+#--------------------
+# alignment QC report
+#--------------------
+###### QC target
+@merge([ngsEasy_collectMultipleMetrics, ngsEasy_collectTargetedPcrMetrics,ngsEasy_collectWgsMetrics], r'alignmentQC.done')
+def ngsEasy_alignmentQC(input_files,output_file):
+    # touch output
+    with open(output_file,'a'): pass
+
+#--------------------
 # GATK indelRealign
 #--------------------
 
@@ -725,8 +851,6 @@ def ngsEasy_realignerTargetCreator(input_file,output_file):
     else:
         run_cmd(cmd)
 
-#@transform([markDuplicates,realignerTargetCreator], formatter("(?P<PAIR>[^\.]+)\.bam","(?P<PAIR>[^\.]+)\.intervals"), "{PAIR[0]}.realn.bam")
-#@transform([markDuplicates,realignerTargetCreator], suffix('.bam'), ".realn.bam")
 @collate([ngsEasy_markDuplicates,ngsEasy_realignerTargetCreator], regex(r'(.+)\.dupemk\.[^\.]+'), r'\1.realn.bam')
 def ngsEasy_indelRealigner(input_files,output_file):
     p = loadConfiguration(input_files[0][:input_files[0].rfind('/')])
@@ -793,9 +917,6 @@ def ngsEasy_firstBaseRecalibrator(input_file,output_file):
     else:
         run_cmd(cmd)
 
-#@transform([ngsEasy_indexRealignedBam,ngsEasy_firstBaseRecalibrator],
-#    formatter("(?P<PAIR>[^\.]+)\.bam"),
-#    "{PAIR[0]}.recal.bam")
 @follows(ngsEasy_indexRealignedBam)
 @collate([ngsEasy_indelRealigner,ngsEasy_firstBaseRecalibrator], regex(r'(.+)\.realn\.[^\.]+'), r'\1.recal.bam')
 def ngsEasy_recalibrateBam(input_files,output_file):
@@ -822,7 +943,6 @@ def ngsEasy_recalibrateBam(input_files,output_file):
     else:
         run_cmd(cmd)
 
-# index bam file
 @transform(ngsEasy_recalibrateBam, suffix('.bam'), '.bai')
 def ngsEasy_indexRecalibratedBam(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
@@ -887,7 +1007,7 @@ def ngsEasy_analyzeCovariates(input_files,output_files):
 #--------------------
 # Haplotype Calling UG
 #--------------------
-
+@active_if(switch_UG)
 @follows(ngsEasy_indexRecalibratedBam)
 @transform(ngsEasy_recalibrateBam, suffix('.recal.bam'), '.UG.vcf')
 def ngsEasy_unifiedGenotyper(input_file,output_file):
@@ -943,6 +1063,7 @@ def ngsEasy_unifiedGenotyper(input_file,output_file):
 #--------------------
 # Haplotype Calling HC
 #--------------------
+@active_if(switch_HC)
 @follows(ngsEasy_indexRecalibratedBam)
 @transform(ngsEasy_recalibrateBam, suffix('.recal.bam'), '.HC.vcf')
 def ngsEasy_haplotypeCaller(input_file,output_file):
@@ -999,7 +1120,7 @@ def ngsEasy_haplotypeCaller(input_file,output_file):
 #--------------------
 # mpileup variant calling
 #--------------------
-
+@active_if(switch_ST)
 @follows(ngsEasy_indexRecalibratedBam)
 @transform(ngsEasy_recalibrateBam, suffix('.recal.bam'), '.ST.vcf')
 def ngsEasy_samtoolsMpileup(input_file,output_file):
@@ -1029,6 +1150,7 @@ def ngsEasy_samtoolsMpileup(input_file,output_file):
 #--------------------
 # platypus variant calling
 #--------------------
+@active_if(switch_PL)
 @transform(ngsEasy_markDuplicates, suffix('.dupemk.bam'), '.PL.vcf')
 def ngsEasy_platypus(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
@@ -1056,6 +1178,7 @@ def ngsEasy_platypus(input_file,output_file):
 #--------------------
 # freebayes variant calling
 #--------------------
+@active_if(switch_FB)
 @transform(ngsEasy_markDuplicates, suffix('.dupemk.bam'), '.FB.vcf')
 def ngsEasy_freebayes(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
@@ -1082,10 +1205,6 @@ def ngsEasy_freebayes(input_file,output_file):
 @transform([ngsEasy_unifiedGenotyper,ngsEasy_haplotypeCaller,ngsEasy_samtoolsMpileup,ngsEasy_platypus,ngsEasy_freebayes], regex(r'(.+)\.vcf'), r'\1.vcf.gz.tbi')
 #@collate([ngsEasy_unifiedGenotyper,ngsEasy_haplotypeCaller,ngsEasy_samtoolsMpileup], regex(r'(.+)\.vcf'), r'\1.filtered.bcf')
 def ngsEasy_indexVCF(input_file,output_file):
-
-    print 'INDEX', input_file
-    print 'INDEX', output_file
-
     p = loadConfiguration(input_file[:input_file.rfind('/')])
     # quality filtering
     cmds = [ [ pipeconfig['software']['bgzip'], '-c', input_file, '>', input_file+'.gz' ],
@@ -1265,43 +1384,7 @@ qsub -o ${SGE_OUT} -e ${SGE_OUT} -q ${queue_name} -N annovar_UnifiedGenotyper.${
 
 
 
-##---------------------- ALIGNMENT QC ----------------------##
 
-# CollectMultipleMetrics
-java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.115/CollectMultipleMetrics.jar \
-TMP_DIR=${SOUT}/tmp \
-VALIDATION_STRINGENCY=SILENT \
-MAX_RECORDS_IN_RAM=100000 \
-INPUT=${SOUT}/alignments/${BAM_PREFIX}.bam \
-OUTPUT=${SOUT}/reports/${BAM_PREFIX} \
-REFERENCE_SEQUENCE=${REFGenomes}/human_g1k_v37.fasta \
-PROGRAM=CollectAlignmentSummaryMetrics \
-PROGRAM=CollectInsertSizeMetrics \
-PROGRAM=QualityScoreDistribution \
-PROGRAM=MeanQualityByCycle;
-
-# CollectAlignmentSummaryMetrics
-java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.115/CollectAlignmentSummaryMetrics.jar \
-TMP_DIR=${SOUT}/tmp \
-VALIDATION_STRINGENCY=SILENT \
-MAX_RECORDS_IN_RAM=100000 \
-INPUT=${SOUT}/alignments/${BAM_PREFIX}.bam \
-OUTPUT=${SOUT}/reports/${BAM_PREFIX}.alignment_summary_metrics_alt \
-REFERENCE_SEQUENCE=${REFGenomes}/human_g1k_v37.fasta \
-ASSUME_SORTED=true \
-METRIC_ACCUMULATION_LEVEL=SAMPLE;
-
-# CollectWgsMetrics
-java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.115/CollectWgsMetrics.jar \
-TMP_DIR=${SOUT}/tmp \
-VALIDATION_STRINGENCY=SILENT \
-MAX_RECORDS_IN_RAM=100000 \
-INPUT=${SOUT}/alignments/${BAM_PREFIX}.bam \
-OUTPUT=${SOUT}/reports/${BAM_PREFIX}.wgs_coverage \
-REFERENCE_SEQUENCE=${REFGenomes}/human_g1k_v37.fasta \
-MINIMUM_MAPPING_QUALITY=20 \
-MINIMUM_BASE_QUALITY=20 \
-COVERAGE_CAP=1000;
 
 awk 'NR>9' ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage > ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage_hist
 sed '8q' ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage > ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage_stats
@@ -1321,6 +1404,17 @@ java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysis
 /usr/local/pipeline/samtools-0.1.19/samtools view -b -h -q 20 -F 1796  ${SOUT}/alignments/${BAM_PREFIX}.bam  | /usr/local/pipeline/bedtools2/bin/bedtools bamtobed  -i stdin > ${SOUT}/reports/${BAM_PREFIX}.bed;
 
 '''
+#--------------------
+# final target
+#--------------------
+@merge([ngsEasy_readQC,ngsEasy_alignmentQC,ngsEasy_regionFilterBCF],'final.checkpoint')
+def ngsEasy_final(input_files, output_file):
+    logger.info('##############################')
+    logger.info('########## HEUREKA! ##########')
+    logger.info('##############################')
+    # just touch the out_file
+    with open(output_file, 'a') as fh:
+        os.utime(fh, None)
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   setup target/forced tasks
@@ -1366,7 +1460,8 @@ elif options.flowchart:
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 else:
     pipeline_run(targettasks, forcedtorun_tasks = forcedtasks, \
-        multiprocess = options.jobs, logger = logger, verbose=options.verbose, touch_files_only=options.touch)
+        multiprocess = options.jobs, logger = logger, verbose=options.verbose, \
+        checksum_level = 1 if options.debug else 3, touch_files_only=options.touch)
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   Cleanly end drmaa session

@@ -53,3 +53,12 @@ Variantfilter:
 
 deduplicate in platypus?
 
+# for fastQC report generation
+    git@github.com:wkhtmltopdf/wkhtmltopdf.git
+
+# checkpoint file
+export DEFAULT_RUFFUS_HISTORY_FILE=.{basename}.ruffus_history.sqlite
+
+
+# ngsanalysis
+TAS: sureselect files

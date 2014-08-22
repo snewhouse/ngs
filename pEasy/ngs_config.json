@@ -15,7 +15,9 @@
     },
     "ngsanalysis": {
         "default": {
-            "bed": "",
+            "wgs": { },
+            "tas": { },
+            "exo": { },
             "vcf":{
                 "minDP": 60,
                 "minQ": 30
@@ -45,7 +47,15 @@
             "rmdup": false
         },
         "test": {
-            "bed": "/Users/dbrawand/ngs/molpath_ngs/ngs_master/fastq/test.bed",
+            "tas": {
+                "covered_bed":"/Users/dbrawand/ngs/pEasy/tas/test.bed",
+                "bait_intervals":"/Users/dbrawand/ngs/pEasy/tas/test_baits.intervals",
+                "target_intervals":"/Users/dbrawand/ngs/pEasy/tas/test_targets.intervals"
+            },
+            "wgs": { },
+            "exo": { },
+
+            "bed": "",
             "vcf":{
                 "minDP": 60,
                 "minQ": 30
