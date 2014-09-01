@@ -17,17 +17,8 @@ __email__ = "dbrawand@nhs.net, stephen.j.newhouse@gmail.com, amosfolarin@gmail.c
 __status__ = "Development"  # ["Prototype", "Development",  "Production"]
 
 
-
-switch_HC = False
-switch_FB = True
-switch_PL = True
-switch_ST = True
-switch_UG = False
-
-switch_WGS = False
+switch_WGS = True
 switch_TAS = True
-
-
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   basic imports and paths
@@ -63,6 +54,8 @@ parser.add_option("-d" ,dest="debug", action='store_true', default=False,\
     help="display DEBUG messages and temporarily disable method checksum flow control")
 
 #   pipeline run options
+parser.add_option("-c", dest="cleanup", default=False, action="store_true", \
+    help="cleanup intermediary files (truncate to zero)")
 parser.add_option("-t", dest="targettasks", default=None, metavar="task1,task2,...", \
     help="target tasks (run all tasks by default)")
 parser.add_option("-f", dest="forcedtasks", default=None, metavar="task1,task2,...", \
@@ -138,12 +131,11 @@ for ngsjobfile in args:
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   setup jobs (collect additional parameters, check files, make directories, write config)
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
-from ngsEasy_helpers import *
+
+from ngsEasy_helpers import tail, zeroFile, parsePicard, flatten
 
 inputfiles = []
 cfg_file = '.molpath'
-
-
 
 # print ngsjob data in readable format
 for i, ngsjob in enumerate(ngsjobs):
@@ -299,6 +291,7 @@ for i, ngsjob in enumerate(ngsjobs):
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   Start DRMAA session if available
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
+
 try:
     from ruffus.drmaa_wrapper import run_job, error_drmaa_job
     import drmaa
@@ -306,17 +299,16 @@ except RuntimeError:  # could not load drmaa
     sge=None
     logger.warn("no DRMAA found -> disabled multiprocessing")
     options.multiprocess = 1
-
 else:
     sge = drmaa.Session()
     sge.initialize()
     logger.info("using DRMAA for job dispatch")
 
-
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   Functions
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 
+'''load configuration file in directory'''
 def loadConfiguration(configpath, configfile=cfg_file):
     # load configuration from file
     configlocation = '/'.join([configpath,configfile])
@@ -328,6 +320,7 @@ def loadConfiguration(configpath, configfile=cfg_file):
         ngsjob_config = NGSjob(json.load(fh))
     return ngsjob_config
 
+'''controlled local execution of command'''
 def run_cmd(cmd_str):
     """
     Throw exception if run command fails
@@ -340,6 +333,7 @@ def run_cmd(cmd_str):
                             (cmd_str, stdout_str, stderr_str, process.returncode))
 
 # uses global variables: sge, logger, pipeconfig
+'''run task on a computing grid (using ruffus.drmaa wrapper)'''
 def run_sge(cmd_str, jobname, fullwd, cpu=1, mem=2, runlocally=False, scriptdir="tmp" , sge_env={ 'BASH_ENV' : '~/.bashrc' }):
     # get options
     opt = []
@@ -366,33 +360,11 @@ def run_sge(cmd_str, jobname, fullwd, cpu=1, mem=2, runlocally=False, scriptdir=
     except error_drmaa_job as err:
         raise Exception("\n".join(map(str,["Failed to run:",cmd_str,err,stdout_res,stderr_res])))
 
+'''writes shell script to execute in a docker container'''
 def dockerDispatch(cmd_str, run_container):
     logger.debug("Running \"%s\" in container \"%s\"" % (cmd_str, run_container))
     return
 
-def tail( f, window=4 ):
-    BUFSIZ = 1024
-    f.seek(0, 2)
-    bytes = f.tell()
-    size = window
-    block = -1
-    data = []
-    while size > 0 and bytes > 0:
-        if (bytes - BUFSIZ > 0):
-            # Seek back one whole BUFSIZ
-            f.seek(block*BUFSIZ, 2)
-            # read BUFFER
-            data.append(f.read(BUFSIZ))
-        else:
-            # file too small, start from begining
-            f.seek(0,0)
-            # only read what was not read
-            data.append(f.read(bytes))
-        linesFound = data[-1].count('\n')
-        size -= linesFound
-        bytes -= BUFSIZ
-        block -= 1
-    return '\n'.join(''.join(data).splitlines()[-window:])
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   get input files
@@ -403,6 +375,14 @@ for i, ngsjob in enumerate(ngsjobs):
     inputfiles.append(loadConfiguration(targetDir).inputfiles())
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
+#   flowchart styles
+#88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
+style_start = {'shape': "box"}
+style_collect = {  'shape': "hexagon" }
+style_normal = { 'shape': "box" }
+style_end = {'shape': "box"}
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   Pipeline tasks
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 from ruffus import *
@@ -411,6 +391,7 @@ import inspect  # to get the functions name inside
 #--------------------
 # just count reads
 #--------------------
+@graphviz(label_prefix="FastQ check\n", **style_start)
 @transform(inputfiles, suffix("_1.fastq"), '.check')
 def ngsEasy_checkPaired(input_files,output_file):
     '''
@@ -447,6 +428,7 @@ def ngsEasy_checkPaired(input_files,output_file):
 #--------------------
 # FASTQC prefiltering
 #--------------------
+@graphviz(label_prefix="inital FastQC\n", **style_normal)
 @follows(ngsEasy_checkPaired)
 @transform(inputfiles, formatter("(?P<PAIR>[^\.]+)\.fastq", "(?P<PAIR>[^\.]+)\.fastq"),
             ["{PAIR[0]}_fastqc.zip", "{PAIR[1]}_fastqc.zip"])
@@ -467,6 +449,7 @@ def ngsEasy_prefilterFastQC(input_files,output_files):
 # Adapter trimming
 #--------------------
 #@posttask (touch_file( 'trimming.completed' ))
+@graphviz(label_prefix="Adapter trimming\n", **style_normal)
 @jobs_limit(4,'iolimit')  # limits jobs with high I/O
 @follows(ngsEasy_checkPaired)
 @transform(inputfiles,
@@ -503,6 +486,7 @@ def ngsEasy_trimmomatic(input_files, output_files):
 #--------------------
 # FASTQC postfilter
 #--------------------
+@graphviz(label_prefix="Final FastQC\n", **style_normal)
 @transform(ngsEasy_trimmomatic, formatter("(?P<PAIR>[^\.]+\.filtered)\.fastq", "(?P<PAIR>[^\.]+\.filtered)\.fastq"),
             ["{PAIR[0]}_fastqc.zip", "{PAIR[1]}_fastqc.zip"])
 def ngsEasy_postfilterFastQC(input_files,output_files):
@@ -523,8 +507,9 @@ def ngsEasy_postfilterFastQC(input_files,output_files):
 # read QC report
 #--------------------
 ###### ADD MERGE/COLLATE OF FASTQC and gerneate QC report
-#@collate([ngsEasy_prefilterFastQC,ngsEasy_postfilterFastQC], regex(r'(.+)(\.filtered)?_fastqc\.zip'), r'\1.FASTQC')
-@merge([ngsEasy_prefilterFastQC,ngsEasy_postfilterFastQC], r'readQC.done')
+@graphviz(label_prefix="Read QC\n", **style_collect)
+#@merge([ngsEasy_prefilterFastQC,ngsEasy_postfilterFastQC], r'readQC.done')
+@collate([ngsEasy_prefilterFastQC,ngsEasy_postfilterFastQC], regex(r'(.+)(\.filtered)?_fastqc\.zip'), r'\1.FASTQC')
 def ngsEasy_readQC(input_files,output_file):
     # touch final file
     with open(output_file,'a'): pass
@@ -536,6 +521,7 @@ def ngsEasy_readQC(input_files,output_file):
 #--------------------
 # ALIGNMENT
 #--------------------
+@graphviz(label_prefix="Align reads\n", **style_normal)
 @transform(ngsEasy_trimmomatic, formatter("(?P<PAIR>[^\.]+)_1\.filtered\.fastq"), "{PAIR[0]}.sam")
 def ngsEasy_alignment(input_files, output_file):
     p = loadConfiguration(input_files[0][:input_files[0].rfind('/')])
@@ -607,12 +593,16 @@ def ngsEasy_alignment(input_files, output_file):
             cpu=1, mem=2)
     else:
         run_cmd(cmd)
-
+    # cleanup of intermediary files (zero files)
+    if options.cleanup:
+        for infile in input_files:
+            zeroFile(infile)
 
 #--------------------
 # process SAM -> BAM
 #--------------------
 @transform(ngsEasy_alignment, suffix('.sam'), '.bam')
+@graphviz(label_prefix="SAM -> BAM\n", **style_normal)
 def ngsEasy_sam2bam(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
     cmd = " ".join([ pipeconfig['software']['samtools'], "view", "-Shb", '-o', output_file, input_file ])
@@ -624,8 +614,13 @@ def ngsEasy_sam2bam(input_file,output_file):
             cpu=1, mem=2)
     else:
         run_cmd(cmd)
+    # cleanup
+    if options.cleanup:
+        zeroFile(input_file)
+
 
 @transform(ngsEasy_sam2bam, suffix('.bam'), '.sorted.bam')
+@graphviz(label_prefix="Sort aligned reads\n", **style_normal)
 def ngsEasy_sortSam(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
     cmd = " ".join([ pipeconfig['software']['samtools'],
@@ -641,8 +636,13 @@ def ngsEasy_sortSam(input_file,output_file):
             cpu=1, mem=2)
     else:
         run_cmd(cmd)
+    # cleanup
+    if options.cleanup:
+        zeroFile(input_file)
+
 
 @transform(ngsEasy_sortSam, suffix('.bam'), '.bai')
+@graphviz(label_prefix="Index reads\n", **style_normal)
 def ngsEasy_indexBam(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
     cmd = " ".join([ pipeconfig['software']['samtools'], "index", input_file, output_file ])
@@ -660,6 +660,7 @@ def ngsEasy_indexBam(input_file,output_file):
 #--------------------
 @follows(ngsEasy_indexBam)
 @transform(ngsEasy_sortSam, suffix('.sorted.bam'), '.addrg.bam')
+@graphviz(label_prefix="set Read Groups\n", **style_normal)
 def ngsEasy_addReplaceReadGroups(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
     cmd = " ".join([
@@ -688,11 +689,15 @@ def ngsEasy_addReplaceReadGroups(input_file,output_file):
             cpu=1, mem=2)
     else:
         run_cmd(cmd)
+    # cleanup
+    if options.cleanup:
+        zeroFile(input_file)
 
 #--------------------
 # mark/remove Duplicates
 #--------------------
 @transform(ngsEasy_addReplaceReadGroups, suffix('.addrg.bam'), '.dupemk.bam')
+@graphviz(label_prefix="Mark PCR duplicates\n", **style_normal)
 def ngsEasy_markDuplicates(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
     metrics = output_file.replace('.bam','.stat')
@@ -722,7 +727,7 @@ def ngsEasy_markDuplicates(input_file,output_file):
 #--------------------
 # Alignment QC
 #--------------------
-
+@graphviz(label_prefix="Collect Alignment metrics\n", **style_normal)
 @transform(ngsEasy_markDuplicates, suffix('.dupemk.bam'), \
     ['.metrics.alignment_summary_metrics',
     '.metrics.insert_size_metrics',
@@ -756,6 +761,7 @@ def ngsEasy_collectMultipleMetrics(input_file,output_files):
         run_cmd(cmd)
 
 @active_if(switch_TAS)
+@graphviz(label_prefix="Calculate target metrics\n", **style_normal)
 @follows(ngsEasy_collectMultipleMetrics)
 @transform(ngsEasy_markDuplicates, suffix('.dupemk.bam'), ['.metrics.TAS','.metrics.TAS.coverage'])
 def ngsEasy_collectTargetedPcrMetrics(input_file,output_files):
@@ -789,6 +795,7 @@ def ngsEasy_collectTargetedPcrMetrics(input_file,output_files):
         run_cmd(cmd)
 
 @active_if(switch_WGS)
+@graphviz(label_prefix="Calculate WGS metrics\n", **style_normal)
 @transform(ngsEasy_markDuplicates, suffix('.dupemk.bam'), '.metrics.WGS')
 def ngsEasy_collectWgsMetrics(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
@@ -803,9 +810,9 @@ def ngsEasy_collectWgsMetrics(input_file,output_file):
         'INPUT='+input_file,
         'OUTPUT='+output_file,
         'REFERENCE_SEQUENCE='+pipeconfig['reference']['genome']['sequence'],
-        'MINIMUM_MAPPING_QUALITY='+20,
-        'MINIMUM_BASE_QUALITY='+20,
-        'COVERAGE_CAP='+1000
+        'MINIMUM_MAPPING_QUALITY='+str(20),
+        'MINIMUM_BASE_QUALITY='+str(20),
+        'COVERAGE_CAP='+str(1000)
         ])
     if sge:
         run_sge(cmd,
@@ -818,16 +825,39 @@ def ngsEasy_collectWgsMetrics(input_file,output_file):
 #--------------------
 # alignment QC report
 #--------------------
-###### QC target
-@merge([ngsEasy_collectMultipleMetrics, ngsEasy_collectTargetedPcrMetrics,ngsEasy_collectWgsMetrics], r'alignmentQC.done')
+'''writes picard results into a single flat file'''
+@graphviz(label_prefix="Alignment QC\n", **style_collect)
+#@merge([ngsEasy_collectMultipleMetrics, ngsEasy_collectTargetedPcrMetrics, ngsEasy_collectWgsMetrics], r'alignmentQC.done')
+@collate([ngsEasy_collectMultipleMetrics, ngsEasy_collectTargetedPcrMetrics, ngsEasy_collectWgsMetrics],
+    regex(r'(.+)\.metrics\.[^\.]+'),
+    r'\1.summarymetrics')
 def ngsEasy_alignmentQC(input_files,output_file):
-    # touch output
-    with open(output_file,'a'): pass
+    with open(output_file,'w') as outfh:
+        for infile in flatten(input_files):
+            if infile.endswith('pdf') or infile.endswith('coverage'):
+                continue
+            print >> sys.stderr, '#####', infile
+            with open(infile) as infh:
+                fields, ordering = parsePicard(infh)
+                for k,v in fields.items():
+                    if len(v) == 1:  # skip historgrams
+                        try:
+                            print >> outfh, '{:<30} {:<16} {:.2}'.format(infile[infile.rfind('.'):], k, float(v[0]))
+                        except ValueError:
+                            pass
+
+'''
+__FUTURE__
+#upload to QC database
+def storeQC(input_file, output_file):
+    # save in sql database
+    pass
+'''
 
 #--------------------
 # GATK indelRealign
 #--------------------
-
+@graphviz(label_prefix="Create realignment targets\n", **style_normal)
 @transform(ngsEasy_markDuplicates, suffix('.dupemk.bam'), '.dupemk.intervals')
 def ngsEasy_realignerTargetCreator(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
@@ -851,6 +881,7 @@ def ngsEasy_realignerTargetCreator(input_file,output_file):
     else:
         run_cmd(cmd)
 
+@graphviz(label_prefix="Realign indels\n", **style_normal)
 @collate([ngsEasy_markDuplicates,ngsEasy_realignerTargetCreator], regex(r'(.+)\.dupemk\.[^\.]+'), r'\1.realn.bam')
 def ngsEasy_indelRealigner(input_files,output_file):
     p = loadConfiguration(input_files[0][:input_files[0].rfind('/')])
@@ -875,7 +906,12 @@ def ngsEasy_indelRealigner(input_files,output_file):
             cpu=pipeconfig['resources']['gatk']['IR']['cpu'], mem=ipeconfig['resources']['gatk']['IR']['mem'])
     else:
         run_cmd(cmd)
+    # cleanup
+    if options.cleanup:
+        for infile in input_files:
+            zeroFile(infiles)
 
+@graphviz(label_prefix="Index aligned reads\n", **style_normal)
 @transform(ngsEasy_indelRealigner, suffix('.bam'), '.bai')
 def ngsEasy_indexRealignedBam(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
@@ -894,6 +930,7 @@ def ngsEasy_indexRealignedBam(input_file,output_file):
 #--------------------
 
 @follows(ngsEasy_indexRealignedBam)
+@graphviz(label_prefix="Calculate base calibration\n", **style_normal)
 @transform(ngsEasy_indelRealigner, suffix('.realn.bam'), '.realn.recalibrationtable')
 def ngsEasy_firstBaseRecalibrator(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
@@ -918,6 +955,7 @@ def ngsEasy_firstBaseRecalibrator(input_file,output_file):
         run_cmd(cmd)
 
 @follows(ngsEasy_indexRealignedBam)
+@graphviz(label_prefix="Recalibrate aligned reads\n", **style_normal)
 @collate([ngsEasy_indelRealigner,ngsEasy_firstBaseRecalibrator], regex(r'(.+)\.realn\.[^\.]+'), r'\1.recal.bam')
 def ngsEasy_recalibrateBam(input_files,output_file):
     p = loadConfiguration(input_files[0][:input_files[0].rfind('/')])
@@ -942,8 +980,13 @@ def ngsEasy_recalibrateBam(input_files,output_file):
             cpu=pipeconfig['resources']['gatk']['PR']['cpu'], mem=pipeconfig['resources']['gatk']['PR']['mem'])
     else:
         run_cmd(cmd)
+    # cleanup
+    if options.cleanup:
+        for infile in input_files:
+            zeroFile(infiles)
 
 @transform(ngsEasy_recalibrateBam, suffix('.bam'), '.bai')
+@graphviz(label_prefix="Index recalibrated reads\n", **style_normal)
 def ngsEasy_indexRecalibratedBam(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
     cmd = " ".join([ pipeconfig['software']['samtools'], "index", input_file, output_file ])
@@ -957,6 +1000,7 @@ def ngsEasy_indexRecalibratedBam(input_file,output_file):
         run_cmd(cmd)
 
 @follows(ngsEasy_indexRecalibratedBam)
+@graphviz(label_prefix="Calculate base calibration\n", **style_normal)
 @transform(ngsEasy_recalibrateBam, suffix('.recal.bam'), '.recal.recalibrationtable')
 def ngsEasy_finalBaseRecalibrator(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
@@ -981,7 +1025,8 @@ def ngsEasy_finalBaseRecalibrator(input_file,output_file):
         run_cmd(cmd)
 
 #@collate([ngsEasy_firstBaseRecalibrator,ngsEasy_finalBaseRecalibrator], regex(r'(.+)\.(re...)\.recalibrationtable'), [r'\1.covariates.csv',r'\1.covariates.pdf'])
-@collate([ngsEasy_firstBaseRecalibrator,ngsEasy_finalBaseRecalibrator], regex(r'(.+)\.(re...)\.recalibrationtable'), [r'\1.covariates.csv'])
+@graphviz(label_prefix="Calculate recalibration covariates\n", **style_collect)
+@collate([ngsEasy_firstBaseRecalibrator,ngsEasy_finalBaseRecalibrator], regex(r'(.+)\.(re...)\.recalibrationtable'), r'\1.covariates.csv')
 def ngsEasy_analyzeCovariates(input_files,output_files):
     p = loadConfiguration(input_files[0][:input_files[0].rfind('/')])
     cmd = " ".join([
@@ -1003,12 +1048,17 @@ def ngsEasy_analyzeCovariates(input_files,output_files):
             cpu=pipeconfig['resources']['gatk']['AC']['cpu'], mem=pipeconfig['resources']['gatk']['AC']['mem'])
     else:
         run_cmd(cmd)
+    # cleanup
+    if options.cleanup:
+        for infile in input_files:
+            zeroFile(infiles)
 
 #--------------------
 # Haplotype Calling UG
 #--------------------
-@active_if(switch_UG)
+@active_if(pipeconfig['switch']['UG'])
 @follows(ngsEasy_indexRecalibratedBam)
+@graphviz(label_prefix="Unified Genotyper\n", **style_normal)
 @transform(ngsEasy_recalibrateBam, suffix('.recal.bam'), '.UG.vcf')
 def ngsEasy_unifiedGenotyper(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
@@ -1063,8 +1113,9 @@ def ngsEasy_unifiedGenotyper(input_file,output_file):
 #--------------------
 # Haplotype Calling HC
 #--------------------
-@active_if(switch_HC)
+@active_if(pipeconfig['switch']['HC'])
 @follows(ngsEasy_indexRecalibratedBam)
+@graphviz(label_prefix="Haplotype Caller\n", **style_normal)
 @transform(ngsEasy_recalibrateBam, suffix('.recal.bam'), '.HC.vcf')
 def ngsEasy_haplotypeCaller(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
@@ -1120,8 +1171,9 @@ def ngsEasy_haplotypeCaller(input_file,output_file):
 #--------------------
 # mpileup variant calling
 #--------------------
-@active_if(switch_ST)
+@active_if(pipeconfig['switch']['ST'])
 @follows(ngsEasy_indexRecalibratedBam)
+@graphviz(label_prefix="MPILEUP variant calling\n", **style_normal)
 @transform(ngsEasy_recalibrateBam, suffix('.recal.bam'), '.ST.vcf')
 def ngsEasy_samtoolsMpileup(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
@@ -1150,7 +1202,8 @@ def ngsEasy_samtoolsMpileup(input_file,output_file):
 #--------------------
 # platypus variant calling
 #--------------------
-@active_if(switch_PL)
+@active_if(pipeconfig['switch']['PL'])
+@graphviz(label_prefix="Platypus variant calling\n", **style_normal)
 @transform(ngsEasy_markDuplicates, suffix('.dupemk.bam'), '.PL.vcf')
 def ngsEasy_platypus(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
@@ -1160,12 +1213,14 @@ def ngsEasy_platypus(input_file,output_file):
         'callVariants',
         '--bamFiles='+input_file,
         '--refFile='+pipeconfig['reference']['genome']['sequence'],
+        #NAIVE CALLING'--source='+pipeconfig['reference']['snps'][0]+'.gz',
+        #'--minPosterior='+str(0),
+        '--outputRefCalls=1',
         '--output='+output_file,
         '--nCPU='+str(pipeconfig['resources']['platypus']['cpu']),
         '--minReads='+str(ngsconfig['ngsanalysis'][p.ngsAnalysis]['platypus']['minReads']),
         '--filterDuplicates='+str(ngsconfig['ngsanalysis'][p.ngsAnalysis]['platypus']['filterDuplicates']),
-        '--trimOverlapping=1',
-        '--outputRefCalls=1'
+        '--trimOverlapping=1'
         ])
     if sge:
         run_sge(cmd,
@@ -1178,7 +1233,8 @@ def ngsEasy_platypus(input_file,output_file):
 #--------------------
 # freebayes variant calling
 #--------------------
-@active_if(switch_FB)
+@active_if(pipeconfig['switch']['FB'])
+@graphviz(label_prefix="Freebayes variant calling\n", **style_normal)
 @transform(ngsEasy_markDuplicates, suffix('.dupemk.bam'), '.FB.vcf')
 def ngsEasy_freebayes(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
@@ -1200,56 +1256,57 @@ def ngsEasy_freebayes(input_file,output_file):
         run_cmd(cmd)
 
 #--------------------
-# filter all VCFs (quality)
+# index and stat VCF
 #--------------------
-@transform([ngsEasy_unifiedGenotyper,ngsEasy_haplotypeCaller,ngsEasy_samtoolsMpileup,ngsEasy_platypus,ngsEasy_freebayes], regex(r'(.+)\.vcf'), r'\1.vcf.gz.tbi')
-#@collate([ngsEasy_unifiedGenotyper,ngsEasy_haplotypeCaller,ngsEasy_samtoolsMpileup], regex(r'(.+)\.vcf'), r'\1.filtered.bcf')
-def ngsEasy_indexVCF(input_file,output_file):
+@graphviz(label_prefix="Compress and Index variants\n", **style_normal)
+@transform([ngsEasy_unifiedGenotyper,ngsEasy_haplotypeCaller,ngsEasy_samtoolsMpileup,ngsEasy_platypus,ngsEasy_freebayes],
+    regex(r'(.+)\.vcf'), r'\1.vcf.gz.tbi')
+def ngsEasy_compressIndexVCF(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
     # quality filtering
-    cmds = [ [ pipeconfig['software']['bgzip'], '-c', input_file, '>', input_file+'.gz' ],
+    cmds = [ [ pipeconfig['software']['bgzip'], '-f', input_file ],
         [ pipeconfig['software']['tabix'], input_file+'.gz' ] ]
     # run job
-    for cmd in cmds:
+    for i, cmd in enumerate(cmds):
         if sge:
             run_sge(' '.join(cmd),
-                jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+                jobname="_".join([inspect.stack()[0][3], str(i+1), p.RG('SM')]),
                 fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
                 cpu=1, mem=2)
         else:
             run_cmd(' '.join(cmd))
 
-@transform(ngsEasy_indexVCF, regex(r'(.+)\.vcf.gz.tbi'), r'\1.filtered.vcf')
-#@collate([ngsEasy_unifiedGenotyper,ngsEasy_haplotypeCaller,ngsEasy_samtoolsMpileup], regex(r'(.+)\.vcf'), r'\1.filtered.bcf')
-def ngsEasy_siteFilter(input_file,output_file):
+#--------------------
+# add missing dbSNP IDs with vcf-tools
+#--------------------
+@graphviz(label_prefix="Adding dbSNP IDs\n", **style_normal)
+@transform(ngsEasy_compressIndexVCF, regex(r'(.+)(\.vcf.gz).tbi'), r'\1.dbsnp\2')
+def ngsEasy_identifyVariants(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
-    # filter
-    filterstring = ['-s', 'LOWQUAL']  # low quality filter
-    m = re.match(r'.+\.(..)\.vcf\.gz\.tbi', input_file)  # for caller dependent filtering
-    try:
-        assert m
-    except:
-        logger.error('Cannot guess variant caller')
-    else:
-        varCaller = m.group(1)
-    # get exclusion (filtering) string
-    try:
-        assert len(ngsconfig['ngsanalysis'][p.ngsAnalysis]['variantfilter'][varCaller])>0
-    except AssertionError:
-        pass  # empty exclusion string
-    except IndexError:
-        logger.error('no filter string available for %s' % varCaller)  # no filter string for caller (configuration error)
-        sys.exit(1)
-    else:
-        filterstring += ['-e', r"'"+ngsconfig['ngsanalysis'][p.ngsAnalysis]['variantfilter'][varCaller]+r"'"]
-    # filtering
+    # convert to bcf
     cmd = [
         pipeconfig['software']['bcftools'],
-        'filter',
-        '-O', 'v',
+        'annotate',
+        '-a', pipeconfig['reference']['snps'][0]+'.gz',
+        '-c', 'CHROM,POS,REF,ALT,ID,-,-,-',
+        '-O z',
         '-o', output_file,
-        ' '.join(filterstring),
         input_file.replace('.tbi','') ]
+    # run job
+    if sge:
+        run_sge(' '.join(cmd),
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+            cpu=1, mem=4)
+    else:
+        run_cmd(' '.join(cmd))
+
+@graphviz(label_prefix="Index VCF\n", **style_normal)
+@transform(ngsEasy_identifyVariants, suffix('.vcf.gz'), '.vcf.gz.tbi')
+def ngsEasy_indexVCF(input_file,output_file):
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
+    # quality filtering
+    cmd = [ pipeconfig['software']['tabix'], input_file ]
     # run job
     if sge:
         run_sge(' '.join(cmd),
@@ -1260,25 +1317,144 @@ def ngsEasy_siteFilter(input_file,output_file):
         run_cmd(' '.join(cmd))
 
 #--------------------
-# reduce VCF to target regions BCF (if TAS or EXO)
+# generate vcf stats
 #--------------------
-@transform(ngsEasy_siteFilter, suffix('.vcf'), '.bcf')
-#@collate([ngsEasy_unifiedGenotyper,ngsEasy_haplotypeCaller,ngsEasy_samtoolsMpileup], regex(r'(.+)\.vcf'), r'\1.filtered.bcf')
-def ngsEasy_regionFilterBCF(input_file,output_file):
+@follows(ngsEasy_indexVCF)
+@graphviz(label_prefix="Variant Statistics\n", **style_normal)
+@transform(ngsEasy_identifyVariants, suffix('.vcf.gz'), '.stats')
+def ngsEasy_varStats(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
-    cmd = [ 'cat', input_file, '|' ]
+    # filtering
+    cmd = [
+        pipeconfig['software']['bcftools'],
+        'stats',
+        '-F', pipeconfig['reference']['genome']['sequence'],
+        '-s', '-',  # all samples
+        input_file,
+        '-o', output_file
+        ]
+    # run job
+    if sge:
+        run_sge(' '.join(cmd),
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(), cpu=1, mem=2)
+    else:
+        run_cmd(' '.join(cmd))
+
+#--------------------
+# filter all VCFs (quality)
+#--------------------
+@follows(ngsEasy_indexVCF)
+@graphviz(label_prefix="Filter variants\n", **style_normal)
+@transform(ngsEasy_identifyVariants, suffix('.dbsnp.vcf.gz'), '.filtered.vcf.gz')
+def ngsEasy_siteFilter(input_file,output_file):
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
+    # filter
+    filterstring = []
+    #filterstring += ['-s', 'LOWQUAL']  # softfilter
+    m = re.match(r'.+\.(..)\.dbsnp\.vcf\.gz', input_file)  # for caller dependent filtering
+    try:
+        assert m
+    except:
+        logger.error('Cannot guess variant caller')
+        raise
+    else:
+        varCaller = m.group(1)
+    # get exclusion (filtering) string
+    try:
+        assert len(ngsconfig['ngsanalysis'][p.ngsAnalysis]['variantfilter'][varCaller])>0
+    except AssertionError:
+        pass  # empty exclusion string
+        logger.warn('empty filtering string for varCaller %s' % varCaller)
+    except IndexError:
+        logger.error('no filter string available for %s' % varCaller)  # no filter string for caller (configuration error)
+        sys.exit(1)
+    else:
+        filterstring += ['-e', r"'"+ngsconfig['ngsanalysis'][p.ngsAnalysis]['variantfilter'][varCaller]+r"'"]
+    # filtering
+    cmd = [
+        pipeconfig['software']['bcftools'],
+        'filter',
+        '-O', 'z',
+        '-o', output_file,
+        ' '.join(filterstring),
+        input_file ]
+    # run job
+    if sge:
+        run_sge(' '.join(cmd),
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+            cpu=1, mem=2)
+    else:
+        run_cmd(' '.join(cmd))
+
+#--------------------
+# assess total number of genotyped dbSNP ids
+#--------------------
+
+
+#--------------------
+# reduce VCF to targets and variant sites
+#--------------------
+@graphviz(label_prefix="Filter Regions\n", **style_normal)
+@transform(ngsEasy_siteFilter, suffix('.filtered.vcf.gz'), '.targets.vcf')
+def ngsEasy_regionFilter(input_file,output_file):
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
     # reduce to target regions of targeted sequencing or exome
     if ngsconfig['ngstype'][p.ngsType]['RGLB'].upper() in ['TAS','EXO']:
-        cmd += [
+        cmd = [
             pipeconfig['software']['bedtools'],
             'intersect',
             '-header',
-            '-a', '-',
-            '-b', ngsconfig['ngsanalysis'][p.ngsAnalysis]['bed'],
-            '|'
+            '-a', input_file,
+            '-b', ngsconfig['ngsanalysis'][p.ngsAnalysis]['tas']['covered_bed'],
+            '>', output_file
             ]
+    else:
+        logger.info('No region filtering for sample %s' % p.RG('SM'))
+        cmd = [
+            'cat', input_file,
+            '>', output_file
+        ]
+    # run job
+    if sge:
+        run_sge(' '.join(cmd),
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+            cpu=1, mem=2)
+    else:
+        run_cmd(' '.join(cmd))
+
+@graphviz(label_prefix="Filtering variants\n", **style_normal)
+@transform(ngsEasy_regionFilter, suffix('.targets.vcf'), '.variants.vcf')
+def ngsEasy_variantSites(input_file,output_file):
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
+    cmd = [
+        'awk', '-f', pipeconfig['path']['scripts']+'/rmRefCalls.awk',
+        '<', input_file,
+        '>', output_file
+        ]
+    # run job
+    if sge:
+        run_sge(' '.join(cmd),
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+            cpu=1, mem=2)
+    else:
+        run_cmd(' '.join(cmd))
+
+'''
+#--------------------
+# make BCF
+#--------------------
+@active_if(False)
+@graphviz(label_prefix="VCF2BCF\n", **style_normal)
+@transform(ngsEasy_regionFilter, suffix('.targets.vcf'), '.final.bcf')
+def ngsEasy_vcf2bcf(input_file,output_file):
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
     # convert to bcf
-    cmd += [
+    cmd = [
+        'cat', input_file, '|',
         pipeconfig['software']['bcftools'],
         'view',
         '-O', 'b',
@@ -1292,9 +1468,199 @@ def ngsEasy_regionFilterBCF(input_file,output_file):
             cpu=1, mem=2)
     else:
         run_cmd(' '.join(cmd))
+'''
+
+## make a soft filter (PASS for variant that pass)
+### alternative allele frequency
+### make annovar only use the passed variants
 
 #--------------------
-# annotate w/SAVANT
+# patch to vcf4 in-place
+#--------------------
+@graphviz(label_prefix="Patch VCF\n", **style_normal)
+@transform(ngsEasy_variantSites, suffix('.variants.vcf'), '.patched.vcf')
+def ngsEasy_patchVcf(input_file,output_file):
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
+    # convert to bcf
+    cmd = [
+        'sed',
+        '\'s/Number=[A|G|R]/Number=./\'',
+        input_file,
+        '>', output_file ]
+    # run job
+    if sge:
+        run_sge(' '.join(cmd),
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+            cpu=1, mem=2)
+    else:
+        run_cmd(' '.join(cmd))
+
+#--------------------
+# Merge filtered variants with GATK
+#--------------------
+@active_if(pipeconfig['switch']['gatk'])
+@graphviz(label_prefix="Merging VCF\n", **style_normal)
+@collate(ngsEasy_patchVcf, regex(r'(.+)\.(..)\.patched\.vcf'), r'\1.merged.vcf')
+def ngsEasy_mergeVcf(input_files,output_file):
+    p = loadConfiguration(input_files[0][:input_files[0].rfind('/')])
+    # at least supported by 2 callers
+    minEvidence = min([2,len(input_files)])
+    cmd = [
+        pipeconfig['software']['java'],
+        '-Xmx'+str(pipeconfig['resources']['gatk']['CV']['java_mem'])+'g',
+        '-Djava.io.tmpdir='+'/'.join([pipeconfig['path']['analysis'], p.wd(), 'tmp']),
+        '-jar', pipeconfig['software']['gatk'],
+        '-T', 'CombineVariants',
+        '-R', pipeconfig['reference']['genome']['sequence'],
+        '-genotypeMergeOptions', 'UNIQUIFY',
+        #'-genotypeMergeOptions', 'PRIORITIZE',
+        #'-genotypeMergeOptions', 'UNSORTED',
+        '-minimalVCF',
+        '--minimumN', str(minEvidence),
+        '-o', output_file ] + [ '--variant:'+input_file[-14:-12]+' '+input_file for input_file in input_files ]
+    # run job
+    if sge:
+        run_sge(' '.join(cmd),
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+            cpu=pipeconfig['resources']['gatk']['CV']['cpu'], mem=pipeconfig['resources']['gatk']['CV']['mem'])
+    else:
+        run_cmd(' '.join(cmd))
+
+#--------------------
+# annotate w/SAVANT and ANNOVAR
+#--------------------
+@active_if(False)
+@graphviz(label_prefix="Annotate Variants (SAVANT)\n", **style_normal)
+@transform(ngsEasy_identifyVariants, suffix('.vcf'), '.savant.vcf')
+#@collate([ngsEasy_unifiedGenotyper,ngsEasy_haplotypeCaller,ngsEasy_samtoolsMpileup], regex(r'(.+)\.vcf'), r'\1.filtered.bcf')
+def ngsEasy_savant(input_file,output_file):
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
+    # MAKE SURE: ALT[1]!="."
+    cmd = ' '.join([
+        pipeconfig['software']['savant'],
+        '-c', pipeconfig['reference']['savant']['config'],
+        '-i', input_file,
+        '-o', output_file[:output_file.rfind('.')]
+        ])
+    # run job
+    if sge:
+        run_sge(cmd,
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+            cpu=1, mem=2)
+    else:
+        run_cmd(cmd)
+
+@active_if(False)
+@graphviz(label_prefix="Annotate Variants (ANNOVAR)\n", **style_normal)
+@transform(ngsEasy_identifyVariants, suffix('.vcf'), '.annovar.'+ pipeconfig['reference']['annovar']['buildver'] + '_multianno.txt')
+#@collate([ngsEasy_unifiedGenotyper,ngsEasy_haplotypeCaller,ngsEasy_samtoolsMpileup], regex(r'(.+)\.vcf'), r'\1.filtered.bcf')
+def ngsEasy_annovar(input_file,output_file):
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
+    cmds = []
+    # prepare input file
+    avinput_file = input_file+'.avinput'
+    cmds.append(' '.join([
+        pipeconfig['software']['annovar']+'convert2annovar.pl',
+        '--includeinfo',
+        '--withzyg',
+        '--format', 'vcf4',
+        input_file,
+        '--outfile', avinput_file
+        ]))
+    # run table_annovar
+    _protocol = ','.join(
+        pipeconfig['reference']['annovar']['databases']['geneanno'] +
+        pipeconfig['reference']['annovar']['databases']['regionanno'] +
+        pipeconfig['reference']['annovar']['databases']['filter']
+        )
+    _operation = ','.join(
+        ['g' for x in pipeconfig['reference']['annovar']['databases']['geneanno'] ] +
+        ['r' for x in pipeconfig['reference']['annovar']['databases']['regionanno'] ] +
+        ['f' for x in pipeconfig['reference']['annovar']['databases']['filter'] ]
+        )
+    cmds.append(' '.join([
+        pipeconfig['software']['annovar']+'table_annovar.pl',
+        '--protocol', _protocol,
+        '--operation', _operation,
+        #'--csvout',
+        #'--otherinfo',
+        '--buildver', pipeconfig['reference']['annovar']['buildver'],
+        '--remove',
+        '--outfile', output_file[:output_file.find('.'+pipeconfig['reference']['annovar']['buildver']+'_multianno')],
+        avinput_file,
+        pipeconfig['reference']['annovar']['directory']
+        ]))
+    # run job
+    for cmd in cmds:
+        print cmd
+        if sge:
+            run_sge(cmd,
+                jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+                fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+                cpu=1, mem=2)
+        else:
+            run_cmd(cmd)
+
+#--------------------
+# coverage
+#--------------------
+@graphviz(label_prefix="Base coverage\n", **style_normal)
+@transform(ngsEasy_markDuplicates, suffix('.dupemk.bam'), '.coverageBed')
+def ngsEasy_coverageBed(input_file,output_file):
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
+    # reduce to target regions of targeted sequencing or exome
+    cmd = [
+        pipeconfig['software']['bedtools'],
+        'coverage',
+        '-d',
+        '-abam', input_file,
+        '-b', ngsconfig['ngsanalysis'][p.ngsAnalysis]['tas']['covered_bed'],
+        '>', output_file
+        ]
+    # run job
+    if sge:
+        run_sge(' '.join(cmd),
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+            cpu=1, mem=2)
+    else:
+        run_cmd(' '.join(cmd))
+
+@active_if(pipeconfig['switch']['gatk'])
+@graphviz(label_prefix="Covered intervals\n", **style_normal)
+@transform(ngsEasy_markDuplicates, suffix('.dupemk.bam'), '.coveredIntervals')
+def ngsEasy_coveredIntervals(input_file,output_file):
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
+    # reduce to target regions of targeted sequencing or exome
+    cmd = [
+        pipeconfig['software']['java'],
+        '-Xmx'+str(pipeconfig['resources']['gatk']['FCI']['java_mem'])+'g',
+        '-Djava.io.tmpdir='+'/'.join([pipeconfig['path']['analysis'], p.wd(), 'tmp']),
+        '-jar', pipeconfig['software']['gatk'],
+        '-T', 'FindCoveredIntervals',
+        '-R', pipeconfig['reference']['genome']['sequence'],
+        '-I', input_file,
+        '-o', output_file,
+        '--coverage_threshold', str(4)
+        ]
+    if sge:
+        run_sge(' '.join(cmd),
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+            cpu=pipeconfig['resources']['gatk']['FCI']['cpu'], mem=pipeconfig['resources']['gatk']['FCI']['mem'])
+    else:
+        run_cmd(' '.join(cmd))
+
+'''
+__FUTURE__
+#run PCA-SVM for coverage variant detection (per gene)
+'''
+
+#--------------------
+# Structural variation detection (mapping based)
 #--------------------
 
 
@@ -1326,95 +1692,36 @@ def ngsEasy_mergeVCF(input_files, output_file):
         run_cmd(cmd)
 
 
-#--------------------
-# annotate (annovar)
-#--------------------
-# 19. Table_Annovar
 
-#--------------------
-# metrics
-#--------------------
-# 18. CollectMultipleMetrics
-# target metrics (picard)
-
-#--------------------
-# coverage
-#--------------------
-# 17. BedTools_DepthOfCoverage
-
-#--------------------
-# cleanup
-#--------------------
-# 20. Cleanup (structures data)
-
-# SAVANT
-
-
-
-#----------------------------------------------------------------------#
-# 17. BedTools_DepthOfCoverage
-#----------------------------------------------------------------------#
-
-qsub -o ${SGE_OUT} -e ${SGE_OUT} -q ${queue_name} -N DepthOfCoverage.${sample_name} -hold_jid PrintReads_BQSR.${sample_name} -l h_vmem=${gatk_h_vmem}G -M ${email_contact} -m beas ${ngs_pipeline}/ngs_BedTools_DepthOfCoverage.sh \
-${sample_name} ${sample_dir} ${sample_temp} ${bed_list} ${bed_type};
-
-
-#----------------------------------------------------------------------#
-# 18. CollectMultipleMetrics
-#----------------------------------------------------------------------#
-
-qsub -o ${SGE_OUT} -e ${SGE_OUT} -q ${queue_name} -N CollectMultipleMetrics.${sample_name} -hold_jid PrintReads_BQSR.${sample_name} -l h_vmem=${gatk_h_vmem}G -M ${email_contact} -m beas ${ngs_pipeline}/ngs_CollectMultipleMetrics.sh \
-${sample_name} ${sample_dir} ${sample_temp}
-
-
-
-#######################################################################
-## Variant annotations ################################################
-#######################################################################
-
-#----------------------------------------------------------------------#
-# 19. Table_Annovar
-#----------------------------------------------------------------------#
-
-qsub -o ${SGE_OUT} -e ${SGE_OUT} -q ${queue_name} -N annovar_HaplotypeCaller.${sample_name} -hold_jid VCFtoolsSiteFilter_HaplotypeCaller.${sample_name} \
--l h_vmem=${gatk_h_vmem}G -M ${email_contact} -m beas ${ngs_pipeline}/ngs_table_annovar_HaplotypeCaller_hg19.sh ${sample_name} ${sample_dir} ${sample_temp} "HaplotypeCaller";
-
-qsub -o ${SGE_OUT} -e ${SGE_OUT} -q ${queue_name} -N annovar_UnifiedGenotyper.${sample_name} -hold_jid VCFtoolsSiteFilter_UnifiedGenotyper.${sample_name} \
--l h_vmem=${gatk_h_vmem}G -M ${email_contact} -m beas ${ngs_pipeline}/ngs_table_annovar_UnifiedGenotyper_hg19.sh ${sample_name} ${sample_dir} ${sample_temp} "UnifiedGenotyper";
-
-
-
-
-
-awk 'NR>9' ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage > ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage_hist
-sed '8q' ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage > ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage_stats
-
-# FindCoveredIntervals
-java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T FindCoveredIntervals -R ${REFGenomes}/human_g1k_v37.fasta \
--I ${SOUT}/alignments/${BAM_PREFIX}.bam  \
--o ${SOUT}/reports/${BAM_PREFIX}.CoveredIntervals.list \
---coverage_threshold 4;
 
 # FlagStat
 java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T FlagStat -R ${REFGenomes}/human_g1k_v37.fasta \
 -I ${SOUT}/alignments/${BAM_PREFIX}.bam  \
 -o ${SOUT}/reports/${BAM_PREFIX}.FlagStat;
 
-# BAM to BED
-/usr/local/pipeline/samtools-0.1.19/samtools view -b -h -q 20 -F 1796  ${SOUT}/alignments/${BAM_PREFIX}.bam  | /usr/local/pipeline/bedtools2/bin/bedtools bamtobed  -i stdin > ${SOUT}/reports/${BAM_PREFIX}.bed;
-
 '''
 #--------------------
 # final target
 #--------------------
-@merge([ngsEasy_readQC,ngsEasy_alignmentQC,ngsEasy_regionFilterBCF],'final.checkpoint')
+@graphviz(label_prefix="END\n", **style_end)
+@merge([ngsEasy_readQC,
+    ngsEasy_analyzeCovariates,
+    ngsEasy_alignmentQC,
+    ngsEasy_coverageBed,
+    ngsEasy_coveredIntervals,
+    ngsEasy_varStats,
+    ngsEasy_savant,
+    ngsEasy_annovar],
+    'final.checkpoint')
 def ngsEasy_final(input_files, output_file):
+    # just touch the out_file
+    with open(output_file, 'w') as fh:
+        for infile in input_files:
+            if os.stat(infile).st_size > 0:
+                print >> fh, infile
     logger.info('##############################')
     logger.info('########## HEUREKA! ##########')
     logger.info('##############################')
-    # just touch the out_file
-    with open(output_file, 'a') as fh:
-        os.utime(fh, None)
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   setup target/forced tasks
@@ -1453,7 +1760,19 @@ if options.just_print:
 elif options.flowchart:
     # use file extension for output format
     output_format = os.path.splitext(options.flowchart)[1][1:]
-    pipeline_printout_graph (open(options.flowchart, "w"), output_format, [], no_key_legend = True)
+    pipeline_printout_graph(open(options.flowchart, "w"), output_format, [ngsEasy_final],
+        no_key_legend = False, minimal_key_legend=True, draw_vertically=True,
+        pipeline_name='ngsEasy - ngs pipeline', user_colour_scheme={"colour_scheme_index" :3,
+                                                "Pipeline"      :{"fontcolor" : '"#FF3232"' },
+                                                "Key"           :{"fontcolor" : "Red",
+                                                                  "fillcolor" : '"#F6F4F4"' },
+                                                "Task to run"   :{"linecolor" : '"#0044A0"' },
+                                                "Final target"  :{"fillcolor" : '"#EFA03B"',
+                                                                  "fontcolor" : "black",
+                                                                  "dashed"    : 0           },
+                                                "Up-to-date task"  :{"fillcolor" : "yellow",
+                                                                  "fontcolor" : "black",
+                                                                  "dashed"    : 1           }})
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   Run Pipeline

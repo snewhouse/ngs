@@ -18,14 +18,10 @@
             "wgs": { },
             "tas": { },
             "exo": { },
-            "vcf":{
-                "minDP": 60,
-                "minQ": 30
-            },
             "variantfilter": {
                 "UG": "%MIN(DP)<60 && %AVG(GQ[*])<30",
                 "HC": "%MIN(DP)<60 && %AVG(GQ[*])<30",
-                "PL": "%MIN(TR)<60 && %AVG(GQ[*])<30",
+                "PL": "%MIN(TR)<60 && %AVG(GQ[*])<30 && TRF>0.2",
                 "ST": "%MIN(DP)<60",
                 "FB": "%MIN(DP)<60"
             },
@@ -48,24 +44,18 @@
         },
         "test": {
             "tas": {
-                "covered_bed":"/Users/dbrawand/ngs/pEasy/tas/test.bed",
+                "covered_bed":"/Users/dbrawand/ngs/pEasy/tas/test_covered.bed",
                 "bait_intervals":"/Users/dbrawand/ngs/pEasy/tas/test_baits.intervals",
                 "target_intervals":"/Users/dbrawand/ngs/pEasy/tas/test_targets.intervals"
             },
             "wgs": { },
             "exo": { },
-
-            "bed": "",
-            "vcf":{
-                "minDP": 60,
-                "minQ": 30
-            },
             "variantfilter": {
-                "UG": "%MIN(DP)<60 && %AVG(GQ[*])<30",
-                "HC": "%MIN(DP)<60 && %AVG(GQ[*])<30",
-                "PL": "%MIN(TR)<60 && %AVG(GQ[*])<30",
-                "ST": "%MIN(DP)<60",
-                "FB": "%MIN(DP)<60"
+                "UG": "QUAL<10 && %MIN(DP)<60 && %AVG(GQ[*])<30 && AC>10 && AF>0.1",
+                "HC": "QUAL<10 && %MIN(DP)<60 && %AVG(GQ[*])<30 && AC>10 && AF>0.1",
+                "PL": "QUAL<10 && %MIN(TR)<60 && %AVG(GQ[*])<30 && AC>10 && AF>0.1 && TR>10",
+                "ST": "QUAL<10 && %MIN(DP)<60 && AC>10 && AF>0.1",
+                "FB": "QUAL<10 && %MIN(DP)<60 && AC>10 && AF>0.1"
             },
             "platypus": {
                 "minReads": 30,

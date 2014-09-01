@@ -1,5 +1,14 @@
 {
+    "switch": {
+        "HC": true,
+        "UG": true,
+        "FB": true,
+        "ST": true,
+        "PL": true,
+        "gatk": true
+    },
     "path": {
+        "scripts": "/Users/dbrawand/ngs/pEasy/scripts",
         "ngstmp": "/Users/dbrawand/ngs/pEasy/temp",
         "fastq": "/Users/dbrawand/ngs/pEasy/fastq",
         "analysis": "/Users/dbrawand/ngs/pEasy/analysis"
@@ -23,10 +32,10 @@
         "platypus": "/usr/local/pipeline/Platypus/bin/Platypus.py",
         "freebayes": "/usr/local/pipeline/freebayes/bin/freebayes",
         "savant": "/usr/local/pipeline/savant-v1.1.0-complete/savant.py",
+        "annovar": "/usr/local/pipeline/annovar/",
 
         "novoalign": "/usr/local/pipeline/novoalign/ngsNovoalign",
-        "novo": "/share/apps/novocraft_current/bin/",
-        "annovar": "/isilon/irods_a/datasets_res/Vault/annovar_2013Aug23"
+        "novo": "/share/apps/novocraft_current/bin/"
     },
     "reference": {
         "genome": {
@@ -57,9 +66,37 @@
             "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/1000G_omni2.5.b37.vcf",
             "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/1000G_phase1.snps.high_confidence.b37.vcf"
         ],
-	    "annotation": {
-	    	"annovar_humandb": "/isilon/irods_a/datasets_res/Vault/annovar_2013Aug23/humandb"
-    	}
+        "annovar": {
+            "directory": "/usr/local/pipeline/annotation/humandb/",
+            "buildver": "hg19",
+            "databases": {
+                "geneanno": [
+                ],
+                "regionanno": [
+                ],
+                "filter": [
+                    "clinvar_20140702"
+                ]
+            },
+            "databases_backup": {
+                "geneanno": [
+                    "refGene",
+                    "knownGene"
+                ],
+                "regionanno": [
+                    "wgRna"
+                ],
+                "filter": [
+                    "snp129",
+                    "ljb23_pp2hvar",
+                    "clinvar_20140702"
+                ]
+            }
+
+        },
+        "savant": {
+            "config": "/usr/local/pipeline/savant-v1.1.0-complete/config.txt"
+        }
     },
     "resources": {
         "gridengine": {
@@ -101,6 +138,9 @@
             "PR": {
                 "mem": 6, "cpu": 1, "java_mem": 4, "nct": 4
             },
+            "FCI": {
+                "mem": 6, "cpu": 1, "java_mem": 4
+            },
             "AC": {
                 "mem": 4, "cpu": 1, "java_mem": 4
             },
@@ -118,7 +158,11 @@
             },
            "VR": {
                 "mem": 6, "cpu": 2, "java_mem": 4, "nt": 2
+            },
+           "CV": {
+                "mem": 2, "cpu": 1, "java_mem": 4
             }
+
         },
         "platypus": {
             "cpu": 4,
