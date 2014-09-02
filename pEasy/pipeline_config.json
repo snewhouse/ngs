@@ -1,4 +1,8 @@
 {
+    "docker": {
+        "alignment":"",
+        "varcall":""
+    },
     "switch": {
         "HC": true,
         "UG": true,

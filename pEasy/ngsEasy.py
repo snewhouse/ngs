@@ -1256,7 +1256,7 @@ def ngsEasy_freebayes(input_file,output_file):
         run_cmd(cmd)
 
 #--------------------
-# index and stat VCF
+# compress and index VCF
 #--------------------
 @graphviz(label_prefix="Compress and Index variants\n", **style_normal)
 @transform([ngsEasy_unifiedGenotyper,ngsEasy_haplotypeCaller,ngsEasy_samtoolsMpileup,ngsEasy_platypus,ngsEasy_freebayes],
@@ -1264,7 +1264,7 @@ def ngsEasy_freebayes(input_file,output_file):
 def ngsEasy_compressIndexVCF(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
     # quality filtering
-    cmds = [ [ pipeconfig['software']['bgzip'], '-f', input_file ],
+    cmds = [ [ pipeconfig['software']['bgzip'], '-c', '-f', input_file, '>', input_file+'.gz' ],
         [ pipeconfig['software']['tabix'], input_file+'.gz' ] ]
     # run job
     for i, cmd in enumerate(cmds):
@@ -1331,7 +1331,7 @@ def ngsEasy_varStats(input_file,output_file):
         '-F', pipeconfig['reference']['genome']['sequence'],
         '-s', '-',  # all samples
         input_file,
-        '-o', output_file
+        '>', output_file
         ]
     # run job
     if sge:
@@ -1497,28 +1497,32 @@ def ngsEasy_patchVcf(input_file,output_file):
         run_cmd(' '.join(cmd))
 
 #--------------------
-# Merge filtered variants with GATK
+# Merge filtered variants with GATK or own script
 #--------------------
-@active_if(pipeconfig['switch']['gatk'])
 @graphviz(label_prefix="Merging VCF\n", **style_normal)
 @collate(ngsEasy_patchVcf, regex(r'(.+)\.(..)\.patched\.vcf'), r'\1.merged.vcf')
 def ngsEasy_mergeVcf(input_files,output_file):
     p = loadConfiguration(input_files[0][:input_files[0].rfind('/')])
     # at least supported by 2 callers
     minEvidence = min([2,len(input_files)])
-    cmd = [
-        pipeconfig['software']['java'],
-        '-Xmx'+str(pipeconfig['resources']['gatk']['CV']['java_mem'])+'g',
-        '-Djava.io.tmpdir='+'/'.join([pipeconfig['path']['analysis'], p.wd(), 'tmp']),
-        '-jar', pipeconfig['software']['gatk'],
-        '-T', 'CombineVariants',
-        '-R', pipeconfig['reference']['genome']['sequence'],
-        '-genotypeMergeOptions', 'UNIQUIFY',
-        #'-genotypeMergeOptions', 'PRIORITIZE',
-        #'-genotypeMergeOptions', 'UNSORTED',
-        '-minimalVCF',
-        '--minimumN', str(minEvidence),
-        '-o', output_file ] + [ '--variant:'+input_file[-14:-12]+' '+input_file for input_file in input_files ]
+    if pipeconfig['switch']['gatk']:
+        cmd = [
+            pipeconfig['software']['java'],
+            '-Xmx'+str(pipeconfig['resources']['gatk']['CV']['java_mem'])+'g',
+            '-Djava.io.tmpdir='+'/'.join([pipeconfig['path']['analysis'], p.wd(), 'tmp']),
+            '-jar', pipeconfig['software']['gatk'],
+            '-T', 'CombineVariants',
+            '-R', pipeconfig['reference']['genome']['sequence'],
+            '-genotypeMergeOptions', 'UNIQUIFY',
+            #'-genotypeMergeOptions', 'PRIORITIZE',
+            #'-genotypeMergeOptions', 'UNSORTED',
+            '-minimalVCF',
+            '--minimumN', str(minEvidence),
+            '-o', output_file ] + \
+            [ '--variant:'+input_file[-14:-12]+' '+input_file for input_file in input_files ]
+    else:
+        cmd = []
+        raise Exception('NOT IMPLEMENTED')
     # run job
     if sge:
         run_sge(' '.join(cmd),
@@ -1527,6 +1531,8 @@ def ngsEasy_mergeVcf(input_files,output_file):
             cpu=pipeconfig['resources']['gatk']['CV']['cpu'], mem=pipeconfig['resources']['gatk']['CV']['mem'])
     else:
         run_cmd(' '.join(cmd))
+
+
 
 #--------------------
 # annotate w/SAVANT and ANNOVAR
@@ -1666,7 +1672,7 @@ __FUTURE__
 
 '''
 #--------------------
-# merge VCFs ?
+# merge VCF (with bcftools)
 #--------------------
 
 @collate([ngsEasy_siteFilterUC,ngsEasy_siteFilterHC,ngsEasy_siteFilterPL],
@@ -1690,16 +1696,8 @@ def ngsEasy_mergeVCF(input_files, output_file):
             cpu=1, mem=2)
     else:
         run_cmd(cmd)
-
-
-
-
-# FlagStat
-java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T FlagStat -R ${REFGenomes}/human_g1k_v37.fasta \
--I ${SOUT}/alignments/${BAM_PREFIX}.bam  \
--o ${SOUT}/reports/${BAM_PREFIX}.FlagStat;
-
 '''
+
 #--------------------
 # final target
 #--------------------
