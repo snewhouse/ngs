@@ -279,7 +279,8 @@ if __name__ == "__main__":
                 stats['_GRANDTOTAL'] += 1
                 if mvar.support >= options.evidence:
                     stats['_PASSED'] += 1
-                    print >> ofh, mvar.printline(headers.formatorder(),sampleorder)
+                    mvar.FILTER = 'PASSED'
+                print >> ofh, mvar.printline(headers.formatorder(),sampleorder)
         # stats
         sys.stderr.write('\r')
         for k in sorted(stats.keys()):

@@ -1480,36 +1480,7 @@ def ngsEasy_variantSites(input_file,output_file):
     else:
         run_cmd(' '.join(cmd))
 
-'''
-#--------------------
-# make BCF
-#--------------------
-@active_if(False)
-@graphviz(label_prefix="VCF2BCF\n", **style_normal)
-@transform(ngsEasy_regionFilter, suffix('.targets.vcf'), '.final.bcf')
-@timejob(logger)
-def ngsEasy_vcf2bcf(input_file,output_file):
-    p = loadConfiguration(input_file[:input_file.rfind('/')])
-    # convert to bcf
-    cmd = [
-        'cat', input_file, '|',
-        pipeconfig['software']['bcftools'],
-        'view',
-        '-O', 'b',
-        '-o', output_file
-        ]
-    # run job
-    if sge:
-        run_sge(' '.join(cmd),
-            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
-            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
-    else:
-        run_cmd(' '.join(cmd))
-'''
-
 ## make a soft filter (PASS for variant that pass)
-### alternative allele frequency
 ### make annovar only use the passed variants
 
 #--------------------
@@ -1605,7 +1576,6 @@ def ngsEasy_mergeVcf(input_files,output_file):
 #--------------------
 # annotate w/SAVANT and ANNOVAR
 #--------------------
-@active_if(True)
 @graphviz(label_prefix="Annotate Variants (SAVANT)\n", **style_normal)
 @transform([ngsEasy_identifyVariants,ngsEasy_mergeVcf], suffix('.vcf'), '.savant.vcf')
 @timejob(logger)
@@ -1627,7 +1597,6 @@ def ngsEasy_savant(input_file,output_file):
     else:
         run_cmd(cmd)
 
-@active_if(False)
 @graphviz(label_prefix="Annotate Variants (ANNOVAR)\n", **style_normal)
 @transform([ngsEasy_identifyVariants,ngsEasy_mergeVcf], suffix('.vcf'), '.annovar.'+ pipeconfig['reference']['annovar']['buildver'] + '_multianno.txt')
 @timejob(logger)
@@ -1740,33 +1709,6 @@ __FUTURE__
 #--------------------
 
 
-'''
-#--------------------
-# merge VCF (with bcftools)
-#--------------------
-
-@collate([ngsEasy_siteFilterUC,ngsEasy_siteFilterHC,ngsEasy_siteFilterPL],
-    formatter("(?P<PAIR>[^\.]+)\.vcf"),
-    ["{PAIR[0]}.merged.vcf"])
-def ngsEasy_mergeVCF(input_files, output_file):
-    p = loadConfiguration(input_file[:input_file.rfind('/')])
-    cmd = " ".join([
-        pipeconfig['software']['vcftools'],
-        '--vcf',input_file,
-        '--recode',
-        '--recode-INFO-all',
-        '--min-meanDP', ngsconfig['ngsanalysis'][p.ngsAnalysis]['vcf']['minDP'],
-        '--minQ', ngsconfig['ngsanalysis'][p.ngsAnalysis]['vcf']['minQ'],
-        '--stdout', '>', output_file
-        ])
-    if sge:
-        run_sge(cmd,
-            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
-            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
-    else:
-        run_cmd(cmd)
-'''
 
 #--------------------
 # final target
@@ -1791,6 +1733,7 @@ def ngsEasy_final(input_files, output_file):
     logger.info('##############################')
     logger.info('########## HEUREKA! ##########')
     logger.info('##############################')
+
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   setup target/forced tasks
@@ -1821,7 +1764,7 @@ else:
 #   Print list of tasks
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 if options.just_print:
-    pipeline_printout(sys.stdout, [], verbose=options.verbose)
+    pipeline_printout(sys.stdout, [], verbose=options.verbose, verbose_abbreviated_path = 3)
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   Print flowchart
@@ -1847,7 +1790,7 @@ elif options.flowchart:
 #   Run Pipeline
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 else:
-    pipeline_run(targettasks, forcedtorun_tasks = forcedtasks, \
+    pipeline_run(targettasks, forcedtorun_tasks = forcedtasks, verbose_abbreviated_path = 3, \
         multiprocess = options.jobs, logger = logger, verbose=options.verbose, \
         checksum_level = 1 if options.debug else 3, touch_files_only=options.touch)
 
