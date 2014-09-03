@@ -19,6 +19,7 @@ import sys
 import re
 import tabix  # pytabix
 import gzip
+from collections import Counter
 
 class Format(object):
     def __init__(self,line):
@@ -235,22 +236,23 @@ if __name__ == "__main__":
     # print header
     with open(options.outfile,'w') as ofh:
         print >> ofh, headers.version
-        print >> ofh, '##INFO=<ID=QUALFROM,Number=1,Type=String,Description="Source of quality score (max)">
+        print >> ofh, '##INFO=<ID=QUALFROM,Number=1,Type=String,Description="Source of quality score (max)">'
         print >> ofh, '\n'.join(map(repr,sorted(headers.format.values())))
         print >> ofh, "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t" + '\t'.join(sampleorder)
 
+
+        stats = Counter()
         # merge and print for each slice
         for s in readSlices(options.bedfile):
             variants = {}
-            sys.stderr.write('merging '+s[0]+':'+str(s[1])+'-'+str(s[2]))
+            sys.stderr.write('\rMerging slice '+s[0]+':'+str(s[1])+'-'+str(s[2]))
             for sample in sampleorder:
-                sys.stderr.write(' '+sample)
                 slicevar = vcfs[sample].query(s[0], int(s[1]), int(s[2]))
                 for var in slicevar:
-                    sys.stderr.write('.')
                     # filter LowQual
                     if var[6] in options.filter.split(','):
                         continue
+                    stats[sample] += 1
                     v = Variant(var,sample)
                     try:
                         success = variants[v.location()].extend(v)
@@ -260,6 +262,7 @@ if __name__ == "__main__":
                     except AssertionError:
                         print >> sys.stderr, '\nWARNING incompatible variants (keeping higher scoring):'
                         ## keeping variant with higher quality score
+                        stats['_CONFLICTING'] += 1
                         if float(v.QUAL) > float(variants[v.location()]):
                             variants[v.location()] = v
                             print >> sys.stderr, '\t', v
@@ -270,11 +273,17 @@ if __name__ == "__main__":
                             print >> sys.stderr, "DISCARDED:"
                             print >> sys.stderr, '\t', v
 
-            sys.stderr.write('\n')
 
             # print variants in slice
             for k, mvar in sorted(variants.items()):
+                stats['_GRANDTOTAL'] += 1
                 if mvar.support >= options.evidence:
+                    stats['_PASSED'] += 1
                     print >> ofh, mvar.printline(headers.formatorder(),sampleorder)
+        # stats
+        sys.stderr.write('\r')
+        for k in sorted(stats.keys()):
+            sys.stderr.write('  '+k+':'+str(stats[k]))
+        sys.stderr.write('\n')
 
 

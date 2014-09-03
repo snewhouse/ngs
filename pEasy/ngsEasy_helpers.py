@@ -2,7 +2,30 @@
 
 import sys
 import os
+import time
+import logging
+import functools
 #import matplotlib.pyplot as plt
+
+'''timer (decorator)'''
+def timejob(stream):
+    def actual_time_job(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            # Start the timer.
+            start = time.time()
+            # Run the decorated function.
+            ret = func(*args, **kwargs)
+            # Stop the timer.
+            end = time.time()
+            elapsed = end - start
+            if isinstance(stream,logging.Logger) or isinstance(stream,logging.RootLogger):
+                stream.debug("[TIME] {} took {} seconds\n".format(func.__name__, elapsed))
+            else:
+                stream.write("[TIME] {} took {} seconds\n".format(func.__name__, elapsed))
+        return wrapper
+    return actual_time_job
+
 
 '''parses picard metrics files into an dictionary (cols) of lists (rows)'''
 def parsePicard(fh):
