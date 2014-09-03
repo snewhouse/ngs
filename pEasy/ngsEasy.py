@@ -1264,8 +1264,10 @@ def ngsEasy_freebayes(input_file,output_file):
 def ngsEasy_compressIndexVCF(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
     # quality filtering
-    cmds = [ [ pipeconfig['software']['bgzip'], '-c', '-f', input_file, '>', input_file+'.gz' ],
-        [ pipeconfig['software']['tabix'], input_file+'.gz' ] ]
+    cmds = [
+        [ pipeconfig['software']['bgzip'], '-c', '-f', input_file, '>', input_file+'.gz' ],
+        [ pipeconfig['software']['tabix'], input_file+'.gz' ]
+            ]
     # run job
     for i, cmd in enumerate(cmds):
         if sge:
@@ -1475,7 +1477,7 @@ def ngsEasy_vcf2bcf(input_file,output_file):
 ### make annovar only use the passed variants
 
 #--------------------
-# patch to vcf4 in-place
+# patch to vcf4.0 in-place (required for SAVANT)
 #--------------------
 @graphviz(label_prefix="Patch VCF\n", **style_normal)
 @transform(ngsEasy_variantSites, suffix('.variants.vcf'), '.patched.vcf')
@@ -1499,6 +1501,26 @@ def ngsEasy_patchVcf(input_file,output_file):
 #--------------------
 # Merge filtered variants with GATK or own script
 #--------------------
+@graphviz(label_prefix="Compress and Index variants\n", **style_normal)
+@transform(ngsEasy_patchVcf, regex(r'(.+)\.vcf'), r'\1.vcf.gz.tbi')
+def ngsEasy_compressIndexVCF_2(input_file,output_file):
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
+    # quality filtering
+    cmds = [
+        [ pipeconfig['software']['bgzip'], '-c', '-f', input_file, '>', input_file+'.gz' ],
+        [ pipeconfig['software']['tabix'], input_file+'.gz' ]
+            ]
+    # run job
+    for i, cmd in enumerate(cmds):
+        if sge:
+            run_sge(' '.join(cmd),
+                jobname="_".join([inspect.stack()[0][3], str(i+1), p.RG('SM')]),
+                fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+                cpu=1, mem=2)
+        else:
+            run_cmd(' '.join(cmd))
+
+@follows(ngsEasy_compressIndexVCF_2)
 @graphviz(label_prefix="Merging VCF\n", **style_normal)
 @collate(ngsEasy_patchVcf, regex(r'(.+)\.(..)\.patched\.vcf'), r'\1.merged.vcf')
 def ngsEasy_mergeVcf(input_files,output_file):
@@ -1521,9 +1543,14 @@ def ngsEasy_mergeVcf(input_files,output_file):
             '-o', output_file ] + \
             [ '--variant:'+input_file[-14:-12]+' '+input_file for input_file in input_files ]
     else:
-        cmd = []
-        raise Exception('NOT IMPLEMENTED')
+        cmd = [
+            pipeconfig['path']['scripts']+'/mergevcf.py',
+            '-s', pipeconfig['reference']['genome']['dict'],
+            '-o', output_file,
+            '-e', str(minEvidence) ] + [infile+'.gz' for infile in input_files]
     # run job
+    print " ".join(cmd)
+    sys.exit()
     if sge:
         run_sge(' '.join(cmd),
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
@@ -1531,6 +1558,10 @@ def ngsEasy_mergeVcf(input_files,output_file):
             cpu=pipeconfig['resources']['gatk']['CV']['cpu'], mem=pipeconfig['resources']['gatk']['CV']['mem'])
     else:
         run_cmd(' '.join(cmd))
+    # cleanup
+    if options.cleanup:
+        for infile in input_files:
+            zeroFile(infiles)
 
 
 
@@ -1539,7 +1570,7 @@ def ngsEasy_mergeVcf(input_files,output_file):
 #--------------------
 @active_if(False)
 @graphviz(label_prefix="Annotate Variants (SAVANT)\n", **style_normal)
-@transform(ngsEasy_identifyVariants, suffix('.vcf'), '.savant.vcf')
+@transform([ngsEasy_identifyVariants,ngsEasy_mergeVcf], suffix('.vcf'), '.savant.vcf')
 #@collate([ngsEasy_unifiedGenotyper,ngsEasy_haplotypeCaller,ngsEasy_samtoolsMpileup], regex(r'(.+)\.vcf'), r'\1.filtered.bcf')
 def ngsEasy_savant(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])
@@ -1561,7 +1592,7 @@ def ngsEasy_savant(input_file,output_file):
 
 @active_if(False)
 @graphviz(label_prefix="Annotate Variants (ANNOVAR)\n", **style_normal)
-@transform(ngsEasy_identifyVariants, suffix('.vcf'), '.annovar.'+ pipeconfig['reference']['annovar']['buildver'] + '_multianno.txt')
+@transform([ngsEasy_identifyVariants,ngsEasy_mergeVcf], suffix('.vcf'), '.annovar.'+ pipeconfig['reference']['annovar']['buildver'] + '_multianno.txt')
 #@collate([ngsEasy_unifiedGenotyper,ngsEasy_haplotypeCaller,ngsEasy_samtoolsMpileup], regex(r'(.+)\.vcf'), r'\1.filtered.bcf')
 def ngsEasy_annovar(input_file,output_file):
     p = loadConfiguration(input_file[:input_file.rfind('/')])

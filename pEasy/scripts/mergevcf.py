@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
 __doc__='''
-###########################################################
-## mergevcf.py | merges tabix indexed vcfs               ##
-## -- a simple free alternative to GATKs CombineVariants ##
-###########################################################
+##############################################################
+## mergevcf.py | merges tabix indexed vcfs                  ##
+## -- a naive and free alternative to GATKs CombineVariants ##
+##############################################################
 '''
 __author__ = "David Brawand"
 __credits__ = ['David Brawand']
-__license__ = "MIT"
+__license__ = "MIT licence"
 __version__ = "0.1"
 __maintainer__ = "David Brawand"
 __email__ = "dbrawand@nhs.net"
@@ -80,10 +80,12 @@ class Variant(object):
         self.ID = data[2]
         self.REF = data[3]
         self.ALT = data[4]
-        self.QUAL = '.'
+        self.QUAL = data[5]
         self.FILTER = '.'
         self.INFO = '.'
         self.samples = { samplename: dict(zip(data[8].split(':'),data[9].split(':'))) }
+        self.support = 1
+        self.qualfrom = samplename
         return
 
     def __lt__(self,other):
@@ -106,14 +108,18 @@ class Variant(object):
                 print other.samples
                 raise Exception('same samples in files to be merged?')
             # merge
+            if float(other.QUAL) > float(self.QUAL):
+                self.QUAL = other.QUAL
+                self.qualfrom = other.samples.keys()[0]
             self.samples.update(other.samples)
+            self.support += 1  # increment supporting evidence
             return True
         else:
             return False
 
     def __repr__(self):
         return '\t'.join([self.CHROM, self.POS, self.ID, self.REF, self.ALT, \
-            self.QUAL, self.FILTER, self.INFO])
+            self.QUAL, self.FILTER, 'QUALFROM='+self.qualfrom])
 
     def printline(self,formatorder,sampleorder):
         formatvalues = []
@@ -139,14 +145,14 @@ class Header(object):
                     ft = Format(line)
                     self.format[ft.ID] = ft
                 elif line.startswith('##fileformat'):
-                    self.version = line
+                    self.version = line.rstrip()
                 elif not line.startswith('#'):
                     break
         return
 
-    def __repr__(self):
-        #return self.format
-        return "####FAKEHEADER###"
+#    def __repr__(self):
+#        #return self.format
+#        return "####FAKEHEADER###"
 
     def extend(self, other):
         for f in other.formats.keys():
@@ -164,11 +170,20 @@ class Header(object):
 
 
 # reads slices from BED file
-def readSlices(fi,slen=100000000):
-    '''returns slices of given size from BED file'''
+def readSlices(fi,slen=1000000):
+    '''returns slices of given size from BED or DICT file'''
     with open(fi) as fh:
         for line in fh:
-            f = line.split()
+            # DICT/BED
+            if line.startswith('@'):
+                m = re.match('@SQ\s+SN:(\w+)\s+LN:(\d+)',line)
+                if m:
+                    f = [ m.group(1), 0, m.group(2) ]
+                else:
+                    continue
+            else:
+                f = line.split()
+            # make segments
             for r in range(int(f[1]),int(f[2]),slen):
                 yield (f[0],r,min([r+slen,int(f[2])]))
 
@@ -180,7 +195,9 @@ if __name__ == "__main__":
     parser = OptionParser(version="mergevcf.py v1.0", usage=usage)
     #   configuration files
     parser.add_option("-o", dest="outfile",metavar="STRING", help="Merged .VCF output")
-    parser.add_option("-b", dest="bedfile",metavar="STRING", help="BED file (segments to merge)")
+    parser.add_option("-s", dest="bedfile",metavar="STRING", help="DICT/BED file (segments to merge)")
+    parser.add_option("-e", dest="evidence",metavar="INT", default=2, type=int, help="minimal evidence [2]")
+    parser.add_option("-f", dest="filter",metavar="STRING,STRING,...", default='LowQual', help="exclusion filter [LowQual]")
     (options, args) = parser.parse_args()
     if len(args) < 2 or not options.outfile or not options.bedfile:
         print >> sys.stderr, __doc__
@@ -193,15 +210,19 @@ if __name__ == "__main__":
     sampleorder = []
     for i, v in enumerate(args):
         samplename = None
-        m = re.match('(?:\w{8}\.)?(..)\.',v)
+        m = re.search('(?:\w{8}\.)?(..)\.',v[v.rfind('/')+1:])
         try:
             assert m
         except:
+            raise
             samplename = 'sample'+str(i)
         else:
             samplename = m.group(1)
         # filehandles
-        vcfs[samplename] = tabix.open(v)
+        try:
+            vcfs[samplename] = tabix.open(v)
+        except tabix.TabixError:
+            raise Exception('Cannnot open %s Is file present and tabix indexed?' % v)
         sampleorder.append(samplename)
         # headers
         try:
@@ -214,6 +235,7 @@ if __name__ == "__main__":
     # print header
     with open(options.outfile,'w') as ofh:
         print >> ofh, headers.version
+        print >> ofh, '##INFO=<ID=QUALFROM,Number=1,Type=String,Description="Source of quality score (max)">
         print >> ofh, '\n'.join(map(repr,sorted(headers.format.values())))
         print >> ofh, "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t" + '\t'.join(sampleorder)
 
@@ -226,6 +248,9 @@ if __name__ == "__main__":
                 slicevar = vcfs[sample].query(s[0], int(s[1]), int(s[2]))
                 for var in slicevar:
                     sys.stderr.write('.')
+                    # filter LowQual
+                    if var[6] in options.filter.split(','):
+                        continue
                     v = Variant(var,sample)
                     try:
                         success = variants[v.location()].extend(v)
@@ -233,13 +258,23 @@ if __name__ == "__main__":
                     except KeyError:
                         variants[v.location()] = v  # didnt exist
                     except AssertionError:
-                        print >> sys.stderr, repr(variants[v.location()])
-                        print >> sys.stderr, v
-                        raise  # incompatible
+                        print >> sys.stderr, '\nWARNING incompatible variants (keeping higher scoring):'
+                        ## keeping variant with higher quality score
+                        if float(v.QUAL) > float(variants[v.location()]):
+                            variants[v.location()] = v
+                            print >> sys.stderr, '\t', v
+                            print >> sys.stderr, "DISCARDED:"
+                            print >> sys.stderr, repr(variants[v.location()])
+                        else:
+                            print >> sys.stderr, repr(variants[v.location()])
+                            print >> sys.stderr, "DISCARDED:"
+                            print >> sys.stderr, '\t', v
+
             sys.stderr.write('\n')
 
-
+            # print variants in slice
             for k, mvar in sorted(variants.items()):
-                print >> ofh, mvar.printline(headers.formatorder(),sampleorder)
+                if mvar.support >= options.evidence:
+                    print >> ofh, mvar.printline(headers.formatorder(),sampleorder)
 
 

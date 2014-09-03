@@ -9,7 +9,7 @@
         "FB": true,
         "ST": true,
         "PL": true,
-        "gatk": true
+        "gatk": false
     },
     "path": {
         "scripts": "/Users/dbrawand/ngs/pEasy/scripts",
