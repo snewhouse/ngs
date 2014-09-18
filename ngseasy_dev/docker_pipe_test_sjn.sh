@@ -8,20 +8,55 @@ host_vol_dir=""
 ## create and run data_volumes container 
 ##--------------------------------------------------##
 
-  volumes_container() {
-		      host_vol_dir=${1}
-		      sudo docker run \
-		      -d \
-		      -P \
-		      -v ${host_vol_dir}/fastq_raw:/home/pipeman/fastq_raw \
-		      -v ${host_vol_dir}/reference_genomes_b37:/home/pipeman/reference_genomes_b37 \
-		      -v ${host_vol_dir}/gatk_resources:/home/pipeman/gatk_resources \
-		      -v ${host_vol_dir}/ngs_projects:/home/pipeman/ngs_projects \
-		      -v ${host_vol_dir}/ngseasy_scripts:/home/pipeman/ngseasy_scripts \
-		      --name data_volumes \
-		      -t compbio/ngseasy-base:v1.0}
-  # run it
-  volumes_container <HOST DIRECTORY>
+volumes_container() {
+
+#usage printing func
+  usage()
+  {
+  cat << EOF
+  This script sets up the docker volumes container:
+  See NGSEasy containerized instructions.
+
+  ARGUMENTS:
+  -h      Flag: Show this help message
+  -d      Base directory for (fastq_raw, reference_genomes_b37, gatk_resources, ngs_projects, ngseasy_scripts)
+  EXAMPLE USAGE:
+  volumes_container -d /media/D/docker_ngs/ngseasy/
+EOF 
+
+#get options for command line args
+  while  getopts "h:d:" opt
+  do
+
+      case ${opt} in
+	  h)
+	  usage #print help
+	  exit 0
+	  ;;
+	  
+	  d)
+	  host_vol_dir=${OPTARG}
+	  ;;
+
+      esac
+  done
+
+#run docker image  
+  host_vol_dir=${1}
+  sudo docker run \
+  -d \
+  -P \
+  -v ${host_vol_dir}/fastq_raw:/home/pipeman/fastq_raw \
+  -v ${host_vol_dir}/reference_genomes_b37:/home/pipeman/reference_genomes_b37 \
+  -v ${host_vol_dir}/gatk_resources:/home/pipeman/gatk_resources \
+  -v ${host_vol_dir}/ngs_projects:/home/pipeman/ngs_projects \
+  -v ${host_vol_dir}/ngseasy_scripts:/home/pipeman/ngseasy_scripts \
+  --name data_volumes \
+  -t compbio/ngseasy-base:v1.0
+}
+
+# run it
+  
 
 ##--------------------------------------------------##
 ## NGSeasy 
