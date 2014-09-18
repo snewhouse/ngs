@@ -1,13 +1,7 @@
 #!/bin/bash
-
-## TO DO:-
-
-run_ea-ngs.sh at each step is s bash script to perfom NGSeasy step 
-run_ea-ngs.sh needs to be copied to a number of worker ngseasy_scripts
-eg
-run_ea-ngs.sh > run_ngseay_fastqc_pre_aln.sh
-run_ea-ngs.sh > run_ngseay_trimmomatic.sh
-run_ea-ngs.sh > run_ngseay_fastqc_post_trimmomatic.sh
+# Collection of NGSeasy Functions
+# Stephen Newhouse <stephen.j.newhouse@gmail.com>
+# Version 0.9.0
 
 ##--------------------------------------------------##
 ## create and run data_volumes container 
@@ -229,11 +223,13 @@ var_anno_ensembl
 ngs_reports
 
   
-  
+## TO DO:-
 
-##--------------------------------------------------##
-## END ALL CONTAINERS 
-##--------------------------------------------------##
-  sudo docker kill ${volumes_container}
+run_ea-ngs.sh at each step is s bash script to perfom NGSeasy step 
+run_ea-ngs.sh needs to be copied to a number of worker ngseasy_scripts
+eg
+run_ea-ngs.sh > run_ngseay_fastqc_pre_aln.sh
+run_ea-ngs.sh > run_ngseay_trimmomatic.sh
+run_ea-ngs.sh > run_ngseay_fastqc_post_trimmomatic.sh
 
 
