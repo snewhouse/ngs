@@ -73,12 +73,12 @@ fastqc_pre () {
   usage()
   {
   cat << EOF
-  This script sets up the docker volumes container:
+  This script sets up the NGSeasy docker fastqc container:
   See NGSEasy containerized instructions.
 
   ARGUMENTS:
   -h      Flag: Show this help message
-  -d      Base directory for (fastq_raw, reference_genomes_b37, gatk_resources, ngs_projects, ngseasy_scripts)
+  -c      NGSeasy project and run configureation file
   EXAMPLE USAGE:
   fastqc_pre -c config.file.tsv
 EOF 
