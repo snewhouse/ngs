@@ -4,6 +4,54 @@
 # Version 0.9.0
 
 ##--------------------------------------------------##
+## create project directories
+##--------------------------------------------------##
+
+create_ngseasy_projects () {
+
+#usage printing func
+usage()
+{
+cat << EOF
+This script sets up the NGSeasy Project directories
+See NGSEasy containerized instructions.
+
+ARGUMENTS:
+-h      Flag: Show this help message
+-c      Config pipeline file
+-d      Base directory for (fastq_raw, reference_genomes_b37, gatk_resources, ngs_projects, ngseasy_scripts)
+EXAMPLE USAGE:
+create_ngseasy_projects -c config.file.tsv -d /media/D/docker_ngs/ngseasy/
+EOF
+}
+
+#get options for command line args
+while  getopts "h:c:d:" opt
+do
+
+    case ${opt} in
+        h)
+        usage #print help
+        exit 0
+        ;;
+        
+        c)
+        config_tsv=${OPTARG}
+        ;;
+        
+        d)
+        host_vol_dir=${OPTARG}
+        ;;
+
+    esac
+done
+
+# make dirs
+run_ngseasy_make_dirs.sh ${config_tsv} ${host_vol_dir} 
+
+}
+
+##--------------------------------------------------##
 ## create and run data_volumes container 
 ##--------------------------------------------------##
 
@@ -340,9 +388,6 @@ sudo docker run \
 --volumes-from volumes_container \
 -t compbio/ngseasy-novoalign:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_bowtie2.sh /home/pipeman/ngs_projects/${config_tsv}
 
-
-
-
 }
 
 
@@ -355,6 +400,8 @@ sudo docker run \
 need a routines to chekc input and output of each step
 if IN exits then DO FUN else exit
 if OUTPUT from last step exists then do next step else run previous step or exit
+
+run_ngseasy_make_dirs.sh # this is based on run_ea-ngs.sh https://github.com/KHP-Informatics/ngs/blob/dev2/ngseasy_scripts/run_ea-ngs.sh
 
 fastqc_pre
 fastq_trimm
