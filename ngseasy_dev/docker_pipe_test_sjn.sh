@@ -1,4 +1,4 @@
-
+#!/bin/bash
 
 
 config_tsv=""
@@ -8,7 +8,9 @@ host_vol_dir=""
 ## create and run data_volumes container 
 ##--------------------------------------------------##
 
-  volumes_container=$(sudo docker run \
+  volumes_container() {
+		      host_vol_dir=${1}
+		      sudo docker run \
 		      -d \
 		      -P \
 		      -v ${host_vol_dir}/fastq_raw:/home/pipeman/fastq_raw \
@@ -17,9 +19,9 @@ host_vol_dir=""
 		      -v ${host_vol_dir}/ngs_projects:/home/pipeman/ngs_projects \
 		      -v ${host_vol_dir}/ngseasy_scripts:/home/pipeman/ngseasy_scripts \
 		      --name data_volumes \
-		      -t compbio/ngseasy-base:v1.0 )
+		      -t compbio/ngseasy-base:v1.0}
   # run it
-  ${volumes_container}
+  volumes_container <HOST DIRECTORY>
 
 ##--------------------------------------------------##
 ## NGSeasy 
