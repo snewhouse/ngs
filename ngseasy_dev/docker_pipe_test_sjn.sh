@@ -46,6 +46,14 @@ do
     esac
 done
 
+#check exists.
+  if [[ ! -e ${host_vol_dir} ]] 
+  then
+	  echo " ${host_vol_dir} does not exist "
+	  usage;
+	  exit 1;
+  fi
+  
 # make dirs
 run_ngseasy_make_dirs.sh ${config_tsv} ${host_vol_dir} 
 
