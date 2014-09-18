@@ -116,7 +116,7 @@ sudo docker run \
 -P \
 --name fastqc_and_trim \
 --volumes-from volumes_container \
--t compbio/ngseasy-fastqc:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ea-ngs.sh /home/pipeman/ngs_projects/${config_tsv}
+-t compbio/ngseasy-fastqc:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_fastqc_pre_trimm.sh /home/pipeman/ngs_projects/${config_tsv}
 
 }
 
@@ -170,7 +170,7 @@ sudo docker run \
 -P \
 --name fastqc_and_trim \
 --volumes-from volumes_container \
--t compbio/ngseasy-fastqc:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ea-ngs.sh /home/pipeman/ngs_projects/${config_tsv}
+-t compbio/ngseasy-fastqc:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_trimmomatic.sh /home/pipeman/ngs_projects/${config_tsv}
 
 }
 
@@ -179,6 +179,56 @@ sudo docker run \
 ## NGSeasy: FastQC Post-Trimmomatic
 ##--------------------------------------------------##
 
+fastqc_post () {
+#usage printing func
+  usage()
+  {
+  cat << EOF
+  This script sets up the NGSeasy docker fastqc container:
+  See NGSEasy containerized instructions.
+
+  ARGUMENTS:
+  -h      Flag: Show this help message
+  -c      NGSeasy project and run configureation file
+  EXAMPLE USAGE:
+  fastqc_pre -c config.file.tsv
+EOF 
+}
+
+#get options for command line args
+  while  getopts "h:c:" opt
+  do
+
+      case ${opt} in
+	  h)
+	  usage #print help
+	  exit 0
+	  ;;
+	  
+	  c)
+	  config_tsv=${OPTARG}
+	  ;;
+
+      esac
+  done
+
+#check exists.
+  if [[ ! -e ${config_tsv} ]] 
+  then
+	  echo " ${config_tsv} does not exist "
+	  usage;
+	  exit 1;
+  fi
+
+#run compbio/ngseasy-fastq
+sudo docker run \
+-d \
+-P \
+--name fastqc_and_trim \
+--volumes-from volumes_container \
+-t compbio/ngseasy-fastqc:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_fastqc_post_trimm.sh /home/pipeman/ngs_projects/${config_tsv}
+
+}
 
 
 
