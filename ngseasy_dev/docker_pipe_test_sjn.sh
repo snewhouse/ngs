@@ -119,13 +119,9 @@ sudo docker run \
 
 }
 
-
-
-
-
-
-### run it
-  ${fastqc_and_trim}    
+##--------------------------------------------------##
+## NGSeasy: FastQC Trimmomatic
+##--------------------------------------------------##
 
 ### trimming YES or No  
   fastq_trimm=$(sudo docker run \
@@ -135,65 +131,45 @@ sudo docker run \
 		    --volumes-from volumes_container \
 		    -t compbio/ngseasy-fastqc:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ea-ngs.sh /home/pipeman/ngs_projects/${config_tsv}
 		    )
+
   
-### run it
-  ${fastq_trimm}  
-  
-  
-#### NOTES
-## These are the pipeline steps
+#### NOTES ##########################################################################################################
+## These are the pipeline steps/functions to call
 
 fastqc_pre
 fastq_trimm
 fastq_post
-alignment
+aln_novo
+aln_stampy
+aln_bwa
+aln_bowtie2
+aln_gem
+aln_gsnap
+aln_mrsfast
+aln_mrfast
 add_read_group
 mark_dupes
 gatk_clean
+gatk_realn
+gatk_recal
 alignment_qc
 var_call
+var_call_freebayes
+var_call_platypus
+var_call_gath_hc
+var_call_ensembl
 sv_call
+sv_call_delly
+sv_call_lumpy
+sv_call_ensembl
 var_anno
+var_anno_annovar
+var_anno_snpEff
+var_anno_ensembl
 ngs_reports
 
   
   
-### Alignment 
-  aln_novo=$(sudo docker  run -i -t compbio/)
-  aln_stampy=$(sudo docker  run -i -t compbio/)
-  aln_bwa=$(sudo docker  run -i -t compbio/)
-  aln_bowtie2=$(sudo docker  run -i -t compbio/)
-  aln_gem=$(sudo docker  run -i -t compbio/)
-  aln_gsnap=$(sudo docker  run -i -t compbio/)
-  aln_mrsfast=$(sudo docker  run -i -t compbio/)
-  aln_mrfast=$(sudo docker  run -i -t compbio/)
-
-
-## Add read groups
-  add_read_group=$(sudo docker  run -i -t compbio/)
-
-## MarkDuplicates
-  mark_dupes=$(sudo docker  run -i -t compbio/)
-
-
-### GATK Clean YES or NO
-  gatk_clean=$(sudo docker  run -i -t compbio/)
-
-### Alignment QC
-  alignment_qc=$(sudo docker  run -i -t compbio/)
-
-
-### SNV Calling
-  var_call=$(sudo docker  run -i -t compbio/) # call all 3 haplotype based callers - GATK, Freebayes and Platypus - consenus as truth for GATK variant recalibration routine
-
-### SV Calling
-  sv_call=$(sudo docker  run -i -t compbio/)
-
-### Variant Annotation
-  var_anno=$(sudo docker  run -i -t compbio/)
-
-### Report Summaries 
-
 
 ##--------------------------------------------------##
 ## END ALL CONTAINERS 
