@@ -23,6 +23,7 @@ volumes_container() {
   EXAMPLE USAGE:
   volumes_container -d /media/D/docker_ngs/ngseasy/
 EOF 
+}
 
 #get options for command line args
   while  getopts "h:d:" opt
