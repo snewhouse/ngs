@@ -1,5 +1,14 @@
 #!/bin/bash
 
+## TO DO:-
+
+run_ea-ngs.sh at each step is s bash script to perfom NGSeasy step 
+run_ea-ngs.sh needs to be copied to a number of worker ngseasy_scripts
+eg
+run_ea-ngs.sh > run_ngseay_fastqc_pre_aln.sh
+run_ea-ngs.sh > run_ngseay_trimmomatic.sh
+run_ea-ngs.sh > run_ngseay_fastqc_post_trimmomatic.sh
+
 ##--------------------------------------------------##
 ## create and run data_volumes container 
 ##--------------------------------------------------##
@@ -66,8 +75,6 @@ EOF
 ## NGSeasy: FastQC Pre-Alignment
 ##--------------------------------------------------##
 
-### fastqc YES or No
-
 fastqc_pre () {
 #usage printing func
   usage()
@@ -123,18 +130,71 @@ sudo docker run \
 ## NGSeasy: FastQC Trimmomatic
 ##--------------------------------------------------##
 
-### trimming YES or No  
-  fastq_trimm=$(sudo docker run \
-		    -d \
-		    -P \
-		    --name fastqc_and_trim \
-		    --volumes-from volumes_container \
-		    -t compbio/ngseasy-fastqc:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ea-ngs.sh /home/pipeman/ngs_projects/${config_tsv}
-		    )
+fastq_trimm () {
+#usage printing func
+  usage()
+  {
+  cat << EOF
+  This script sets up the NGSeasy docker fastqc Trimmomatic container:
+  See NGSEasy containerized instructions.
+
+  ARGUMENTS:
+  -h      Flag: Show this help message
+  -c      NGSeasy project and run configureation file
+  EXAMPLE USAGE:
+  fastqc_pre -c config.file.tsv
+EOF 
+}
+
+#get options for command line args
+  while  getopts "h:c:" opt
+  do
+
+      case ${opt} in
+	  h)
+	  usage #print help
+	  exit 0
+	  ;;
+	  
+	  c)
+	  config_tsv=${OPTARG}
+	  ;;
+
+      esac
+  done
+
+#check exists.
+  if [[ ! -e ${config_tsv} ]] 
+  then
+	  echo " ${config_tsv} does not exist "
+	  usage;
+	  exit 1;
+  fi
+
+sudo docker run \
+-d \
+-P \
+--name fastqc_and_trim \
+--volumes-from volumes_container \
+-t compbio/ngseasy-fastqc:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ea-ngs.sh /home/pipeman/ngs_projects/${config_tsv}
+
+}
+
+
+##--------------------------------------------------##
+## NGSeasy: FastQC Post-Trimmomatic
+##--------------------------------------------------##
+
+
+
 
   
 #### NOTES ##########################################################################################################
 ## These are the pipeline steps/functions to call
+
+need a routines to chekc input and output of each step
+if IN exits then DO FUN else exit
+if OUTPUT from last step exists then do next step else run previous step or exit
 
 fastqc_pre
 fastq_trimm
