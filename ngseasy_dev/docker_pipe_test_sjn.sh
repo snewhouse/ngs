@@ -1,9 +1,5 @@
 #!/bin/bash
 
-
-config_tsv=""
-host_vol_dir=""
-
 ##--------------------------------------------------##
 ## create and run data_volumes container 
 ##--------------------------------------------------##
@@ -45,7 +41,7 @@ EOF
 #check exists.
   if [[ ! -e ${host_vol_dir} ]] 
   then
-	  echo " ${host_vol_dir}does not exist "
+	  echo " ${host_vol_dir} does not exist "
 	  usage;
 	  exit 1;
   fi
@@ -67,18 +63,66 @@ EOF
   
 
 ##--------------------------------------------------##
-## NGSeasy 
+## NGSeasy: FastQC Pre-Alignment
 ##--------------------------------------------------##
 
 ### fastqc YES or No
 
-  fastqc_pre=$(sudo docker run \
-		    -d \
-		    -P \
-		    --name fastqc_and_trim \
-		    --volumes-from volumes_container \
-		    -t compbio/ngseasy-fastqc:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ea-ngs.sh /home/pipeman/ngs_projects/${config_tsv}
-		    )
+fastqc_pre () {
+#usage printing func
+  usage()
+  {
+  cat << EOF
+  This script sets up the docker volumes container:
+  See NGSEasy containerized instructions.
+
+  ARGUMENTS:
+  -h      Flag: Show this help message
+  -d      Base directory for (fastq_raw, reference_genomes_b37, gatk_resources, ngs_projects, ngseasy_scripts)
+  EXAMPLE USAGE:
+  fastqc_pre -c config.file.tsv
+EOF 
+}
+
+#get options for command line args
+  while  getopts "h:c:" opt
+  do
+
+      case ${opt} in
+	  h)
+	  usage #print help
+	  exit 0
+	  ;;
+	  
+	  c)
+	  config_tsv=${OPTARG}
+	  ;;
+
+      esac
+  done
+
+#check exists.
+  if [[ ! -e ${config_tsv} ]] 
+  then
+	  echo " ${config_tsv} does not exist "
+	  usage;
+	  exit 1;
+  fi
+
+#run compbio/ngseasy-fastq
+sudo docker run \
+-d \
+-P \
+--name fastqc_and_trim \
+--volumes-from volumes_container \
+-t compbio/ngseasy-fastqc:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ea-ngs.sh /home/pipeman/ngs_projects/${config_tsv}
+
+}
+
+
+
+
+
 
 ### run it
   ${fastqc_and_trim}    
