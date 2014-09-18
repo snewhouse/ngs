@@ -136,7 +136,7 @@ fastq_trimm () {
   -h      Flag: Show this help message
   -c      NGSeasy project and run configureation file
   EXAMPLE USAGE:
-  fastqc_pre -c config.file.tsv
+  fastq_trimm -c config.file.tsv
 EOF 
 }
 
@@ -191,7 +191,7 @@ fastqc_post () {
   -h      Flag: Show this help message
   -c      NGSeasy project and run configureation file
   EXAMPLE USAGE:
-  fastqc_pre -c config.file.tsv
+  fastqc_post -c config.file.tsv
 EOF 
 }
 
@@ -230,8 +230,68 @@ sudo docker run \
 
 }
 
+##--------------------------------------------------##
+## NGSeasy: FastQC aln_novo
+##--------------------------------------------------##
+
+aln_novo () {
+#usage printing func
+  usage()
+  {
+  cat << EOF
+  This script sets up the NGSeasy docker novoalign container:
+  See NGSEasy containerized instructions.
+
+  ARGUMENTS:
+  -h      Flag: Show this help message
+  -c      NGSeasy project and run configureation file
+  EXAMPLE USAGE:
+  aln_novo -c config.file.tsv
+EOF 
+}
+
+#get options for command line args
+  while  getopts "h:c:" opt
+  do
+
+      case ${opt} in
+	  h)
+	  usage #print help
+	  exit 0
+	  ;;
+	  
+	  c)
+	  config_tsv=${OPTARG}
+	  ;;
+
+      esac
+  done
+
+#check exists.
+  if [[ ! -e ${config_tsv} ]] 
+  then
+	  echo " ${config_tsv} does not exist "
+	  usage;
+	  exit 1;
+  fi
+
+#run compbio/ngseasy-fastq
+sudo docker run \
+-d \
+-P \
+--name fastqc_and_trim \
+--volumes-from volumes_container \
+-t compbio/ngseasy-novoalign:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_novoalign.sh /home/pipeman/ngs_projects/${config_tsv}
+
+}
 
 
+
+
+
+##--------------------------------------------------##
+## NGSeasy: FastQC aln_bowtie2
+##--------------------------------------------------##
   
 #### NOTES ##########################################################################################################
 ## These are the pipeline steps/functions to call
