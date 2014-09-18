@@ -231,7 +231,7 @@ sudo docker run \
 }
 
 ##--------------------------------------------------##
-## NGSeasy: FastQC aln_novo
+## NGSeasy: aln_novo
 ##--------------------------------------------------##
 
 aln_novo () {
@@ -286,12 +286,68 @@ sudo docker run \
 }
 
 
-
-
-
 ##--------------------------------------------------##
-## NGSeasy: FastQC aln_bowtie2
+## NGSeasy: aln_bowtie2
 ##--------------------------------------------------##
+
+aln_bowtie2 () {
+
+#usage printing func
+  usage()
+  {
+  cat << EOF
+  This script sets up the NGSeasy docker novoalign container:
+  See NGSEasy containerized instructions.
+
+  ARGUMENTS:
+  -h      Flag: Show this help message
+  -c      NGSeasy project and run configureation file
+  EXAMPLE USAGE:
+  aln_bowtie2 -c config.file.tsv
+EOF 
+}
+
+#get options for command line args
+  while  getopts "h:c:" opt
+  do
+
+      case ${opt} in
+	  h)
+	  usage #print help
+	  exit 0
+	  ;;
+	  
+	  c)
+	  config_tsv=${OPTARG}
+	  ;;
+
+      esac
+  done
+
+#check exists.
+  if [[ ! -e ${config_tsv} ]] 
+  then
+	  echo " ${config_tsv} does not exist "
+	  usage;
+	  exit 1;
+  fi
+
+#run compbio/ngseasy-fastq
+sudo docker run \
+-d \
+-P \
+--name aln_bowtie2 \
+--volumes-from volumes_container \
+-t compbio/ngseasy-novoalign:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_bowtie2.sh /home/pipeman/ngs_projects/${config_tsv}
+
+
+
+
+}
+
+
+
+
   
 #### NOTES ##########################################################################################################
 ## These are the pipeline steps/functions to call
