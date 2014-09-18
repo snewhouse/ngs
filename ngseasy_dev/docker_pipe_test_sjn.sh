@@ -405,11 +405,14 @@ sudo docker run \
 #### NOTES ##########################################################################################################
 ## These are the pipeline steps/functions to call
 
-need a routines to chekc input and output of each step
-if IN exits then DO FUN else exit
-if OUTPUT from last step exists then do next step else run previous step or exit
+# need a routines to chekc input and output of each step
+# if IN exits then DO FUN else exit
+# if OUTPUT from last step exists then do next step else run previous step or exit
 
 run_ngseasy_make_dirs.sh # this is based on run_ea-ngs.sh https://github.com/KHP-Informatics/ngs/blob/dev2/ngseasy_scripts/run_ea-ngs.sh
+
+# at each stage check for sample and project dir and input required
+# check if output alread exists and exit if it does then move on 
 
 fastqc_pre
 fastq_trimm
