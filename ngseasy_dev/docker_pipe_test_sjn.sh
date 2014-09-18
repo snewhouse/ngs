@@ -41,6 +41,14 @@ EOF
       esac
   done
 
+#check exists.
+  if [[ ! -e ${host_vol_dir} ]] 
+  then
+	  echo " ${host_vol_dir}does not exist "
+	  usage;
+	  exit 1;
+  fi
+
 #run docker image  
   host_vol_dir=${1}
   sudo docker run \
