@@ -51,7 +51,6 @@ EOF
   fi
 
 #run docker image  
-  host_vol_dir=${1}
   sudo docker run \
   -d \
   -P \
