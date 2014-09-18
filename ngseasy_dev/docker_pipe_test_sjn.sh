@@ -114,7 +114,7 @@ EOF
 sudo docker run \
 -d \
 -P \
---name fastqc_and_trim \
+--name fastqc_pre \
 --volumes-from volumes_container \
 -t compbio/ngseasy-fastqc:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_fastqc_pre_trimm.sh /home/pipeman/ngs_projects/${config_tsv}
 
@@ -168,7 +168,7 @@ EOF
 sudo docker run \
 -d \
 -P \
---name fastqc_and_trim \
+--name fastq_trimm \
 --volumes-from volumes_container \
 -t compbio/ngseasy-fastqc:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_trimmomatic.sh /home/pipeman/ngs_projects/${config_tsv}
 
@@ -224,7 +224,7 @@ EOF
 sudo docker run \
 -d \
 -P \
---name fastqc_and_trim \
+--name fastqc_post \
 --volumes-from volumes_container \
 -t compbio/ngseasy-fastqc:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_fastqc_post_trimm.sh /home/pipeman/ngs_projects/${config_tsv}
 
@@ -279,7 +279,7 @@ EOF
 sudo docker run \
 -d \
 -P \
---name fastqc_and_trim \
+--name aln_novo \
 --volumes-from volumes_container \
 -t compbio/ngseasy-novoalign:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_novoalign.sh /home/pipeman/ngs_projects/${config_tsv}
 
