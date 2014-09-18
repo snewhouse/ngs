@@ -25,9 +25,9 @@ host_vol_dir=""
 ## NGSeasy 
 ##--------------------------------------------------##
 
-### fastqc and trimming YES or No
+### fastqc YES or No
 
-  fastqc_and_trim=$(sudo docker run \
+  fastqc_pre=$(sudo docker run \
 		    -d \
 		    -P \
 		    --name fastqc_and_trim \
@@ -38,10 +38,36 @@ host_vol_dir=""
 ### run it
   ${fastqc_and_trim}    
 
+### trimming YES or No  
+  fastq_trimm=$(sudo docker run \
+		    -d \
+		    -P \
+		    --name fastqc_and_trim \
+		    --volumes-from volumes_container \
+		    -t compbio/ngseasy-fastqc:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ea-ngs.sh /home/pipeman/ngs_projects/${config_tsv}
+		    )
   
+### run it
+  ${fastq_trimm}  
+  
+  
+#### NOTES
+## These are the pipeline steps
+
+fastqc_pre
+fastq_trimm
+fastq_post
+alignment
+add_read_group
+mark_dupes
+gatk_clean
+alignment_qc
+var_call
+sv_call
+var_anno
+ngs_reports
 
   
-
   
 ### Alignment 
   aln_novo=$(sudo docker  run -i -t compbio/)
