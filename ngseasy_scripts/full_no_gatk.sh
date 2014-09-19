@@ -516,6 +516,7 @@ echo " NGSeasy: START SNP and Small INDEL Calling " `date`
 echo "................................................"
 echo ""
 
+
 if [ "${VARCALLER}" == "freebayes" ]
 then
 
@@ -564,10 +565,15 @@ then
 	  
 elif [ "${VARCALLER}" == "gatk_ug" ]
 then
+#filter bam files paired FILTER IF BWA AND IF CALLING IS USING GATK HC
+ /usr/local/pipeline/samtools/samtools view -b -h -q 20 -F 1796 ${SOUT}/alignments/${BAM_PREFIX}.bam  > ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam 
+ /usr/local/pipeline/samtools/samtools index ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam;
+ cp -v ${SOUT}/alignments/${BAM_PREFIX}.filtered.bai ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam.bai;
+
   # UnifiedGenotyper EMIT_ALL_CONFIDENT_SITES
   echo " NGSeasy: Running GATK UnifiedGenotyper " `date`
   java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T UnifiedGenotyper -R ${REFGenomes}/human_g1k_v37.fasta -nct ${NCPU} \
-  -I ${SOUT}/alignments/${BAM_PREFIX}.bam \
+  -I ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam \
   -o ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf \
   -stand_call_conf 30 \
   -stand_emit_conf 10 \
@@ -605,9 +611,13 @@ then
 elif [ "${VARCALLER}" == "gatk_hc" ]
 then 
   echo " NGSeasy: Running GATK HaplotypeCaller THIS TAKES A LOOOONG TIME " `date`
+   /usr/local/pipeline/samtools/samtools view -b -h -q 20 -F 1796 ${SOUT}/alignments/${BAM_PREFIX}.bam  > ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam 
+ /usr/local/pipeline/samtools/samtools index ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam;
+ cp -v ${SOUT}/alignments/${BAM_PREFIX}.filtered.bai ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam.bai;
+
   ## HaplotypeCaller Standard EMIT_ALL_CONFIDENT_SITES EMIT_VARIANTS_ONLY
   java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T HaplotypeCaller -R ${REFGenomes}/human_g1k_v37.fasta -nct ${NCPU} \
-  -I ${SOUT}/alignments/${BAM_PREFIX}.bam \
+  -I ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam \
   -o ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf \
   -stand_call_conf 30 \
   -stand_emit_conf 10 \
@@ -645,9 +655,12 @@ then
 elif [ "${VARCALLER}" == "gatk_hc_gvcf" ]
 then
   echo " NGSeasy: Running GATK HaplotypeCaller GVCF THIS TAKES A VERY LOOOONG TIME" `date` 
+     /usr/local/pipeline/samtools/samtools view -b -h -q 20 -F 1796 ${SOUT}/alignments/${BAM_PREFIX}.bam  > ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam 
+ /usr/local/pipeline/samtools/samtools index ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam;
+ cp -v ${SOUT}/alignments/${BAM_PREFIX}.filtered.bai ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam.bai;
   ## HaplotypeCaller GVCF
   java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T HaplotypeCaller -R ${REFGenomes}/human_g1k_v37.fasta -nct ${NCPU} \
-  -I ${SOUT}/alignments/${BAM_PREFIX}.bam \
+  -I ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam \
   -o ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.g.vcf \
   -stand_call_conf 30 \
   -stand_emit_conf 10 \

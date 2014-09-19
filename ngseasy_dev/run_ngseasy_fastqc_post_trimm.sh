@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# run_ngseasy_trimmomatic.sh
+# run_ngseasy_fastqc_pre_trimm.sh 
 
 config_tsv=${1}
 
@@ -15,7 +15,7 @@ usage()
   -h      Flag: Show this help message
   -c      NGSeasy project and run configureation file
   EXAMPLE USAGE:
-  bash run_ngseasy_trimmomatic.sh <config.file.tsv>
+  bash run_ngseasy_fastqc_pre_trimm.sh <config.file.tsv>
 EOF 
 }
 
@@ -61,9 +61,10 @@ do
   echo " NGSeasy: Setting BAM_PREFIX directory [$BAM_PREFIX]"
 
 #-------------------------------------------------------------------#
+
 #OUTPUT SAMPLE DIR
  SOUT=${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}
- 
+
 if [ ! -e ${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID} ]
 then
   echo " NGSeasy: Cant Find Project directory. This is then end. Please Stop and check everything is ok " `date`
@@ -72,24 +73,6 @@ then
 else 
   echo " NGSeasy: Setting OUTPUT directory [${SOUT}]"
 fi
-
-#-------------------------------------------------------------------#
-#check fot fastq files to sample directory
-if [ ! -s ${SOUT}/fastq/${FASTQ1} ] && [ ! -s ${SOUT}/fastq/${FASTQ2} ]
-then
-  echo " NGSeasy: Cant find fastq files from ${FASTQDIR}/ in ${SOUT}/fastq/ " `date`
-  exit 1
-else
-  echo " NGSeasy: Fastq Files exist in  ${SOUT}/fastq/ " `date`
-fi
-
-#-------------------------------------------------------------------#
-#set new names for copied fastq files
-  rawFASTQ1=`basename ${SOUT}/fastq/${FASTQ1} _1.fq.gz`
-  rawFASTQ2=`basename ${SOUT}/fastq/${FASTQ2} _2.fq.gz`
-    
-echo " NGSeasy: Fastq Basename : [$rawFASTQ1] "
-
 #-------------------------------------------------------------------#
 
 # Trimmomatic paired output
@@ -102,24 +85,6 @@ echo " NGSeasy: Fastq Basename : [$rawFASTQ1] "
 # if qc'd files exits then skip this step
 if [ ! -s ${qcdPeFASTQ1} ] && [ ! -s ${qcdPeFASTQ2} ]
 then
-
-  # skip next step if using novoalign or ya really cant be bothered - saves about an hour
-  echo " NGSeasy: Running Trimmomatic: A flexible read trimming tool for NGS data " `date`
-
-    # run Trimmomatic
-    java -jar /usr/local/pipeline/Trimmomatic-0.32/trimmomatic-0.32.jar PE \
-    -threads ${NCPU} \
-    -phred33 \
-    -trimlog ${SOUT}/fastq/trimm_qc.log \
-    ${SOUT}/fastq/${rawFASTQ1}_1.fq.gz ${SOUT}/fastq/${rawFASTQ2}_2.fq.gz \
-    ${qcdPeFASTQ1} ${qcdSeFASTQ1} \
-    ${qcdPeFASTQ2} ${qcdSeFASTQ2} \
-    ILLUMINACLIP:${adapter_fa}:2:30:10:5:true \
-    LEADING:3 \
-    TRAILING:3 \
-    SLIDINGWINDOW:4:15 \
-    MINLEN:50
-
   echo " NGSeasy: Run Pre-Alignment QC on Filtered/Trimmed Fastq files " `date`
     # FASTQC on paired trimmed files
 
@@ -129,14 +94,16 @@ then
     --quiet \
     --dir ${SOUT}/tmp \
     --outdir ${SOUT}/fastq \
-    ${qcdPeFASTQ1} ${qcdPeFASTQ2};    
+    ${qcdPeFASTQ1} ${qcdPeFASTQ2};
+
 else
   echo " NGSeasy: QC'd Fastq files Already Exist " `date`
   echo "................................................"
   zcat ${qcdPeFASTQ1} | head -4
   echo "................................................"
 fi
-    
-    
+
 done < ${config_file}
+
+
 
