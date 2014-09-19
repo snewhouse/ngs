@@ -1,7 +1,7 @@
 NGSeasy
 ======================================
 
-# Getting and Setting up NGSeasy
+Getting and Setting up NGSeasy
 ***********************************
 
 ## Get NGSeasy & Resources
@@ -13,25 +13,48 @@ NGSeasy
 ## Local Machine Set Up
 
 ```
-source /mendia/NGSeasy/nsg/ngseasy_scripts/ngseasy_functions
+source /media/D/NGSeasy/nsg/ngseasy_scripts/ngseasy_functions
 ```
 
-# Running a full pipeline from fastq to raw SNP/INDEL calls
-**************************************************************
+- Windows
+- Mac
 
-## Step 1. 
-initiate_project -c config.file.tsv -d /media/D/docker_ngs/ngseasy/
+***********************************
 
-## Step 2.1 Manual Calling 
+Running a full pipeline from fastq to raw SNP/INDEL calls
+-----------------------------------------------------------------------
 
-## Step 2.2 Run Scritps
+## Step 1. Initiate NGSeasy Project
+initiate_project -c /media/D/docker_ngs/ngseasy/config.file.tsv -d /media/D/docker_ngs/ngseasy/
 
-# Runing NGSeasy Production Suite (AGENTS + DOCKER)
-**************************************************************
+## Step 2. Start Volumes Container
+volumes_container -d /media/D/docker_ngs/ngseasy/
 
+## Step 3.1 NGS Pipeline : Manual Calling (with gatk cleaning)
 
-# Runing NGSeasy Production Suite (AGENTS + DOCKER)
-**************************************************************
+## Step 3.2 NGS Pipeline : Run Script (no gatk cleaning)
 
-# Runing NGSeasy Annotation
-**************************************************************
+## Step 3.4 NGS Pipeline : Run Script (with gatk cleaning)
+
+***********************************
+
+Running aspects of the pipeline
+-----------------------------------------------------------------------
+
+***********************************
+
+Runing NGSeasy Production Suite (AGENTS + DOCKER)
+---------------------------------------------------
+
+***********************************
+
+Runing NGSeasy Production Suite (AGENTS + DOCKER)
+---------------------------------------------------------
+
+***********************************
+
+Runing NGSeasy Annotation
+-------------------------------
+
+***********************************
+

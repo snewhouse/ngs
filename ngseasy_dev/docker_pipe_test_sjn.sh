@@ -252,8 +252,7 @@ EOF
   -t compbio/ngseasy-base:v1.0
 }
 
-# run it
-  
+ 
 
 ##--------------------------------------------------##
 ## NGSeasy: FastQC Pre-Alignment
@@ -653,12 +652,6 @@ sudo docker run \
 # if IN exits then DO FUN else exit
 # if OUTPUT from last step exists then do next step else run previous step or exit
 
-source ~/ngseasy_scripts/ngseasy_functions
-
-# Step 1.
-initiate_project -c config.file.tsv -d /media/D/docker_ngs/ngseasy/
-
-# Step 2. 
 
 
 # at each stage check for sample and project dir and input required
