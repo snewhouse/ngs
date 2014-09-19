@@ -279,7 +279,7 @@ echo " NGSeasy: Basic $ALIGNER Complete " `date`
 
 echo " NGSeasy: START AddOrReplaceReadGroups " `date`
 
-if [ ! -e ${SOUT}/alignments/${BAM_PREFIX}.addrg.bam ]
+if [ ! -e ${SOUT}/alignments/${BAM_PREFIX}.bam ]
 then
 echo " NGSeasy: Adding Read Group Information " `date`
 echo " NGSeasy: Getting Platform Unit Information "  `date`
@@ -321,7 +321,7 @@ echo " NGSeasy: Marking Duplicate Reads " `date`
   METRICS_FILE=${SOUT}/reports/${BAM_PREFIX}.dupemk_metrics;
 fi
 
-  # FindCoveredIntervals: these are used in GATK Calling to help speed things up
+# FindCoveredIntervals: these are used in GATK Calling to help speed things up
 
 echo " NGSeasy: START FindCoveredIntervals " `date`  
 if [ ! -s ${SOUT}/reports/${BAM_PREFIX}.CoveredIntervals_x4.list ]
