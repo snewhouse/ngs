@@ -523,7 +523,7 @@ echo " NGSeasy: Starting Variant Calling using Freebayes " `date`
   /usr/local/pipeline/freebayes/bin/freebayes \
     -f ${REFGenomes}/human_g1k_v37.fasta \
     -b ${SOUT}/alignments/${BAM_PREFIX}.bam \
-    --min-coverage 4 \
+    --min-coverage 10 \
     --min-mapping-quality 30 \
     --min-base-quality 20 \
     --genotype-qualities > ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ;
@@ -535,7 +535,7 @@ elif [ "${VARCALLER}" == "platypus" ]
 then
 
   echo " NGSeasy: Starting Variant Calling using Platypus " `date`
-    if [ ${NGS_TYPE} == "TGS" ]
+    if [ "${NGS_TYPE}" == "TGS" ] || [ "${NGS_TYPE}" == "WEX" ]
     then
     echo " NGSeasy: NGS_TYPE is Targeted so no duplicate filtering  " `date`
     # for exome/whole genome data no duplicate filtering
@@ -544,7 +544,7 @@ then
       --bamFiles=${SOUT}/alignments/${BAM_PREFIX}.bam \
       --refFile=${REFGenomes}/human_g1k_v37.fasta \
       --output=${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf \
-      --filterDuplicates=0;
+      --filterDuplicates=0 --minReads=10 --minMapQual=30 --minBaseQual=20;
       
   # copy vcf to cohort vcf directory
   cp -v ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
@@ -554,14 +554,15 @@ then
 	  --nCPU ${NCPU} \
 	  --bamFiles=${SOUT}/alignments/${BAM_PREFIX}.bam \
 	  --refFile=${REFGenomes}/human_g1k_v37.fasta \
-	  --output=${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf;
+	  --output=${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf \
+	  --filterDuplicates=1 --minReads=10 --minMapQual=30 --minBaseQual=20;
 	  
 	    # copy vcf to cohort vcf directory
   cp -v ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
   
     fi
 	  
-elif [ ${VARCALLER} == "gatk_ug" ]
+elif [ "${VARCALLER}" == "gatk_ug" ]
 then
   # UnifiedGenotyper EMIT_ALL_CONFIDENT_SITES
   echo " NGSeasy: Running GATK UnifiedGenotyper " `date`
@@ -571,7 +572,7 @@ then
   -stand_call_conf 30 \
   -stand_emit_conf 10 \
   --dbsnp ${KNOWN_SNPS_b138} \
-  -dcov 250 -minPruning 4 \
+  -dcov 250 -minPruning 10 \
   --unsafe ALL \
   --genotype_likelihoods_model BOTH \
   --genotyping_mode DISCOVERY \
@@ -611,7 +612,7 @@ then
   -stand_call_conf 30 \
   -stand_emit_conf 10 \
   --dbsnp ${KNOWN_SNPS_b138} \
-  -dcov 250 -minPruning 4 \
+  -dcov 250 -minPruning 10 \
   --unsafe ALL \
   -pairHMM VECTOR_LOGLESS_CACHING \
   --genotyping_mode DISCOVERY \
@@ -641,7 +642,7 @@ then
   # copy vcf to cohort vcf directory
   cp -v ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
   
-elif [ ${VARCALLER} == "gatk_hc_gvcf" ]
+elif [ "${VARCALLER}" == "gatk_hc_gvcf" ]
 then
   echo " NGSeasy: Running GATK HaplotypeCaller GVCF THIS TAKES A VERY LOOOONG TIME" `date` 
   ## HaplotypeCaller GVCF
@@ -651,7 +652,7 @@ then
   -stand_call_conf 30 \
   -stand_emit_conf 10 \
   --dbsnp ${KNOWN_SNPS_b138} \
-  -dcov 250 -minPruning 4 \
+  -dcov 250 -minPruning 10 \
   --unsafe ALL \
   -pairHMM VECTOR_LOGLESS_CACHING \
   --emitRefConfidence GVCF \
