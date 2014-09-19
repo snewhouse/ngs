@@ -653,7 +653,13 @@ sudo docker run \
 # if IN exits then DO FUN else exit
 # if OUTPUT from last step exists then do next step else run previous step or exit
 
-run_ngseasy_make_dirs.sh # this is based on run_ea-ngs.sh https://github.com/KHP-Informatics/ngs/blob/dev2/ngseasy_scripts/run_ea-ngs.sh
+source ~/ngseasy_scripts/ngseasy_functions
+
+# Step 1.
+initiate_project -c config.file.tsv -d /media/D/docker_ngs/ngseasy/
+
+# Step 2. 
+
 
 # at each stage check for sample and project dir and input required
 # check if output alread exists and exit if it does then move on 
