@@ -6,6 +6,12 @@
             "RGLB": "TAS",
             "RGDS": "redcell_baitCapture"
         },
+        "cancertest": {
+            "RGCN": "MolPath",
+            "RGPL": "ILLUMINA",
+            "RGLB": "TAS",
+            "RGDS": "cancer_baitCapture"
+        },
         "test": {
             "RGCN": "MolPath",
             "RGPL": "ILLUMINA",
@@ -38,6 +44,37 @@
                 "LEADING:3",
                 "TRAILING:3",
                 "SLIDINGWINDOW:4:15",
+                "MINLEN:36"],
+            "aligner": "bowtie2",
+            "rmdup": false
+        },
+        "cancertest": {
+            "tas": {
+                "covered_bed":"/Users/dbrawand/ngs/pEasy/tas/test_covered.bed",
+                "bait_intervals":"/Users/dbrawand/ngs/pEasy/tas/test_baits.intervals",
+                "target_intervals":"/Users/dbrawand/ngs/pEasy/tas/test_targets.intervals"
+            },
+            "wgs": { },
+            "exo": { },
+            "variantfilter": {
+                "UG": "QUAL<10 && %MIN(DP)<60 && %AVG(GQ[*])<30 && AC>10 && AF>0.1",
+                "HC": "QUAL<10 && %MIN(DP)<60 && %AVG(GQ[*])<30 && AC>10 && AF>0.1",
+                "PL": "QUAL<10 && %MIN(TR)<60 && %AVG(GQ[*])<30 && AC>10 && AF>0.1 && TR>10",
+                "ST": "QUAL<10 && %MIN(DP)<60 && AC>10 && AF>0.1",
+                "FB": "QUAL<10 && %MIN(DP)<60 && AC>10 && AF>0.1"
+            },
+            "platypus": {
+                "minReads": 30,
+                "filterDuplicates": 0
+            },
+            "freebayes": {
+                "minObs": 5,
+                "useDuplicates": true
+            },
+            "trimmomatic":[
+                "ILLUMINACLIP:/usr/local/pipeline/Trimmomatic-0.32/adapters/TruSeq3-PE-2.fa:2:30:10",
+                "LEADING:3",
+                "TRAILING:3",
                 "MINLEN:36"],
             "aligner": "bowtie2",
             "rmdup": false

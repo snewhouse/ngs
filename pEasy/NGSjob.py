@@ -19,7 +19,6 @@ ReadGroup_SeqCentre_RGCN
 ReadGroup_Desc_RGDS
 ReadGroup_runDate_RGDT
 
-
 AUTOMATIC RGPU (from fastq)
 AUTOMATIC RGID (RGSM.NGStype.NGSanalysis.${DATE})
 AUTOMATIC PE

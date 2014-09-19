@@ -1,4 +1,33 @@
 {
+    "database": {
+        "global": {
+            "sqlhost": "",
+            "sqlport": "",
+            "sqluser": "",
+            "sqlpass": "",
+            "sqldb": ""
+        },
+        "results": {
+            "sqlhost": "",
+            "sqlport": "",
+            "sqluser": "",
+            "sqlpass": "",
+            "sqldb": ""
+        },
+        "variants": {
+            "sqlhost": "",
+            "sqlport": "",
+            "sqluser": "",
+            "sqlpass": "",
+            "sqldb": ""
+        },
+        "qc": {
+
+        },
+        "logging": {
+
+        }
+    },
     "docker": {
         "alignment":"",
         "varcall":""
@@ -9,10 +38,12 @@
         "FB": true,
         "ST": true,
         "PL": true,
-        "gatk": false
+        "gatk": false,
+        "annovar": true,
+        "savant": false,
+        "SV":false
     },
     "path": {
-        "scripts": "/Users/dbrawand/ngs/pEasy/scripts",
         "ngstmp": "/Users/dbrawand/ngs/pEasy/temp",
         "fastq": "/Users/dbrawand/ngs/pEasy/fastq",
         "analysis": "/Users/dbrawand/ngs/pEasy/analysis"
@@ -112,11 +143,19 @@
             "cpu": 4,
             "java_mem": 1
         },
-        "novo": {
+        "novoalign": {
             "cpu": 8,
             "mem": 3
         },
         "bwa": {
+            "cpu": 4,
+            "sge_vmem": 8
+        },
+        "bowtie": {
+            "cpu": 4,
+            "sge_vmem": 8
+        },
+        "bowtie2": {
             "cpu": 4,
             "sge_vmem": 8
         },
@@ -177,6 +216,10 @@
             "mem": 4
         },
         "freebayes": {
+            "cpu": 1,
+            "mem": 4
+        },
+        "delly": {
             "cpu": 1,
             "mem": 4
         }

@@ -20,9 +20,9 @@ def timejob(stream):
             end = time.time()
             elapsed = end - start
             if isinstance(stream,logging.Logger) or isinstance(stream,logging.RootLogger):
-                stream.debug("[TIME] {} took {} seconds\n".format(func.__name__, elapsed))
+                stream.debug("[TIME] {} took {} seconds".format(func.__name__, elapsed))
             else:
-                stream.write("[TIME] {} took {} seconds\n".format(func.__name__, elapsed))
+                stream.write("[TIME] {} took {} seconds".format(func.__name__, elapsed))
         return wrapper
     return actual_time_job
 
@@ -63,7 +63,23 @@ def parsePicard(fh):
     for i, n in indexToName:
         allnames[i+len(allcols)] = n
     allcols.update(cols)
-    return allcols, allnames
+
+
+    # try finding row labels (column with non numeric fields)
+    for i in sorted(allnames.keys()):
+        try:
+            float(allcols[allnames[i]][0])
+        except ValueError:
+            # is not a number => set as row label
+            allrows = allcols[allnames[i]]
+            break
+    # set default if no labels (only print length of rows as in first column)
+    try:
+        allrows
+    except:
+        allrows = ['metric' for x in allcols[allnames[0]]]
+
+    return allcols, allnames, allrows
 
 
 def plot():

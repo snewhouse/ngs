@@ -1,23 +1,99 @@
 {
+    "database": {
+        "global": {
+            "sqlhost": "",
+            "sqlport": "",
+            "sqluser": "",
+            "sqlpass": "",
+            "sqldb": ""
+        },
+        "results": {
+            "sqlhost": "",
+            "sqlport": "",
+            "sqluser": "",
+            "sqlpass": "",
+            "sqldb": ""
+        },
+        "variants": {
+            "sqlhost": "",
+            "sqlport": "",
+            "sqluser": "",
+            "sqlpass": "",
+            "sqldb": ""
+        },
+        "qc": {
+
+        },
+        "logging": {
+
+        }
+    },
+    "docker": {
+        "alignment":"",
+        "varcall":""
+    },
+    "switch": {
+        "HC": true,
+        "UG": true,
+        "FB": true,
+        "ST": true,
+        "PL": true,
+        "gatk": true,
+        "annovar": false,
+        "savant": false,
+        "SV":false
+    },
     "path": {
         "ngstmp": "/home/agulatibrc/workspace/pipelines/ngs/ngs_temp",
-        "fastq": "/home/agulatibrc/workspace/pipelines/ngs/ngs_fastq",
-        "analysis": "/home/agulatibrc/workspace/pipelines/ngs/ngs_project"
+        "fastq": "/isilon_home/bclarkbrc/scratch/data/CRTP_cancer",
+        "analysis": "/home/agulatibrc/workspace/pipelines/ngs/ngs_project",
+
+        "ngstmp": "/Users/dbrawand/ngs/pEasy/temp",
+        "fastq": "/Users/dbrawand/ngs/pEasy/fastq",
+        "analysis": "/Users/dbrawand/ngs/pEasy/analysis"
     },
+
     "software": {
-        "java": "/usr/bin/java",
-        "trimmomatic": "/usr/local/pipeline/Trimmomatic-0.32/trimmomatic-0.32.jar",
-        "picard":   "/usr/local/pipeline/picard-tools-1.115/",
+        "java": "/share/java/latest/bin/java",
+        "picard": "/share/apps/picard-tools_current/",
         "gatk": "/share/apps/gatk_2.7-2",
         "novo": "/share/apps/novocraft_current/bin/",
-        "samtools": "/share/apps/samtools_0.1.18/bin",
-        "annovar": "/isilon/irods_a/datasets_res/Vault/annovar_2013Aug23"
+        "samtools": "/share/apps/samtools_0.1.18/bin/samtools",
+        "fastqc": "/share/apps/fastqc_current/fastqc",
+        "tabix": "/share/bin/tabix",
+        "bgzip":"/share/bin/bgzip",
+        "vcftools": "/share/bin/vcftools",
+        "bcftools": "/share/bin/bcftools",
+        "bedtools": "/share/bin/bedtools",
+        "bowtie2": "/share/bin/bowtie2",
+        "bwa": "/share/bin/bwa",
+        "stampy": "/share/bin/stampy.py",
+        "gatk": "/share/apps/gatk_current/GenomeAnalysisTK.jar",
+        "platypus": "/share/apps/Platypus_current/Platypus.py",
+
+        "trimmomatic": "/usr/local/pipeline/Trimmomatic-0.32/trimmomatic-0.32.jar",
+        "annovar": "/isilon/irods_a/datasets_res/Vault/annovar_2013Aug23",
+
+        "freebayes": "/usr/local/pipeline/freebayes/bin/freebayes",
+        "savant": "/usr/local/pipeline/savant-v1.1.0-complete/savant.py",
+        "annovar": "/usr/local/pipeline/annovar/",
+
+        "novoalign": "/usr/local/pipeline/novoalign/ngsNovoalign",
+        "novo": "/share/apps/novocraft_current/bin/"
     },
     "reference": {
         "genome": {
             "novoindex":"/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/human_g1k_v37.fasta.novoindex",
             "sequence": "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/human_g1k_v37.fasta"
+
+            "stampyindex":"/usr/local/pipeline/genome/chr11",
+            "bwaindex":"/usr/local/pipeline/genome/chr11.fasta",
+            "bowtie2index":"/usr/local/pipeline/genome/chr11",
+            "novoindex":"/usr/local/pipeline/genome/chr11.fa.novoindex",
+            "sequence": "/usr/local/pipeline/genome/chr11.fasta",
+            "dict":  "/usr/local/pipeline/genome/chr11.dict"
         },
+
         "indels": [
             "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/Mills_and_1000G_gold_standard.indels.b37.vcf",
             "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/1000G_phase1.indels.b37.vcf"
@@ -28,9 +104,28 @@
             "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/hapmap_3.3.b37.vcf",
             "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/1000G_phase1.snps.high_confidence.b37.vcf"
         ],
-	    "annotation": {
-	    	"annovar_humandb": "/isilon/irods_a/datasets_res/Vault/annovar_2013Aug23/humandb"
-    	}
+        "annovar": {
+            "directory": "/usr/local/pipeline/annotation/humandb/",
+            "buildver": "hg19",
+            "databases": {
+                "geneanno": [
+                    "refGene",
+                    "knownGene"
+                ],
+                "regionanno": [
+                    "wgRna"
+                ],
+                "filter": [
+                    "snp129",
+                    "ljb23_pp2hvar",
+                    "clinvar_20140702"
+                ]
+            }
+
+        },
+        "savant": {
+            "config": "/usr/local/pipeline/savant-v1.1.0-complete/config.txt"
+        }
     },
     "resources": {
         "gridengine": {
@@ -42,17 +137,85 @@
             "cpu": 4,
             "java_mem": 1
         },
-        "novo": {
+        "novoalign": {
             "cpu": 8,
             "mem": 3
         },
+        "bwa": {
+            "cpu": 4,
+            "sge_vmem": 8
+        },
+        "bowtie": {
+            "cpu": 4,
+            "sge_vmem": 8
+        },
+        "bowtie2": {
+            "cpu": 4,
+            "sge_vmem": 8
+        },
+        "stampy": {
+            "cpu": 4,
+            "sge_vmem": 8
+        },
         "picard": {
-            "sge_h_vmem": 8,
+            "cpu": 4,
+            "sge_vmem": 8,
             "java_mem": 6
         },
         "gatk": {
-            "gatk_h_vmem": 8,
-            "gatk_java_mem": 6
+            "RTC": {
+                "mem": 6, "cpu": 2, "java_mem": 4, "nt": 2
+            },
+            "IR": {
+                "mem":6, "cpu": 4, "java_mem":4
+            },
+            "BR": {
+                "mem":6, "cpu": 4, "java_mem":4, "nct": 8
+            },
+            "PR": {
+                "mem": 6, "cpu": 1, "java_mem": 4, "nct": 4
+            },
+            "FCI": {
+                "mem": 6, "cpu": 1, "java_mem": 4
+            },
+            "AC": {
+                "mem": 4, "cpu": 1, "java_mem": 4
+            },
+            "UG": {
+                "mem": 2, "cpu": 2, "java_mem": 2, "nct": 3, "nt": 2
+            },
+            "UG_backup": {
+                "mem": 18, "cpu": 4, "java_mem": 16, "nct": 6, "nt": 4
+            },
+            "HC": {
+                "mem": 2, "cpu": 2, "java_mem": 2, "nct": 3, "nt": 2
+            },
+            "HC_backup": {
+                "mem": 18, "cpu": 4, "java_mem": 16, "nct": 6, "nt": 4
+            },
+           "VR": {
+                "mem": 6, "cpu": 2, "java_mem": 4, "nt": 2
+            },
+           "CV": {
+                "mem": 2, "cpu": 1, "java_mem": 4
+            }
+
+        },
+        "platypus": {
+            "cpu": 4,
+            "mem": 8
+        },
+        "mpileup": {
+            "cpu": 1,
+            "mem": 4
+        },
+        "freebayes": {
+            "cpu": 1,
+            "mem": 4
+        },
+        "delly": {
+            "cpu": 1,
+            "mem": 4
         }
     }
 }
