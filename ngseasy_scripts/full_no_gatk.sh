@@ -583,7 +583,7 @@ then
   -stand_call_conf 30 \
   -stand_emit_conf 10 \
   --dbsnp ${KNOWN_SNPS_b138} \
-  -dcov 250 -minPruning 10 \
+  -dcov 250 \
   --unsafe ALL \
   --genotype_likelihoods_model BOTH \
   --genotyping_mode DISCOVERY \
