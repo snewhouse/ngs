@@ -347,7 +347,12 @@ echo " NGSeasy: Converting Aligned BED To MERGED BED File " `date`
  /usr/local/pipeline/bedtools2/bin/bedtools merge -i ${SOUT}/reports/${BAM_PREFIX}.bed > ${SOUT}/reports/${BAM_PREFIX}.merged.bed;
 fi
 
-cp -v ${SOUT}/alignments/${BAM_PREFIX}.bam ${SOUT}/alignments/${BAM_PREFIX}.bam.bai
+
+#if [ ! -s ${SOUT}/alignments/${BAM_PREFIX}.bam.bai ]
+#then
+cp -v ${SOUT}/alignments/${BAM_PREFIX}.bai ${SOUT}/alignments/${BAM_PREFIX}.bam.bai
+#fi
+
 
 echo ""
 echo "................................................"
@@ -655,7 +660,7 @@ then
 elif [ "${VARCALLER}" == "gatk_hc_gvcf" ]
 then
   echo " NGSeasy: Running GATK HaplotypeCaller GVCF THIS TAKES A VERY LOOOONG TIME" `date` 
-     /usr/local/pipeline/samtools/samtools view -b -h -q 20 -F 1796 ${SOUT}/alignments/${BAM_PREFIX}.bam  > ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam 
+ /usr/local/pipeline/samtools/samtools view -b -h -q 20 -F 1796 ${SOUT}/alignments/${BAM_PREFIX}.bam  > ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam 
  /usr/local/pipeline/samtools/samtools index ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam;
  cp -v ${SOUT}/alignments/${BAM_PREFIX}.filtered.bai ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam.bai;
   ## HaplotypeCaller GVCF
