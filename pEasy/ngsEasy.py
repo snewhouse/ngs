@@ -602,7 +602,7 @@ def ngsEasy_alignment(input_files, output_file):
             '-f sam',
             '-o', output_file
             ])
-    elif aligner.startswith('novoalign'):
+    elif aligner.startswith('novo'):
         stat_file = output_file.replace('.sam','.stat')
         cmd = " ".join([
             pipeconfig['software']['novoalign'],
@@ -1660,6 +1660,34 @@ def ngsEasy_savant(input_file,output_file):
     else:
         run_cmd(cmd)
 
+@active_if(pipeconfig['switch']['snpEff'])
+@graphviz(label_prefix="Annotate Variants (snpEff)\n", **style_normal)
+@transform([ngsEasy_identifyVariants,ngsEasy_mergeVcf], suffix('.vcf'), '.snpEff.html')
+@timejob(logger)
+def ngsEasy_snpEff(input_file,output_file):
+    p = loadConfiguration(input_file[:input_file.rfind('/')])
+    cmd = ' '.join([
+        pipeconfig['software']['java'],
+        '-Xmx'+str(pipeconfig['resources']['snpEff']['mem'])+'g',
+        '-Djava.io.tmpdir='+'/'.join([pipeconfig['path']['analysis'], p.wd(), 'tmp']),
+        '-jar', pipeconfig['software']['snpEff'],
+        '-dataDir', pipeconfig['reference']['snpEff']['dbdir'],
+        '-stats',
+        pipeconfig['reference']['snpEff']['database'],
+        input_file,
+        '>',
+        output_file,
+        ])
+    # run job
+    if sge:
+        run_sge(cmd,
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+            cpu=pipeconfig['resources']['snpEff']['cpu'], mem=pipeconfig['resources']['snpEff']['mem'])
+    else:
+        run_cmd(cmd)
+
+
 @active_if(pipeconfig['switch']['annovar'])
 @graphviz(label_prefix="Annotate Variants (ANNOVAR)\n", **style_normal)
 @transform([ngsEasy_identifyVariants,ngsEasy_mergeVcf], suffix('.vcf'), '.annovar.'+ pipeconfig['reference']['annovar']['buildver'] + '_multianno.txt')
@@ -1823,9 +1851,9 @@ def ngsEasy_pindel(input_file,output_file):
         run_cmd(' '.join(cmd))
 
 #
-###
-#####
-#######
+### breakdancer
+##### CNVnator
+####### m-HMM
 #####
 ###
 #
@@ -1857,7 +1885,6 @@ def ngsEasy_summarizeSV(input_files,output_file):
                         else:
                             print >> outfh, '{:<30} {:<16} {:<26} {}'.format(infile[infile.rfind('.')+1:], postfix[i], k, v[i])
 
-
 #--------------------
 # final target
 #--------------------
@@ -1870,6 +1897,7 @@ def ngsEasy_summarizeSV(input_files,output_file):
     ngsEasy_varStats,
     ngsEasy_savant,
     ngsEasy_annovar,
+    ngsEasy_snpEff,
     ngsEasy_summarizeSV],
     'final.checkpoint')
 @timejob(logger)

@@ -35,96 +35,91 @@
     "switch": {
         "HC": true,
         "UG": true,
-        "FB": true,
+        "FB": false,
         "ST": true,
         "PL": true,
         "gatk": true,
         "annovar": false,
         "savant": false,
+        "snpEff": false,
         "SV":false
     },
     "path": {
-        "ngstmp": "/home/agulatibrc/workspace/pipelines/ngs/ngs_temp",
+        "ngstmp": "/scratch/home/bclarkebrc/tmp",
         "fastq": "/isilon_home/bclarkbrc/scratch/data/CRTP_cancer",
-        "analysis": "/home/agulatibrc/workspace/pipelines/ngs/ngs_project",
-
-        "ngstmp": "/Users/dbrawand/ngs/pEasy/temp",
-        "fastq": "/Users/dbrawand/ngs/pEasy/fastq",
-        "analysis": "/Users/dbrawand/ngs/pEasy/analysis"
+        "analysis": "/scratch/home/bclarkebrc/RUN"
     },
-
     "software": {
         "java": "/share/java/latest/bin/java",
-        "picard": "/share/apps/picard-tools_current/",
-        "gatk": "/share/apps/gatk_2.7-2",
-        "novo": "/share/apps/novocraft_current/bin/",
-        "samtools": "/share/apps/samtools_0.1.18/bin/samtools",
-        "fastqc": "/share/apps/fastqc_current/fastqc",
-        "tabix": "/share/bin/tabix",
-        "bgzip":"/share/bin/bgzip",
-        "vcftools": "/share/bin/vcftools",
-        "bcftools": "/share/bin/bcftools",
-        "bedtools": "/share/bin/bedtools",
-        "bowtie2": "/share/bin/bowtie2",
-        "bwa": "/share/bin/bwa",
-        "stampy": "/share/bin/stampy.py",
-        "gatk": "/share/apps/gatk_current/GenomeAnalysisTK.jar",
-        "platypus": "/share/apps/Platypus_current/Platypus.py",
-
-        "trimmomatic": "/usr/local/pipeline/Trimmomatic-0.32/trimmomatic-0.32.jar",
-        "annovar": "/isilon/irods_a/datasets_res/Vault/annovar_2013Aug23",
-
-        "freebayes": "/usr/local/pipeline/freebayes/bin/freebayes",
-        "savant": "/usr/local/pipeline/savant-v1.1.0-complete/savant.py",
-        "annovar": "/usr/local/pipeline/annovar/",
-
-        "novoalign": "/usr/local/pipeline/novoalign/ngsNovoalign",
-        "novo": "/share/apps/novocraft_current/bin/"
+        "picard": "/scratch/home/bclarkebrc/pipeline/picardtools/",
+        "gatk": "/scratch/home/bclarkebrc/pipeline/GenomeAnalysisTK-3.2-2/",
+        "samtools": "/scratch/home/bclarkebrc/pipeline/samtools-0.1.19/samtools",
+        "samtools1": "/scratch/home/bclarkebrc/pipeline/samtools/samtools",
+        "fastqc": "/scratch/home/bclarkebrc/pipeline/FastQC/fastqc",
+        "tabix": "/scratch/home/bclarkebrc/pipeline/htslib/tabix",
+        "bgzip": "/scratch/home/bclarkebrc/pipeline/htslib/bgzip",
+        "vcftools": "/scratch/home/bclarkebrc/pipeline/vcftools_0.1.12a/bin/vcftools",
+        "bcftools": "/scratch/home/bclarkebrc/pipeline/bcftools/bcftools",
+        "bedtools": "/scratch/home/bclarkebrc/pipeline/bedtools2/bin/bedtools",
+        "bowtie2": "/scratch/home/bclarkebrc/pipeline/bowtie2-2.2.3/bowtie2",
+        "bwa": "scratch/home/bclarkebrc/pipeline/bwa-0.7.10/bwa",
+        "stampy": "/scratch/home/bclarkebrc/pipeline/stampy-1.0.23/stampy.py",
+        "platypus": "/scratch/home/bclarkebrc/pipeline/Platypus_0.7.9.1/Platypus.py",
+        "trimmomatic": "/scratch/home/bclarkebrc/pipeline/Trimmomatic-0.32/trimmomatic-0.32.jar",
+        "annovar": "/scratch/home/bclarkebrc/pipeline/annovar",
+        "freebayes": "/scratch/home/bclarkebrc/pipeline/freebayes/bin/freebayes",
+        "snpEff": "/scratch/home/bclarkebrc/pipeline/snpEff/snpEff.jar",
+        "savant": "/scratch/home/bclarkebrc/pipeline/savant-v1.1.0-complete/savant.py",
+        "novoalign": "/share/apps/novocraft_current/bin/novoalign"
     },
     "reference": {
         "genome": {
-            "novoindex":"/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/human_g1k_v37.fasta.novoindex",
-            "sequence": "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/human_g1k_v37.fasta"
-
-            "stampyindex":"/usr/local/pipeline/genome/chr11",
-            "bwaindex":"/usr/local/pipeline/genome/chr11.fasta",
-            "bowtie2index":"/usr/local/pipeline/genome/chr11",
-            "novoindex":"/usr/local/pipeline/genome/chr11.fa.novoindex",
-            "sequence": "/usr/local/pipeline/genome/chr11.fasta",
-            "dict":  "/usr/local/pipeline/genome/chr11.dict"
+            "novoindex": "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/human_g1k_v37.fasta.novoindex",
+            "sequence": "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/human_g1k_v37.fasta",
+            "bowtie2index": "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/human_g1k_v37",
+            "dict": "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/human_g1k_v37.dict",
+            "stampyindex":"/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/human_g1k_v37",
+            "bwaindex":"/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/human_g1k_v37.fasta",
+            "bwaindexSW":"/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/human_g1k_v37.fasta.bwa"
         },
-
         "indels": [
             "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/Mills_and_1000G_gold_standard.indels.b37.vcf",
             "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/1000G_phase1.indels.b37.vcf"
         ],
         "snps": [
-            "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/1000G_omni2.5.b37.vcf",
             "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/dbsnp_137.b37.vcf",
             "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/hapmap_3.3.b37.vcf",
+            "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/1000G_omni2.5.b37.vcf",
             "/isilon/irods_a/datasets_res/Vault/ngs_ref_resources_b37/1000G_phase1.snps.high_confidence.b37.vcf"
         ],
         "annovar": {
-            "directory": "/usr/local/pipeline/annotation/humandb/",
+            "directory": "/isilon_home/bclarkbrc/pipeline/annovar/humandb",
             "buildver": "hg19",
             "databases": {
                 "geneanno": [
                     "refGene",
-                    "knownGene"
+                    "knownGene",
+                    "ensGene"
                 ],
                 "regionanno": [
-                    "wgRna"
+                    "wgRna",
+                    "targetScanS",
+                    "tfbsConsSites"
                 ],
                 "filter": [
-                    "snp129",
-                    "ljb23_pp2hvar",
-                    "clinvar_20140702"
+                    "snp138",
+                    "ljb23_all",
+                    "clinvar_20140902",
+                    "cosmic70"
                 ]
             }
-
         },
         "savant": {
-            "config": "/usr/local/pipeline/savant-v1.1.0-complete/config.txt"
+            "config": "isilon_home/bclarkbrc/pipeline/savant-v1.1.0-complete/config.txt"
+        },
+        "snpEff": {
+            "database": "hg19",
+            "dbdir": "/isilon_home/bclarkbrc/scratch/snpEffDB"
         }
     },
     "resources": {
@@ -214,6 +209,10 @@
             "mem": 4
         },
         "delly": {
+            "cpu": 1,
+            "mem": 4
+        },
+        "snpEff": {
             "cpu": 1,
             "mem": 4
         }
