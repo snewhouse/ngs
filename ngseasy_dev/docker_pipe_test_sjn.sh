@@ -269,13 +269,25 @@ fastqc_pre () {
   ARGUMENTS:
   -h      Flag: Show this help message
   -c      NGSeasy project and run configureation file
+  
+  OPTIONAL:
+  -s	  Sample Id
+  -f      Fastq File Prefix/basename
+  -d      NGSeasy project and run configureation file
+  
   EXAMPLE USAGE:
   fastqc_pre -c config.file.tsv
+  fastqc_pre -s sample01 -f example -d /media/D/ngs_projects/example
 EOF 
 }
 
+fastq_prefix="NULL"
+sample_id=""
+project_directory=""
+config_tsv=""
+
 #get options for command line args
-  while  getopts "h:c:" opt
+  while  getopts "h:c:sfpd" opt
   do
 
       case ${opt} in
@@ -287,25 +299,56 @@ EOF
 	  c)
 	  config_tsv=${OPTARG}
 	  ;;
+	  
+	  s)
+	  sample_id=${OPTARG}
+	  ;;
+	  
+	  f)
+	  fastq_prefix=${OPTARG}
+	  ;;
+	  
+	  p)
+	  project_id=${OPTARG}
+	  ;;
+
+  	  d)
+	  project_directory=${OPTARG}
+	  ;;
 
       esac
   done
 
-#check exists.
-  if [[ ! -e ${config_tsv} ]] 
-  then
-	  echo " ${config_tsv} does not exist "
-	  usage;
-	  exit 1;
-  fi
 
+
+#choose run from config file or manually from specified fasq  
+if [ "${fastq_prefix}" == "NULL" ]
+then
+
+#check config file exists.
+if [ ! -e ${config_tsv} ] 
+then
+	    echo " ${config_tsv} does not exist "
+	    usage;
+	    exit 1;
+fi
+  
 #run compbio/ngseasy-fastq
-sudo docker run \
--d \
--P \
---name fastqc_pre \
---volumes-from volumes_container \
--t compbio/ngseasy-fastqc:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_fastqc_pre_trimm.sh /home/pipeman/ngs_projects/${config_tsv}
+  sudo docker run \
+  -d \
+  -P \
+  --name fastqc_pre \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-fastqc:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_fastqc_pre_trimm.sh "config" /home/pipeman/ngs_projects/${config_tsv}
+
+else
+  sudo docker run \
+  -d \
+  -P \
+  --name fastqc_pre \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-fastqc:v1.0 /sbin/my_init -- /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_fastqc_pre_trimm.sh "manually" ${sample_id} ${fastq_prefix} ${project_id} ${project_directory}
+fi
 
 }
 
