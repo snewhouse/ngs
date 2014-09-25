@@ -300,7 +300,7 @@ except RuntimeError:  # could not load drmaa
     logger.warn("no DRMAA found -> disabled multiprocessing")
     options.multiprocess = 1
 else:
-    if pipeline['switch']['forcelocal']:
+    if pipeconfig['switch']['forcelocal']:
         sge = None
         logger.info("Forced local run (this may take significantly longer)")
     else:
