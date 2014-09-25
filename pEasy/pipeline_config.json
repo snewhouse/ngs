@@ -33,15 +33,16 @@
         "varcall":""
     },
     "switch": {
+        "forcelocal": true,
         "HC": true,
         "UG": true,
         "FB": true,
         "ST": true,
         "PL": true,
-        "gatk": false,
+        "gatk": true,
         "annovar": true,
-        "savant": false,
-        "snpEff": false,
+        "savant": true,
+        "snpEff": true,
         "SV":false
     },
     "path": {

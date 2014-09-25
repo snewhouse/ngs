@@ -33,7 +33,7 @@
         "varcall":""
     },
     "switch": {
-        "forcelocal": true,
+        "forcelocal": false,
         "HC": true,
         "UG": true,
         "FB": false,

@@ -45,14 +45,14 @@
                 "TRAILING:3",
                 "SLIDINGWINDOW:4:15",
                 "MINLEN:36"],
-            "aligner": "bowtie2",
+            "aligner": "bwa",
             "rmdup": false
         },
         "cancertest": {
             "tas": {
-                "covered_bed":"/Users/dbrawand/ngs/pEasy/tas/test_covered.bed",
-                "bait_intervals":"/Users/dbrawand/ngs/pEasy/tas/test_baits.intervals",
-                "target_intervals":"/Users/dbrawand/ngs/pEasy/tas/test_targets.intervals"
+                "covered_bed":"/isilon_home/bclarkbrc/scratch/ngs/pEasy/tas/cancer/NGHS-101X_Clinically_Relevant_Tumor.covered.bed",
+                "bait_intervals":"/isilon_home/bclarkbrc/scratch/ngs/pEasy/tas/cancer/NGHS-101X_Clinically_Relevant_Tumor.amplicons.intervals",
+                "target_intervals":"/isilon_home/bclarkbrc/scratch/ngs/pEasy/tas/cancer/NGHS-101X_Clinically_Relevant_Tumor.target.intervals"
             },
             "wgs": { },
             "exo": { },
@@ -72,11 +72,11 @@
                 "useDuplicates": true
             },
             "trimmomatic":[
-                "ILLUMINACLIP:/usr/local/pipeline/Trimmomatic-0.32/adapters/TruSeq3-PE-2.fa:2:30:10",
+                "ILLUMINACLIP:/scratch/home/bclarkebrc/pipeline/Trimmomatic-0.32/adapters/TruSeq3-PE-2.fa:2:30:10",
                 "LEADING:3",
                 "TRAILING:3",
                 "MINLEN:36"],
-            "aligner": "bowtie2",
+            "aligner": "stampy",
             "rmdup": false
         },
         "test": {

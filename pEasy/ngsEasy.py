@@ -1851,37 +1851,54 @@ def ngsEasy_exomedepth(input_file,output_file):
 
 
 @active_if(pipeconfig['switch']['SV'])
-@graphviz(label_prefix="SV homozgosity\n", **style_normal)
-@transform(ngsEasy_vcf, suffix('.dupemk.bam'), '.SV.homo')
+@graphviz(label_prefix="SV exon homozygosity\n", **style_normal)
+@transform(ngsEasy_mergeVcf, suffix('.dupemk.bam'), '.SV.exonhomo.bed')
 @timejob(logger)
-def ngsEasy_exomedepth(input_file,output_file):
+def ngsEasy_exonhomo(input_file,output_file):
     p = loadConfiguration(os.path.abspath(os.path.dirname(input_file)))
     cmd = [
         pipeconfig['software']['R'],
-        os.path.dirname(os.path.realpath(__file__))+'/scripts/exomedepth.R',
+        os.path.dirname(os.path.realpath(__file__))+'/scripts/exonHomo.py',
         input_file,
-        output_file,
+        ngsconfig['ngsanalysis'][p.ngsAnalysis]['tas']['covered_bed'],
+        output_file
         ]
     if sge:
         run_sge(' '.join(cmd),
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['pindel']['cpu'], mem=pipeconfig['resources']['pindel']['mem'])
+            cpu=1, mem=2)
     else:
         run_cmd(' '.join(cmd))
 
+@active_if(pipeconfig['switch']['SV'])
+@graphviz(label_prefix="SV exon homozygosity\n", **style_normal)
+@transform(ngsEasy_alignment, suffix('.dupemk.bam'), '.SV.exonhomo.bed')
+@timejob(logger)
+def ngsEasy_SLOPE(input_file,output_file):
+    p = loadConfiguration(os.path.abspath(os.path.dirname(input_file)))
+    cmd = [
+        # http://www-genepi.med.utah.edu/suppl/SLOPE/index.html
+        ]
+    if sge:
+        run_sge(' '.join(cmd),
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+            cpu=1, mem=2)
+    else:
+        run_cmd(' '.join(cmd))
 #
 ### breakdancer?
 ##### CNVnator
 ####### m-HMM
-#####
+##### http://www-genepi.med.utah.edu/suppl/SLOPE/index.html
 ###
 #
 
 '''Summarize large scale structural variants'''
 @timejob(logger)
 @graphviz(label_prefix="Summarize SV\n", **style_collect)
-@collate([ngsEasy_delly, ngsEasy_exomedepth, ngsEasy_SLOPE, ngsEasy_],
+@collate([ngsEasy_delly, ngsEasy_exomedepth, ngsEasy_exonhomo, ngsEasy_SLOPE],
     regex(r'(.+\.SV)\.\S+'), r'\1.summary')
 @timejob(logger)
 def ngsEasy_summarizeSV(input_files,output_file):
