@@ -300,9 +300,13 @@ except RuntimeError:  # could not load drmaa
     logger.warn("no DRMAA found -> disabled multiprocessing")
     options.multiprocess = 1
 else:
-    sge = drmaa.Session()
-    sge.initialize()
-    logger.info("using DRMAA for job dispatch")
+    if pipeline['switch']['forcelocal']:
+        sge = None
+        logger.info("Forced local run (this may take significantly longer)")
+    else:
+        sge = drmaa.Session()
+        sge.initialize()
+        logger.info("using DRMAA for job dispatch")
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 #   Functions
@@ -1826,21 +1830,37 @@ def ngsEasy_delly(input_file,output_file):
 
 
 @active_if(pipeconfig['switch']['SV'])
-@graphviz(label_prefix="SV pindel\n", **style_normal)
-@transform(ngsEasy_markDuplicates, suffix('.dupemk.bam'), '.SV.pindel')
+@graphviz(label_prefix="SV exomedepth\n", **style_normal)
+@transform(ngsEasy_markDuplicates, suffix('.dupemk.bam'), '.SV.exomedepth')
 @timejob(logger)
-def ngsEasy_pindel(input_file,output_file):
-    p = loadConfiguration(input_file[:input_file.rfind('/')])
+def ngsEasy_exomedepth(input_file,output_file):
+    p = loadConfiguration(os.path.abspath(os.path.dirname(input_file)))
     cmd = [
-        # pipeconfig['software']['java'],
-        # '-Xmx'+str(pipeconfig['resources']['gatk']['FCI']['java_mem'])+'g',
-        # '-Djava.io.tmpdir='+'/'.join([pipeconfig['path']['analysis'], p.wd(), 'tmp']),
-        # '-jar', pipeconfig['software']['gatk'],
-        # '-T', 'FindCoveredIntervals',
-        # '-R', pipeconfig['reference']['genome']['sequence'],
-        # '-I', input_file,
-        # '-o', output_file,
-        # '--coverage_threshold', str(4)
+        pipeconfig['software']['R'],
+        os.path.dirname(os.path.realpath(__file__))+'/scripts/exomedepth.R',
+        input_file,
+        output_file,
+        ]
+    if sge:
+        run_sge(' '.join(cmd),
+            jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
+            cpu=pipeconfig['resources']['pindel']['cpu'], mem=pipeconfig['resources']['pindel']['mem'])
+    else:
+        run_cmd(' '.join(cmd))
+
+
+@active_if(pipeconfig['switch']['SV'])
+@graphviz(label_prefix="SV homozgosity\n", **style_normal)
+@transform(ngsEasy_vcf, suffix('.dupemk.bam'), '.SV.homo')
+@timejob(logger)
+def ngsEasy_exomedepth(input_file,output_file):
+    p = loadConfiguration(os.path.abspath(os.path.dirname(input_file)))
+    cmd = [
+        pipeconfig['software']['R'],
+        os.path.dirname(os.path.realpath(__file__))+'/scripts/exomedepth.R',
+        input_file,
+        output_file,
         ]
     if sge:
         run_sge(' '.join(cmd),
@@ -1851,7 +1871,7 @@ def ngsEasy_pindel(input_file,output_file):
         run_cmd(' '.join(cmd))
 
 #
-### breakdancer
+### breakdancer?
 ##### CNVnator
 ####### m-HMM
 #####
@@ -1861,7 +1881,7 @@ def ngsEasy_pindel(input_file,output_file):
 '''Summarize large scale structural variants'''
 @timejob(logger)
 @graphviz(label_prefix="Summarize SV\n", **style_collect)
-@collate([ngsEasy_delly, ngsEasy_pindel],
+@collate([ngsEasy_delly, ngsEasy_exomedepth, ngsEasy_SLOPE, ngsEasy_],
     regex(r'(.+\.SV)\.\S+'), r'\1.summary')
 @timejob(logger)
 def ngsEasy_summarizeSV(input_files,output_file):
