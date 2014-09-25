@@ -33,6 +33,7 @@
         "varcall":""
     },
     "switch": {
+        "forcelocal": true,
         "HC": true,
         "UG": true,
         "FB": false,
@@ -42,7 +43,7 @@
         "annovar": false,
         "savant": false,
         "snpEff": false,
-        "SV":false
+        "SV": false
     },
     "path": {
         "ngstmp": "/scratch/home/bclarkebrc/tmp",
