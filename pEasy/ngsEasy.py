@@ -459,7 +459,7 @@ def ngsEasy_prefilterFastQC(input_files,output_files):
 #--------------------
 #@posttask (touch_file( 'trimming.completed' ))
 @graphviz(label_prefix="Adapter trimming\n", **style_normal)
-@jobs_limit(4,'iolimit')  # limits jobs with high I/O
+@jobs_limit(8,'iolimit')  # further limit jobs with high I/O
 @follows(ngsEasy_checkPaired)
 @transform(inputfiles,
             formatter("(?P<PAIR>[^\.]+)\.fastq", "(?P<PAIR>[^\.]+)\.fastq"),
