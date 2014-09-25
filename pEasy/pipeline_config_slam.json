@@ -126,8 +126,7 @@
     "resources": {
         "gridengine": {
             "-q": "short.q,long.q",
-            "-m": "dbrawand@gmail.com",
-            "-M": "beas"
+            "-m": "n"
         },
         "trimmomatic": {
             "cpu": 4,
