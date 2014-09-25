@@ -297,10 +297,13 @@ try:
     import drmaa
 except RuntimeError:  # could not load drmaa
     sge=None
-    logger.warn("no DRMAA found -> disabled multiprocessing")
+    logger.warn("no DRMAA found -> runs locally")
     options.multiprocess = 1
 else:
-    if pipeconfig['switch']['forcelocal']:
+    if pipeconfig['docker']['active']:
+        sge = None
+        sys.exit("### DOCKERIZED DISPATCH NOT IMPLEMENTED YET ###")
+    elif pipeconfig['switch']['forcelocal']:
         sge = None
         logger.info("Forced local run (this may take significantly longer)")
     else:
@@ -351,16 +354,6 @@ def run_sge(cmd_str, jobname, fullwd, cpu=1, mem=2, runlocally=False, scriptdir=
         opt.append('-l h_vmem='+str(mem)+'G')
     # dispatch via DRMAA
     try:
-        if options.debug:
-            print sys.stderr, "CMD", cmd_str
-            print sys.stderr, "JOBNAME", jobname
-            print sys.stderr, "FULLWD", fullwd
-            print sys.stderr, "DRMAA", sge
-            print sys.stderr, "LOGGER", logger
-            print sys.stderr, "OPT", opt
-            print sys.stderr, "LOCAL", runlocally
-            print sys.stderr, "SCRIPTDIR", scriptdir
-            print sys.stderr, "ENV", sge_env
         stdout_res, stderr_res  = run_job(
             cmd_str,
             job_name = jobname,
@@ -2014,8 +2007,9 @@ elif options.flowchart:
 #   Run Pipeline
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 else:
-    pipeline_run(targettasks, forcedtorun_tasks = forcedtasks, verbose_abbreviated_path = 3, \
-        multiprocess = options.jobs, logger = logger, verbose=options.verbose, \
+    pipeline_run(target_tasks = targettasks, forcedtorun_tasks = forcedtasks,
+        multithread = options.jobs if sge else 2, multiprocess = 1 if sge else options.jobs,
+        logger = logger, verbose=options.verbose, verbose_abbreviated_path = 3,
         checksum_level = 1 if options.debug else 3, touch_files_only=options.touch)
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
