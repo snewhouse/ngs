@@ -351,6 +351,16 @@ def run_sge(cmd_str, jobname, fullwd, cpu=1, mem=2, runlocally=False, scriptdir=
         opt.append('-l h_vmem='+str(mem)+'G')
     # dispatch via DRMAA
     try:
+        if options.debug:
+            print sys.stderr, "CMD", cmd_str
+            print sys.stderr, "JOBNAME", jobname
+            print sys.stderr, "FULLWD", fullwd
+            print sys.stderr, "DRMAA", sge
+            print sys.stderr, "LOGGER", logger
+            print sys.stderr, "OPT", opt
+            print sys.stderr, "LOCAL", runlocally
+            print sys.stderr, "SCRIPTDIR", scriptdir
+            print sys.stderr, "ENV", sge_env
         stdout_res, stderr_res  = run_job(
             cmd_str,
             job_name = jobname,
