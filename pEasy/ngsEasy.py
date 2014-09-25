@@ -344,7 +344,7 @@ def run_sge(cmd_str, jobname, fullwd, cpu=1, mem=2, runlocally=False, scriptdir=
     opt.append('-o '+fullwd+'/sge.out')
     opt.append('-e '+fullwd+'/sge.out')
     for k,v in pipeconfig['resources']['gridengine']:
-        opt.append(' '.join(k,v))
+        opt.append(' '.join([k,v]))
     if cpu:
         opt.append(' '.join(["-pe multi_thread", str(cpu)]))
     if mem:
