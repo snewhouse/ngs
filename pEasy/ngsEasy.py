@@ -53,7 +53,7 @@ parser.add_option("-l", dest="logfile", default=None, metavar="STRING", \
 parser.add_option("-d" ,dest="debug", action='store_true', default=False,\
     help="display DEBUG messages and temporarily disable method checksum flow control")
 
-#   pipeline run options
+#   pipeline options
 parser.add_option("-c", dest="cleanup", default=False, action="store_true", \
     help="cleanup intermediary files (truncate to zero)")
 parser.add_option("-t", dest="targettasks", default=None, metavar="task1,task2,...", \
@@ -62,8 +62,6 @@ parser.add_option("-f", dest="forcedtasks", default=None, metavar="task1,task2,.
     help="forced tasks (updates dependent tasks)")
 parser.add_option("--touch", dest="touch", default=False, action="store_true", \
     help="just touch")
-parser.add_option("--jobs", dest="jobs", default=1, metavar="INT", type="int", \
-    help="Specifies the number of jobs (operations) to run in parallel.")
 parser.add_option("--flowchart", dest="flowchart", metavar="FILE", type="string", \
                   help="Print flowchart of the pipeline to FILE. Flowchart format "
                        "depends on extension. Alternatives include ('.dot', '.jpg', "
@@ -72,6 +70,11 @@ parser.add_option("--flowchart", dest="flowchart", metavar="FILE", type="string"
 parser.add_option("--just_print", dest="just_print", action="store_true", default=False, \
                     help="Only print a trace (description) of the pipeline. "
                          " The level of detail is set by --verbose.")
+# Run options
+parser.add_option("--jobs", dest="jobs", default=1, metavar="INT", type="int", \
+    help="Specifies the number of jobs (operations) to run in parallel.")
+parser.add_option("--local", dest="runlocal", default=False, action="store_true", \
+    help="Force local execution (via DRMAA, if available)")
 
 (options, args) = parser.parse_args()
 
@@ -450,7 +453,7 @@ def ngsEasy_prefilterFastQC(input_files,output_files):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(cmd)
 
@@ -488,7 +491,7 @@ def ngsEasy_trimmomatic(input_files, output_files):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     # fallback
     else:
         run_cmd(cmd)
@@ -514,7 +517,7 @@ def ngsEasy_postfilterFastQC(input_files,output_files):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     # fallback
     else:
         run_cmd(cmd)
@@ -638,7 +641,7 @@ def ngsEasy_alignment(input_files, output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=ge_cpu, mem=ge_mem)
+            cpu=ge_cpu, mem=ge_mem, runlocally=options.runlocal)
     else:
         run_cmd(cmd)
     # cleanup of intermediary files (zero files)
@@ -660,7 +663,7 @@ def ngsEasy_sam2bam(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(cmd)
     # cleanup
@@ -683,7 +686,7 @@ def ngsEasy_sortSam(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(cmd)
     # cleanup
@@ -702,7 +705,7 @@ def ngsEasy_indexBam(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(cmd)
 
@@ -738,7 +741,7 @@ def ngsEasy_addReplaceReadGroups(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(cmd)
     # cleanup
@@ -773,7 +776,7 @@ def ngsEasy_markDuplicates(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(cmd)
     # cleanup
@@ -813,7 +816,7 @@ def ngsEasy_collectMultipleMetrics(input_file,output_files):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(cmd)
 
@@ -848,7 +851,7 @@ def ngsEasy_collectTargetedPcrMetrics(input_file,output_files):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(cmd)
 
@@ -877,7 +880,7 @@ def ngsEasy_collectWgsMetrics(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(cmd)
 
@@ -944,7 +947,7 @@ def ngsEasy_realignerTargetCreator(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['gatk']['RTC']['cpu'], mem=pipeconfig['resources']['gatk']['RTC']['mem'])
+            cpu=pipeconfig['resources']['gatk']['RTC']['cpu'], mem=pipeconfig['resources']['gatk']['RTC']['mem'],runlocally=options.runlocal)
     else:
         run_cmd(cmd)
 
@@ -971,7 +974,7 @@ def ngsEasy_indelRealigner(input_files,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['gatk']['IR']['cpu'], mem=ipeconfig['resources']['gatk']['IR']['mem'])
+            cpu=pipeconfig['resources']['gatk']['IR']['cpu'], mem=ipeconfig['resources']['gatk']['IR']['mem'],runlocally=options.runlocal)
     else:
         run_cmd(cmd)
     # cleanup
@@ -990,7 +993,7 @@ def ngsEasy_indexRealignedBam(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(cmd)
 
@@ -1020,7 +1023,7 @@ def ngsEasy_firstBaseRecalibrator(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['gatk']['BR']['cpu'], mem=pipeconfig['resources']['gatk']['BR']['mem'])
+            cpu=pipeconfig['resources']['gatk']['BR']['cpu'], mem=pipeconfig['resources']['gatk']['BR']['mem'],runlocally=options.runlocal)
     else:
         run_cmd(cmd)
 
@@ -1048,7 +1051,7 @@ def ngsEasy_recalibrateBam(input_files,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['gatk']['PR']['cpu'], mem=pipeconfig['resources']['gatk']['PR']['mem'])
+            cpu=pipeconfig['resources']['gatk']['PR']['cpu'], mem=pipeconfig['resources']['gatk']['PR']['mem'],runlocally=options.runlocal)
     else:
         run_cmd(cmd)
     # cleanup
@@ -1068,7 +1071,7 @@ def ngsEasy_indexRecalibratedBam(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(cmd)
 
@@ -1094,7 +1097,7 @@ def ngsEasy_finalBaseRecalibrator(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['gatk']['BR']['cpu'], mem=pipeconfig['resources']['gatk']['BR']['mem'])
+            cpu=pipeconfig['resources']['gatk']['BR']['cpu'], mem=pipeconfig['resources']['gatk']['BR']['mem'],runlocally=options.runlocal)
     else:
         run_cmd(cmd)
 
@@ -1120,7 +1123,7 @@ def ngsEasy_analyzeCovariates(input_files,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['gatk']['AC']['cpu'], mem=pipeconfig['resources']['gatk']['AC']['mem'])
+            cpu=pipeconfig['resources']['gatk']['AC']['cpu'], mem=pipeconfig['resources']['gatk']['AC']['mem'],runlocally=options.runlocal)
     else:
         run_cmd(cmd)
     # cleanup
@@ -1182,7 +1185,7 @@ def ngsEasy_unifiedGenotyper(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['gatk']['UG']['cpu'], mem=pipeconfig['resources']['gatk']['UG']['mem'])
+            cpu=pipeconfig['resources']['gatk']['UG']['cpu'], mem=pipeconfig['resources']['gatk']['UG']['mem'],runlocally=options.runlocal)
     else:
         run_cmd(cmd)
 
@@ -1241,7 +1244,7 @@ def ngsEasy_haplotypeCaller(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['gatk']['HC']['cpu'], mem=pipeconfig['resources']['gatk']['HC']['mem'])
+            cpu=pipeconfig['resources']['gatk']['HC']['cpu'], mem=pipeconfig['resources']['gatk']['HC']['mem'],runlocally=options.runlocal)
     else:
         run_cmd(cmd)
 
@@ -1292,7 +1295,7 @@ def ngsEasy_samtoolsMpileup(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['samtools']['cpu'], mem=pipeconfig['resources']['samtools']['mem'])
+            cpu=pipeconfig['resources']['samtools']['cpu'], mem=pipeconfig['resources']['samtools']['mem'],runlocally=options.runlocal)
     else:
         run_cmd(cmd)
 
@@ -1324,7 +1327,7 @@ def ngsEasy_platypus(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['platypus']['cpu'], mem=pipeconfig['resources']['platypus']['mem'])
+            cpu=pipeconfig['resources']['platypus']['cpu'], mem=pipeconfig['resources']['platypus']['mem'],runlocally=options.runlocal)
     else:
         run_cmd(cmd)
 
@@ -1350,7 +1353,7 @@ def ngsEasy_freebayes(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['freebayes']['cpu'], mem=pipeconfig['resources']['freebayes']['mem'])
+            cpu=pipeconfig['resources']['freebayes']['cpu'], mem=pipeconfig['resources']['freebayes']['mem'],runlocally=options.runlocal)
     else:
         run_cmd(cmd)
 
@@ -1374,7 +1377,7 @@ def ngsEasy_compressIndexVCF(input_file,output_file):
             run_sge(' '.join(cmd),
                 jobname="_".join([inspect.stack()[0][3], str(i+1), p.RG('SM')]),
                 fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-                cpu=1, mem=2)
+                cpu=1, mem=2,runlocally=options.runlocal)
         else:
             run_cmd(' '.join(cmd))
 
@@ -1400,7 +1403,7 @@ def ngsEasy_identifyVariants(input_file,output_file):
         run_sge(' '.join(cmd),
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=4)
+            cpu=1, mem=4,runlocally=options.runlocal)
     else:
         run_cmd(' '.join(cmd))
 
@@ -1416,7 +1419,7 @@ def ngsEasy_indexVCF(input_file,output_file):
         run_sge(' '.join(cmd),
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(' '.join(cmd))
 
@@ -1442,7 +1445,7 @@ def ngsEasy_varStats(input_file,output_file):
     if sge:
         run_sge(' '.join(cmd),
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
-            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(), cpu=1, mem=2)
+            fullwd=pipeconfig['path']['analysis']+'/'+p.wd(), cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(' '.join(cmd))
 
@@ -1490,7 +1493,7 @@ def ngsEasy_siteFilter(input_file,output_file):
         run_sge(' '.join(cmd),
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(' '.join(cmd))
 
@@ -1528,7 +1531,7 @@ def ngsEasy_regionFilter(input_file,output_file):
         run_sge(' '.join(cmd),
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(' '.join(cmd))
 
@@ -1547,7 +1550,7 @@ def ngsEasy_variantSites(input_file,output_file):
         run_sge(' '.join(cmd),
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(' '.join(cmd))
 
@@ -1573,7 +1576,7 @@ def ngsEasy_patchVcf(input_file,output_file):
         run_sge(' '.join(cmd),
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(' '.join(cmd))
 
@@ -1596,7 +1599,7 @@ def ngsEasy_compressIndexVCF_2(input_file,output_file):
             run_sge(' '.join(cmd),
                 jobname="_".join([inspect.stack()[0][3], str(i+1), p.RG('SM')]),
                 fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-                cpu=1, mem=2)
+                cpu=1, mem=2,runlocally=options.runlocal)
         else:
             run_cmd(' '.join(cmd))
 
@@ -1634,7 +1637,7 @@ def ngsEasy_mergeVcf(input_files,output_file):
         run_sge(' '.join(cmd),
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['gatk']['CV']['cpu'], mem=pipeconfig['resources']['gatk']['CV']['mem'])
+            cpu=pipeconfig['resources']['gatk']['CV']['cpu'], mem=pipeconfig['resources']['gatk']['CV']['mem'],runlocally=options.runlocal)
     else:
         run_cmd(' '.join(cmd))
     # cleanup
@@ -1663,7 +1666,7 @@ def ngsEasy_savant(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(cmd)
 
@@ -1690,7 +1693,7 @@ def ngsEasy_snpEff(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['snpEff']['cpu'], mem=pipeconfig['resources']['snpEff']['mem'])
+            cpu=pipeconfig['resources']['snpEff']['cpu'], mem=pipeconfig['resources']['snpEff']['mem'],runlocally=options.runlocal)
     else:
         run_cmd(cmd)
 
@@ -1741,7 +1744,7 @@ def ngsEasy_annovar(input_file,output_file):
             run_sge(cmd,
                 jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
                 fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-                cpu=1, mem=2)
+                cpu=1, mem=2,runlocally=options.runlocal)
         else:
             run_cmd(cmd)
 
@@ -1767,7 +1770,7 @@ def ngsEasy_coverageBed(input_file,output_file):
         run_sge(' '.join(cmd),
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(' '.join(cmd))
 
@@ -1793,7 +1796,7 @@ def ngsEasy_coveredIntervals(input_file,output_file):
         run_sge(' '.join(cmd),
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['gatk']['FCI']['cpu'], mem=pipeconfig['resources']['gatk']['FCI']['mem'])
+            cpu=pipeconfig['resources']['gatk']['FCI']['cpu'], mem=pipeconfig['resources']['gatk']['FCI']['mem'],runlocally=options.runlocal)
     else:
         run_cmd(' '.join(cmd))
 
@@ -1827,7 +1830,7 @@ def ngsEasy_delly(input_file,output_file):
         run_sge(' '.join(cmd),
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['delly']['cpu'], mem=pipeconfig['resources']['delly']['mem'])
+            cpu=pipeconfig['resources']['delly']['cpu'], mem=pipeconfig['resources']['delly']['mem'],runlocally=options.runlocal)
     else:
         run_cmd(' '.join(cmd))
 
@@ -1848,7 +1851,7 @@ def ngsEasy_exomedepth(input_file,output_file):
         run_sge(' '.join(cmd),
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=pipeconfig['resources']['pindel']['cpu'], mem=pipeconfig['resources']['pindel']['mem'])
+            cpu=pipeconfig['resources']['pindel']['cpu'], mem=pipeconfig['resources']['pindel']['mem'],runlocally=options.runlocal)
     else:
         run_cmd(' '.join(cmd))
 
@@ -1870,7 +1873,7 @@ def ngsEasy_exonhomo(input_file,output_file):
         run_sge(' '.join(cmd),
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(' '.join(cmd))
 
@@ -1887,7 +1890,7 @@ def ngsEasy_SLOPE(input_file,output_file):
         run_sge(' '.join(cmd),
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2)
+            cpu=1, mem=2,runlocally=options.runlocal)
     else:
         run_cmd(' '.join(cmd))
 #
