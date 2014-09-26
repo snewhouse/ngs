@@ -46,7 +46,11 @@
                 "SLIDINGWINDOW:4:15",
                 "MINLEN:36"],
             "aligner": "bwa",
-            "rmdup": false
+            "rmdup": false,
+            "readQC": {
+                "medianlength": 100,
+                "count": 1000000
+            }
         },
         "cancertest": {
             "tas": {
@@ -77,7 +81,11 @@
                 "TRAILING:3",
                 "MINLEN:36"],
             "aligner": "stampy",
-            "rmdup": false
+            "rmdup": false,
+            "readQC": {
+                "medianlength": 100,
+                "count": 1000000
+            }
         },
         "test": {
             "tas": {
@@ -108,7 +116,11 @@
                 "TRAILING:3",
                 "MINLEN:36"],
             "aligner": "bowtie2",
-            "rmdup": false
+            "rmdup": false,
+            "readQC": {
+                "medianlength": 100,
+                "count": 1000000
+            }
         }
     }
 }

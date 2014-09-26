@@ -116,7 +116,7 @@
     },
     "resources": {
         "gridengine": {
-            "-q": "short.q,long.q",
+            "-q": "bignode.q,short.q,long.q",
             "-M": "dbrawand@gmail.com",
             "-m": "beas"
         },

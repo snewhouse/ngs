@@ -402,7 +402,9 @@ style_end = {'shape': "box"}
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 from ruffus import *
 import inspect  # to get the functions name inside
-from collections import Counter
+from collections import Counter, defaultdict
+from numpy import median
+
 #--------------------
 # just count reads
 #--------------------
@@ -532,9 +534,11 @@ def ngsEasy_postfilterFastQC(input_files,output_files):
 #--------------------
 ###### ADD MERGE/COLLATE OF FASTQC and gerneate QC report
 @graphviz(label_prefix="Read QC\n", **style_collect)
-@collate([ngsEasy_prefilterFastQC,ngsEasy_postfilterFastQC], regex(r'(.+)(?:\.filtered)?_fastqc\.zip'), r'\1.readQCpassed')
+@follows(ngsEasy_postfilterFastQC)
+@collate(ngsEasy_prefilterFastQC, regex(r'(.+)_1_fastqc\.zip'), r'\1.readQC')
 @timejob(logger)
 def ngsEasy_readQC(input_files,output_file):
+    p = loadConfiguration(input_files[0][0][:input_files[0][0].rfind('/')])
     # check trimlog
     try:
         filename =  input_files[0][0]
@@ -545,24 +549,36 @@ def ngsEasy_readQC(input_files,output_file):
         with open(output_file,'a'): pass
     else:
         re_trimlog = re.compile('\S+\s+(\d)\S+\s+(\d+)\s+\d+\s+\d+\s+\d+$')
-        trimlog = '/'+m.group(1)+m.group(2)+'.trimlog'
         success = Counter()
+        lengths = defaultdict(list)
+        trimlog = '/'+m.group(1)+m.group(2)+'.trimlog'
         for l in open(trimlog):
             m = re_trimlog.match(l)
-            try:
-                assert m.group(2) != '0'
-            except:
-                pass
-            else:
+            if int(m.group(2)) != 0:
                 success[m.group(1)] += 1
-        # check how many read remain
-        if len(success) < 2:
-            logger.error("ABORTING: NO READS REMAIN AFTER FILTERING!")
-            sys.exit()
-        else:
-            with open(output_file,'a'):
-                pass
-
+            lengths[m.group(1)].append(int(m.group(2)))
+        # check how many reads remain (check median read length)
+        with open(output_file,'w') as rqc:
+            for k in lengths.keys():
+                _median = median(lengths[k])
+                print >> rqc, k, 'median:'+str(_median),
+                if _median >= ngsconfig['ngsanalysis'][p.ngsAnalysis]['readQC']['medianlength']:
+                    print >> rqc, "PASS"
+                else:
+                    print >> rqc, "FAIL"
+                print >> rqc, k, 'count:'+str(success[k]),
+                if success[k] >= ngsconfig['ngsanalysis'][p.ngsAnalysis]['readQC']['count']:
+                    print >> rqc, "PASS"
+                else:
+                    print >> rqc, "FAIL"
+                # abort trap
+                try:
+                    assert success[k] > 0
+                except AssertionError:
+                    logger.error("ABORTING: NO READS REMAIN AFTER FILTERING!")
+                    sys.exit(1)
+                except:
+                    raise
 
 #--------------------
 # ALIGNMENT
@@ -2016,7 +2032,7 @@ elif options.flowchart:
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 else:
     pipeline_run(target_tasks = targettasks, forcedtorun_tasks = forcedtasks,
-        multithread = options.jobs if sge else 2, multiprocess = 1 if sge else options.jobs,
+        multithread = options.jobs if sge else 1, multiprocess = 1 if sge else options.jobs,
         logger = logger, verbose=options.verbose, verbose_abbreviated_path = 3,
         checksum_level = 1 if options.debug else 3, touch_files_only=options.touch)
 
