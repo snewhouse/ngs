@@ -609,7 +609,7 @@ def ngsEasy_alignment(input_files, output_file):
         cmd = " ".join([
             pipeconfig['software']['bwa'],
             'mem', '-M',
-            '-t '+pipeconfig['resources']['bwa']['cpu'],
+            '-t '+str(pipeconfig['resources']['bwa']['cpu']),
             pipeconfig['reference']['genome']['bwaindex'],
             ' '.join(input_files),
             '>', output_file ])
@@ -618,7 +618,7 @@ def ngsEasy_alignment(input_files, output_file):
         cmd = " ".join([
             pipeconfig['software']['bwa'],
             'mem', '-M',
-            '-t '+pipeconfig['resources']['bwa']['cpu'],
+            '-t '+ str(pipeconfig['resources']['bwa']['cpu']),
             pipeconfig['reference']['genome']['sequence'],
             ' '.join(input_files),
             '|', pipeconfig['software']['bwa'], 'view -Sb -', '>', bwa,
