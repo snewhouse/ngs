@@ -76,7 +76,9 @@ class NGSjob:
         "_sample",  # from filename
         "_run_id",  # from filename
         "_lane",  # from filename
-        "_pair"  # from filename
+        "_pair",  # from filename
+        "githash",  # git revision history
+        "_pipeconfig"  # pipeline configration (reference and software at least)
         )
 
     __required__ = (

@@ -130,8 +130,9 @@
             "-m": "n"
         },
         "trimmomatic": {
-            "cpu": 4,
-            "java_mem": 1
+            "cpu": 1,
+            "mem": 2,
+            "java_mem": 2
         },
         "novoalign": {
             "cpu": 8,
@@ -139,23 +140,23 @@
         },
         "bwa": {
             "cpu": 4,
-            "sge_vmem": 8
+            "mem": 8
         },
         "bowtie": {
             "cpu": 4,
-            "sge_vmem": 8
+            "mem": 8
         },
         "bowtie2": {
             "cpu": 4,
-            "sge_vmem": 8
+            "mem": 8
         },
         "stampy": {
             "cpu": 4,
-            "sge_vmem": 8
+            "mem": 8
         },
         "picard": {
             "cpu": 4,
-            "sge_vmem": 8,
+            "mem": 8,
             "java_mem": 6
         },
         "gatk": {

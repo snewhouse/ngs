@@ -5,7 +5,12 @@ import os
 import time
 import logging
 import functools
+import subprocess
 #import matplotlib.pyplot as plt
+
+'''get GIT revision hash'''
+def githash():
+    return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).rstrip()
 
 '''timer (decorator)'''
 def timejob(stream):

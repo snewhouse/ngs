@@ -135,7 +135,7 @@ for ngsjobfile in args:
 #   setup jobs (collect additional parameters, check files, make directories, write config)
 #88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 
-from ngsEasy_helpers import tail, zeroFile, parsePicard, flatten, timejob
+from ngsEasy_helpers import tail, zeroFile, parsePicard, flatten, timejob, githash
 
 inputfiles = []
 cfg_file = '.molpath'
@@ -147,6 +147,11 @@ for i, ngsjob in enumerate(ngsjobs):
     # build configfile and setup directories
     if not os.path.isfile(configpath):
         logger.info('Setting up '+str(ngsjob))
+
+        # store GIT revision hash and pipeline configuration (subset)
+        ngsjob.githash = githash()
+        ngsjob._pipeconfig = {k: pipeconfig.get(k, None) for k in ('reference', 'software')}
+
         # get fastq names
         if not ngsjob.FASTQ1:
             try:
@@ -447,7 +452,7 @@ def ngsEasy_checkPaired(input_files,output_file):
 def ngsEasy_prefilterFastQC(input_files,output_files):
     # load configurations and name job
     p = loadConfiguration(input_files[0][:input_files[0].rfind('/')])
-    cmd = " ".join([ pipeconfig['software']['fastqc'], "--noextract", ' '.join(input_files) ])
+    cmd = " ".join([ pipeconfig['software']['fastqc'], "--noextract"] + input_files)
     # # run on cluster
     if sge:
         run_sge(cmd,
@@ -491,7 +496,7 @@ def ngsEasy_trimmomatic(input_files, output_files):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2,runlocally=options.runlocal)
+            cpu=pipeconfig['resources']['trimmomatic']['cpu'], mem=pipeconfig['resources']['trimmomatic']['mem'] , runlocally=options.runlocal)
     # fallback
     else:
         run_cmd(cmd)
@@ -511,7 +516,7 @@ def ngsEasy_trimmomatic(input_files, output_files):
 def ngsEasy_postfilterFastQC(input_files,output_files):
     # load configurations
     p = loadConfiguration(input_files[0][:input_files[0].rfind('/')])
-    cmd = " ".join([ pipeconfig['software']['fastqc'], "--noextract", ' '.join(input_files) ])
+    cmd = " ".join([ pipeconfig['software']['fastqc'], "--noextract"] + input_files)
     # run on cluster
     if sge:
         run_sge(cmd,
@@ -527,7 +532,7 @@ def ngsEasy_postfilterFastQC(input_files,output_files):
 #--------------------
 ###### ADD MERGE/COLLATE OF FASTQC and gerneate QC report
 @graphviz(label_prefix="Read QC\n", **style_collect)
-@collate([ngsEasy_prefilterFastQC,ngsEasy_postfilterFastQC], regex(r'(.+)(?:\.filtered)?_fastqc\.zip'), r'readQC.done')
+@collate([ngsEasy_prefilterFastQC,ngsEasy_postfilterFastQC], regex(r'(.+)(?:\.filtered)?_fastqc\.zip'), r'\1.readQCpassed')
 @timejob(logger)
 def ngsEasy_readQC(input_files,output_file):
     # check trimlog
@@ -573,8 +578,8 @@ def ngsEasy_alignment(input_files, output_file):
     try:
         assert aligner in ['bwa','bowtie2','stampy','bowtie','bowtie2','novoalign']
     except:
-        logger.warn("aligner %s not available. Falling back to stampy." % aligner)
-        aligner = 'stampy'
+        logger.warn("aligner %s not available. Falling back to bwa." % aligner)
+        aligner = 'bwa'
     # GE resources
     try:
         ge_cpu = pipeconfig['resources'][aligner]['cpu']
@@ -741,7 +746,7 @@ def ngsEasy_addReplaceReadGroups(input_file,output_file):
         run_sge(cmd,
             jobname="_".join([inspect.stack()[0][3], p.RG('SM')]),
             fullwd=pipeconfig['path']['analysis']+'/'+p.wd(),
-            cpu=1, mem=2,runlocally=options.runlocal)
+            cpu=1, mem=pipeconfig['resources']['picard']['mem'],runlocally=options.runlocal)
     else:
         run_cmd(cmd)
     # cleanup
