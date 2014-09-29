@@ -64,7 +64,7 @@
         "bcftools": "/scratch/home/bclarkebrc/pipeline/bcftools/bcftools",
         "bedtools": "/scratch/home/bclarkebrc/pipeline/bedtools2/bin/bedtools",
         "bowtie2": "/scratch/home/bclarkebrc/pipeline/bowtie2-2.2.3/bowtie2",
-        "bwa": "scratch/home/bclarkebrc/pipeline/bwa-0.7.10/bwa",
+        "bwa": "/scratch/home/bclarkebrc/pipeline/bwa-0.7.10/bwa",
         "stampy": "/scratch/home/bclarkebrc/pipeline/stampy-1.0.23/stampy.py",
         "platypus": "/scratch/home/bclarkebrc/pipeline/Platypus_0.7.9.1/Platypus.py",
         "trimmomatic": "/scratch/home/bclarkebrc/pipeline/Trimmomatic-0.32/trimmomatic-0.32.jar",
