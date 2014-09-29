@@ -52,6 +52,7 @@
         "analysis": "/Users/dbrawand/ngs/pEasy/analysis"
     },
     "software": {
+        "python": "python",
         "java": "/usr/bin/java",
         "fastqc": "/usr/local/pipeline/FastQC/fastqc",
         "trimmomatic": "/usr/local/pipeline/Trimmomatic-0.32/trimmomatic-0.32.jar",

@@ -624,6 +624,7 @@ def ngsEasy_alignment(input_files, output_file):
             #'|', pipeconfig['software']['bwa'], 'view -Sb -',
             '>', bwa,
             '&&',
+            pipeconfig['software']['python'],
             pipeconfig['software']['stampy'],
             '-g', pipeconfig['reference']['genome']['stampyindex'],
             '-h', pipeconfig['reference']['genome']['stampyindex'],

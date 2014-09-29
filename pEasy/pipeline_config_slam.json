@@ -52,6 +52,7 @@
         "analysis": "/scratch/home/bclarkebrc/RUN"
     },
     "software": {
+        "python": "/share/bin/python2.7",
         "java": "/share/java/latest/bin/java",
         "picard": "/scratch/home/bclarkebrc/pipeline/picardtools/",
         "gatk": "/scratch/home/bclarkebrc/pipeline/GenomeAnalysisTK-3.2-2/",
