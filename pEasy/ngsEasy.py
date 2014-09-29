@@ -373,7 +373,7 @@ def run_sge(cmd_str, jobname, fullwd, cpu=1, mem=2, runlocally=False, scriptdir=
             job_script_directory = scriptdir,
             job_environment=sge_env, retain_job_scripts = True if scriptdir else False)
     except error_drmaa_job as err:
-        raise Exception("\n".join(map(str,["Failed to run:",cmd_str,err,stdout_res,stderr_res])))
+        raise Exception("\n".join(map(str,["Failed to run:",cmd_str,'with error',err])))
 
 '''writes shell script to execute in a docker container'''
 def dockerDispatch(cmd_str, run_container):
