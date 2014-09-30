@@ -15,7 +15,7 @@ ENV HOME /root
 
 # basic dependencies
 RUN apt-get update \
-  && apt-get install -y \
+  && apt-get install -f -y \
   automake \
   bash \
   binutils \
@@ -54,8 +54,7 @@ RUN apt-get update \
   libftgl-dev \
   libglew1.5-dev \
   libgsl0-dev \
-  libjpeg62 \
-  libjpeg62-dev \
+  libjpeg-dev \
   libkrb5-dev \
   libldap2-dev \
   libmcrypt4 \
@@ -90,7 +89,6 @@ RUN apt-get update \
   perl \
   php5-curl \
   python-dev \
-  r-base-dev \
   subversion \
   sysvbanner \
   tabix \
@@ -99,18 +97,17 @@ RUN apt-get update \
   vim \
   wget \
   xlibmesa-glu-dev \
-  zlib1g-dev
+  zlib1g-dev;  
 
+
+#------------------------------------------------------------------------
+# USER SETUP
+#------------------------------------------------------------------------
 # Create a pipeline user:pipeman and group:ngsgroup
-RUN mkdir /usr/local/pipeline \
-  && chmod 766 /usr/local/pipeline \
-  && useradd -m -s /bin/bash pipeman \
-  && cd /home/pipeman \
-  && echo "#bash config file for user pipeman" >> /home/pipeman/.bashrc
-  && groupadd ngsgroup \
-  && usermod -G ngsgroup pipeman \
-  && adduser pipeman sudo \
-  && usermod -a -G sudo pipeman
+RUN useradd -m -s /bin/bash pipeman && cd /home/pipeman && echo "#bash config file for user pipeman" >> /home/pipeman/.bashrc
+RUN groupadd ngsgroup
+RUN usermod -G ngsgroup pipeman
+RUN mkdir /usr/local/pipeline && chown pipeman:ngsgroup /usr/local/pipeline && chmod 775 /usr/local/pipeline
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

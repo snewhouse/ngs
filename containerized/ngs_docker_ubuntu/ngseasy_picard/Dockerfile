@@ -1,5 +1,5 @@
 # Base image
-FROM snewhouse/ngseasy-base:v1.0
+FROM compbio/ngseasy-ubuntu-base:v1.0
 
 # Maintainer 
 MAINTAINER Stephen Newhouse stephen.j.newhouse@gmail.com
@@ -7,28 +7,20 @@ MAINTAINER Stephen Newhouse stephen.j.newhouse@gmail.com
 # Set correct environment variables.
 ENV HOME /root
 
-# Regenerate SSH host keys. baseimage-docker does not contain any, so you
-# have to do that yourself. You may also comment out this instruction; the
-# init system will auto-generate one during boot.
-RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
-
 # Use baseimage-docker's init system.
-CMD ["/sbin/my_init"]
-
-# Set correct environment variables.
-ENV HOME /root
+CMD ["bash"]
 
 # Update
 RUN apt-get update
 
 # + Picard
-RUN wget -O /tmp/picard-tools-1.115.zip http://sourceforge.net/projects/picard/files/picard-tools/1.115/picard-tools-1.115.zip \
+RUN wget -O /tmp/picard-tools-1.119.zip http://sourceforge.net/projects/picard/files/picard-tools/1.119/picard-tools-1.119.zip \
     && mkdir /usr/local/pipeline/picardtools \
-    && unzip /tmp/picard-tools-1.115.zip -d /usr/local/pipeline/picardtools/ \
+    && unzip /tmp/picard-tools-1.119.zip -d /usr/local/pipeline/picardtools/ \
     && chown -R pipeman:ngsgroup /usr/local/pipeline/picardtools \
-    && sed -i '$aCLASSPATH=.:${CLASSPATH}:/usr/local/pipeline/picardtools/picard-tools-1.115/snappy-java-1.0.3-rc3.jar' /home/pipeman/.bashrc \
-    && sed -i '$aPATH=${PATH}:/usr/local/pipeline/picardtools/picard-tools-1.115' /home/pipeman/.bashrc \
-    && echo "alias ngsPicard='/usr/local/pipeline/picardtools/picard-tools-1.115'" >>  /home/pipeman/.bashrc
+    && sed -i '$aCLASSPATH=.:${CLASSPATH}:/usr/local/pipeline/picardtools/picard-tools-1.119/snappy-java-1.0.3-rc3.jar' /home/pipeman/.bashrc \
+    && sed -i '$aPATH=${PATH}:/usr/local/pipeline/picardtools/picard-tools-1.119' /home/pipeman/.bashrc \
+    && echo "alias ngsPicard='/usr/local/pipeline/picardtools/picard-tools-1.119'" >>  /home/pipeman/.bashrc
 
 
 #-------------------------------PERMISSIONS--------------------------
