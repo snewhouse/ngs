@@ -55,7 +55,6 @@ RUN apt-get update \
   vim \
   wget
 
-RUN apt-get update && apt-get --fix-missing
 
 #------------------------------------------------------------------------
 # USER SETUP
