@@ -69,13 +69,13 @@ done
   
 
 ## Print to screen input 
-echo  " NGS config_file  : [${config_file}]"
-echo  " NGS host_vol_dir : [${host_vol_di}]"
+echo  " NGS config_file  : [${config_tsv}]"
+echo  " NGS host_vol_dir : [${host_vol_dir}]"
 
-echo  " Checking [${config_file}] format"
+echo  " Checking [${config_tsv}] format"
 
-  numfeilds=`awk '{print NF}' ${config_file} | sort -gr | sed '1q'`
-  numsamples=`wc -l ${config_file} | awk '{print $1}'`
+  numfeilds=`awk '{print NF}' ${config_tsv} | sort -gr | sed '1q'`
+  numsamples=`wc -l ${config_tsv} | awk '{print $1}'`
 echo  " Number of samples : [$numsamples]"
     
   if [ "$numfeilds" -ne "15" ]
@@ -102,7 +102,7 @@ echo  " Number of samples : [$numsamples]"
     echo  " Data are [TAB] delimited and each line should end in a [NEW LINE]"
       exit 1
     else
-   echo  " All Good...Proceeding to read : [${config_file}]"
+   echo  " All Good...Proceeding to read : [${config_tsv}]"
   fi
 
 # begin reading config file line by line
@@ -115,7 +115,8 @@ do
   SAMPLE_ID=$f2
   FASTQ1=$f3
   FASTQ2=$f4
-  PROJECT_DIR=$f5
+# PROJECT_DIR=$f5
+  PROJECT_DIR=${host_vol_dir}
   DNA_PREP_LIBRARY_ID=$f6
   NGS_PLATFORM=$f7
   NGS_TYPE=$f8
@@ -190,7 +191,7 @@ echo  " Output Directory : [${PROJECT_DIR}/${POJECT_ID}]"
 echo  " Saving Project configuration settings to : [${PROJECT_DIR}/${POJECT_ID}/config_files/project.config.file.${DATE}]"
 echo  "$DATE $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15 ${SAMPLE_ID}.${NGS_TYPE}.${NGS_PLATFORM}.${ALIGNER} ${PROJECT_DIR}/${POJECT_ID}" >> ${PROJECT_DIR}/${POJECT_ID}/config_files/project.config.file.${DATE};
   
-done < ${config_file}
+done < ${config_tsv}
 }
 
 ##--------------------------------------------------##
@@ -200,9 +201,9 @@ done < ${config_file}
 volumes_container() {
 
 #usage printing func
-  usage()
-  {
-  cat << EOF
+usage()
+{
+cat << EOF
   This script sets up the docker volumes container:
   See NGSEasy containerized instructions.
 
@@ -211,7 +212,7 @@ volumes_container() {
   -d      Base directory for (fastq_raw, reference_genomes_b37, gatk_resources, ngs_projects, ngseasy_scripts)
   EXAMPLE USAGE:
   volumes_container -d /media/D/docker_ngs/ngseasy/
-EOF 
+EOF
 }
 
 #get options for command line args
@@ -253,6 +254,132 @@ EOF
 }
 
  
+##--------------------------------------------------##
+## Pre Alignemnt Fastqc
+##--------------------------------------------------##
+
+ngseasy_fastqc () {
+#usage printing func
+  usage()
+  {
+  cat << EOF
+  This script sets up the NGSeasy docker fastqc container:
+  See NGSEasy containerized instructions.
+
+  ARGUMENTS:
+  -h      Flag: Show this help message
+  -c      NGSeasy project and run configureation file
+  -t      1 = pre quality trim; 0 = post quality trim
+  
+  OPTIONAL:
+  -s	  Sample Id
+  -f      Fastq File Prefix/basename
+  -d      NGSeasy project directory
+  -p      NGSeasy project id
+
+  If optional arguments are provided, function ignores config file settings
+  
+  
+  EXAMPLE USAGE:
+  ngseasy_fastqc -c config.file.tsv -t pre
+  ngseasy_fastqc -s sample01 -t pre -f example -d /media/D/ngs_projects/example
+EOF 
+}
+
+#Default settings
+fastq_prefix="NULL"
+sample_id=""
+project_directory=""
+config_tsv=""
+
+#get options for command line args
+  while  getopts "h:c:t:sfpd" opt
+  do
+
+      case ${opt} in
+	  h)
+	  usage #print help
+	  exit 0
+	  ;;
+	  
+	  c)
+	  config_tsv=${OPTARG}
+	  ;;
+	 
+	  t)
+	  fastqc_pre=${OPTARG}
+	  ;; 
+	  
+	  s)
+	  sample_id=${OPTARG}
+	  ;;
+	  
+	  f)
+	  fastq_prefix=${OPTARG}
+	  ;;
+	  
+	  p)
+	  project_id=${OPTARG}
+	  ;;
+
+  	  d)
+	  project_directory=${OPTARG}
+	  ;;
+
+      esac
+  done
+
+
+
+#choose run from config file or manually from specified fasq  
+if [ "${fastq_prefix}" == "NULL" ]
+then
+
+#check config file exists.
+if [ ! -e ${config_tsv} ] 
+then
+	    echo " ${config_tsv} does not exist "
+	    usage;
+	    exit 1;
+fi
+  
+#run compbio/ngseasy-fastq
+  sudo docker run \
+  -d \
+  -P \
+  --name fastqc \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-fastqc:v0.9 /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_fastqc_pre_trimm.sh "config" ${fastqc_pre} /home/pipeman/ngs_projects/${config_tsv}
+
+else
+  sudo docker run \
+  -d \
+  -P \
+  --name fastqc \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-fastqc:v0.9 /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_fastqc_pre_trimm.sh "manually" ${fastqc_pre} ${sample_id} ${fastq_prefix} ${project_id} ${project_directory}
+fi
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
