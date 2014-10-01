@@ -1,5 +1,9 @@
+#------------------------------------------------#
+# FASTQC TOOL: Dockerfile
+#------------------------------------------------#
+
 # Base image
-FROM compbio/ngseasy-ubuntu-base:v1.0
+FROM compbio/ngseasy-base:wheezy
 
 # Maintainer 
 MAINTAINER Stephen Newhouse stephen.j.newhouse@gmail.com
@@ -7,15 +11,10 @@ MAINTAINER Stephen Newhouse stephen.j.newhouse@gmail.com
 # Set correct environment variables.
 ENV HOME /root
 
-# Use baseimage-docker's init system.
-CMD ["bash"]
-
-# Set correct environment variables.
-ENV HOME /root
-
 # Update
 RUN apt-get update -y
-        
+
+#-------------------------NGS-TOOL---------------------------------------
 # + FastQC
     RUN wget -O /tmp/fastqc_v0.11.2.zip http://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.2.zip \
         && unzip /tmp/fastqc_v0.11.2.zip -d /usr/local/pipeline/ \
@@ -28,12 +27,18 @@ RUN apt-get update -y
 RUN chmod -R 766 /usr/local/pipeline/***
 RUN chown -R pipeman:ngsgroup /usr/local/pipeline
 
-# Cleanup the temp dir
+#---------------------------------------------------------------------
+#Cleanup the temp dir
 RUN rm -rf /tmp/*
 
-# open ports private only
+#open ports private only
 EXPOSE 80
 
-# Clean up APT when done.
+#Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get autoclean && apt-get autoremove -y && rm -rf /var/lib/{apt,dpkg,cache,log}/
 
+#CMD and ENTRYPOINT 
+COPY ngseasy_hello.sh /home/pipeman/ngseasy_hello.sh 
+ENTRYPOINT ["/bin/bash"]  
+CMD ["/home/pipeman/ngseasy_hello.sh"]
