@@ -1,0 +1,19 @@
+#!/bin/bash
+# Collection of NGSeasy Functions
+# Stephen Newhouse <stephen.j.newhouse@gmail.com>
+# Version 0.9.0
+
+
+
+
+#copy fastq files to sample directory
+if [ ! -s ${SOUT}/fastq/${FASTQ1} ] && [ ! -s ${SOUT}/fastq/${FASTQ2} ]
+then
+  echo " NGSeasy: Copying fastq files from ${FASTQDIR}/ to ${SOUT}/fastq/ " `date`
+    cp ${FASTQDIR}/${FASTQ1} ${SOUT}/fastq/${FASTQ1}
+    cp ${FASTQDIR}/${FASTQ2} ${SOUT}/fastq/${FASTQ2}
+
+else
+  echo " NGSeasy: Fastq Files exist in  ${SOUT}/fastq/ " `date`
+  ls ${SOUT}/fastq/
+fi
