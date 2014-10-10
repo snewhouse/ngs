@@ -21,7 +21,7 @@ RUN wget -O /tmp/bowtie2-2.2.3-linux-x86_64.zip http://sourceforge.net/projects/
     && chown -R pipeman:ngsgroup /usr/local/pipeline/bowtie2-2.2.3 \
     && sed  -i '$aPATH=${PATH}:/usr/local/pipeline/bowtie2-2.2.3:/usr/local/pipeline/bowtie2-2.2.3/scripts' /home/pipeman/.bashrc \
     && echo "alias ngsBowtie2='/usr/local/pipeline/bowtie2-2.2.3'" >>  /home/pipeman/.bashrc \
-    && sed  -i '$aPATH=${PATH}:/usr/local/pipeline/bowtie2-2.2.3:/usr/local/pipeline/bowtie2-2.2.3/scripts' .bashrc
+    && sed  -i '$aPATH=${PATH}:/usr/local/pipeline/bowtie2-2.2.3:/usr/local/pipeline/bowtie2-2.2.3/scripts' /root/.bashrc
 
 #Tophat
 RUN wget -O /tmp/tophat-2.0.13.Linux_x86_64.tar.gz http://ccb.jhu.edu/software/tophat/downloads/tophat-2.0.13.Linux_x86_64.tar.gz \
