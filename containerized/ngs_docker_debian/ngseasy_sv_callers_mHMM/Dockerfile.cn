@@ -35,14 +35,16 @@ RUN apt-get update -y && \
 	zlib1g \
 	r-base-core \
 	r-base-dev \
-	r-recommended \
-	r-cran-vgam
+	r-recommended
 
 ## bioconductor and R libs ##
 ## needed fo R CNV tools  
-
+## needed fo R CNV tools  
 RUN /usr/bin/Rscript --no-save --no-restore -e 'source("http://www.bioconductor.org/biocLite.R"); biocLite()' \
-	&& /usr/bin/Rscript --no-save --no-restore -e 'source("http://www.bioconductor.org/biocLite.R"); biocLite("ExomeDepth",dependencies=TRUE)'
+&& cd /usr/local/pipeline/ \
+&& wget https://www.stt.msu.edu/users/hengwang/mHMM%20Data/mHMM_1.0.tar.gz \
+&& sudo R CMD INSTALL mHMM_1.0.tar.gz \
+&& rm mHMM_1.0.tar.gz;
 
 # Cleanup the temp dir
 RUN rm -rf /tmp/*
