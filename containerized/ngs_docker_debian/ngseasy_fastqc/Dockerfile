@@ -38,7 +38,3 @@ EXPOSE 80
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN apt-get autoclean && apt-get autoremove -y && rm -rf /var/lib/{apt,dpkg,cache,log}/
 
-#CMD and ENTRYPOINT 
-COPY ngseasy_hello.sh /home/pipeman/ngseasy_hello.sh 
-ENTRYPOINT ["/bin/bash"]  
-CMD ["/home/pipeman/ngseasy_hello.sh"]

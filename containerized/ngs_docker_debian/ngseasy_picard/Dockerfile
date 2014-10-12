@@ -1,5 +1,5 @@
 # Base image
-FROM compbio/ngseasy-ubuntu-base:v1.0
+FROM compbio/ngseasy-base:wheezy
 
 # Maintainer 
 MAINTAINER Stephen Newhouse stephen.j.newhouse@gmail.com
@@ -11,7 +11,7 @@ ENV HOME /root
 CMD ["bash"]
 
 # Update
-RUN apt-get update
+RUN apt-get update -y
 
 # + Picard
 RUN wget -O /tmp/picard-tools-1.119.zip http://sourceforge.net/projects/picard/files/picard-tools/1.119/picard-tools-1.119.zip \
@@ -35,4 +35,5 @@ EXPOSE 80
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get autoclean && apt-get autoremove -y && rm -rf /var/lib/{apt,dpkg,cache,log}/
 

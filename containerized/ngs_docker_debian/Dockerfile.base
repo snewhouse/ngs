@@ -7,17 +7,22 @@ MAINTAINER Stephen Newhouse stephen.j.newhouse@gmail.com
 # Set correct environment variables.
 ENV HOME /root
 
+# Use baseimage-docker's init system.
+CMD ["bash"]
+
 # Update
 RUN apt-get update -y
 
-# + seqtk
-    RUN cd /usr/local/pipeline/ \
-    && git clone https://github.com/lh3/seqtk.git \
-    && chown -R pipeman:ngsgroup /usr/local/pipeline/seqtk \
-    && cd seqtk/ \
-    && make \
-    && sed  -i '$aPATH=${PATH}:/usr/local/pipeline/seqtk' /home/pipeman/.bashrc \
-    && echo "alias ngsSeqtk='/usr/local/pipeline/seqtk'" >>  /home/pipeman/.bashrc \
+#-------------------------------TOOL--------------------------
+
+# + SAVANT
+wget -O /tmp/Savant-full-latest.tgz http://www.well.ox.ac.uk/bioinformatics/Software/Savant-full-latest.tgz \
+  && tar xvf /tmp/Savant-full-latest.tgz -C $INSTALL_TARGET/ \
+  && cd $INSTALL_TARGET/savant-v1.1.0-complete \
+  && chmod -R 755 $INSTALL_TARGET/savant-v1.1.0-complete \
+  && sed -i '$aPATH=${PATH}:$INSTALL_TARGET/savant-v1.1.0-complete' $PATH_FILE \
+  && echo "alias ngsSavant='$INSTALL_TARGET/savant-v1.1.0-complete'" >>  $PATH_FILE
+
 
 
 #-------------------------------PERMISSIONS--------------------------

@@ -18,15 +18,30 @@ ngseasy_initiate_project () {
 usage()
 {
 cat << EOF
-This script sets up the NGSeasy Project directories
+
+This script sets up the NGSeasy Project directories.
+
+Users must run this script before starting any NGS projects/runs 
+using NGSesy suite of tools.
+
+This ensures the correct directory structure is set up on your
+local machine. 
+
+Note: These directory names and structure are hard coded in the 
+NGSeasy scripts.  
+
 See NGSEasy containerized instructions.
 
 ARGUMENTS:
--h      Flag: Show this help message
--c      Config pipeline file
--d      Base directory for (fastq_raw, reference_genomes_b37, gatk_resources, ngs_projects, ngseasy_scripts)
+	
+	-h      Flag: Show this help message
+	-c      Config pipeline file
+	-d      Base directory for (fastq_raw, reference_genomes_b37, gatk_resources, ngs_projects, ngseasy_scripts)
+
 EXAMPLE USAGE:
-ngseasy_initiate_project -c config.file.tsv -d /media/D/docker_ngs/ngseasy/
+	
+	ngseasy_initiate_project -c config.file.tsv -d /media/D/docker_ngs/ngseasy/
+
 EOF
 }
 

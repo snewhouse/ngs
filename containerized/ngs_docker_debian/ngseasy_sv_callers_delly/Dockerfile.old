@@ -1,0 +1,66 @@
+# Base image
+FROM compbio/ngseasy-base:wheezy
+
+# Maintainer 
+MAINTAINER Stephen Newhouse stephen.j.newhouse@gmail.com
+
+# Set correct environment variables.
+ENV HOME /root
+
+# Update
+RUN apt-get update -y
+RUN apt-get install -y build-essential g++ git cmake zlib1g-dev debhelper \
+	libboost-all-dev \
+	libboost-dev \
+	libboost-date-time-dev \
+	libboost-program-options-dev \
+	libboost-system-dev \
+	libboost-filesystem-dev \
+	libboost-iostreams-dev \
+	libboost-**
+
+#---------------------------------DELLY------------------------------------#
+# + DELLY - split read PE mapping
+# install bamtools
+RUN cd /usr/local/pipeline \
+&& git clone https://github.com/pezmaster31/bamtools.git \
+&& cd bamtools/\
+&& mkdir build \
+&& cd build/ \
+&& cmake ..\
+&& make;
+
+# install seqtk
+RUN cd /usr/local/pipeline \
+&& git clone https://github.com/lh3/seqtk.git \
+&& cd seqtk/ \
+&&  make
+
+# set environment
+ENV BOOST_ROOT /usr
+ENV BAMTOOLS_ROOT /usr/local/pipeline/bamtools
+ENV SEQTK_ROOT /usr/local/pipeline/seqtk
+ENV LD_LIBRARY_PATH /usr/local/pipeline/bamtools/lib
+
+# install delly
+RUN cd /usr/local/pipeline \
+&& git clone https://github.com/tobiasrausch/delly.git \
+&& chmod -R 766 /usr/local/pipeline/** \
+&& cd delly/ \
+&& make -B src/delly \
+&& sed -i '$aPATH=${PATH}:/usr/local/pipeline/delly/src' /home/pipeman/.bashrc \
+&& echo "alias ngsDelly='/usr/local/pipeline/delly/src'" >> /home/pipeman/.bashrc \
+
+#-------------------------------PERMISSIONS--------------------------
+RUN chmod -R 766 /usr/local/pipeline/***
+RUN chown -R pipeman:ngsgroup /usr/local/pipeline
+
+# Cleanup the temp dir
+RUN rm -rf /tmp/*
+
+# open ports private only
+EXPOSE 80
+
+# Clean up APT when done.
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get autoclean && apt-get autoremove -y && rm -rf /var/lib/{apt,dpkg,cache,log}/
