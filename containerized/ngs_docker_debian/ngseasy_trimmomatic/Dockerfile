@@ -37,3 +37,7 @@ EXPOSE 80
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+#CMD and ENTRYPOINT
+COPY ngseasy_hello.sh /home/pipeman/ngseasy_hello.sh
+ENTRYPOINT ["/bin/bash"]
+CMD ["/home/pipeman/ngseasy_hello.sh"]
