@@ -16,6 +16,7 @@ RUN apt-get update -y
 #-------------------------------TOOL--------------------------
 
 # + SAVANT
+<<<<<<< HEAD
 wget -O /tmp/Savant-full-latest.tgz http://www.well.ox.ac.uk/bioinformatics/Software/Savant-full-latest.tgz \
   && tar xvf /tmp/Savant-full-latest.tgz -C /usr/local/pipeline \
   && cd /usr/local/pipeline/savant-v1.1.0-complete \
@@ -25,6 +26,18 @@ wget -O /tmp/Savant-full-latest.tgz http://www.well.ox.ac.uk/bioinformatics/Soft
 
 #-------------------------------PERMISSIONS--------------------------
 RUN chmod -R 766 /usr/local/pipeline/
+=======
+RUN wget -O /tmp/Savant-full-latest.tgz http://www.well.ox.ac.uk/bioinformatics/Software/Savant-full-latest.tgz \
+  && tar xvf /tmp/Savant-full-latest.tgz -C /usr/local/pipeline/ \
+  && cd /usr/local/pipeline/savant-v1.1.0-complete \
+  && chmod -R 755 /usr/local/pipeline/savant-v1.1.0-complete \
+  && sed -i '$aPATH=${PATH}:/usr/local/pipeline/savant-v1.1.0-complete' /home/pipeman/.bashrc \
+  && echo "alias ngsSavant='/usr/local/pipeline/savant-v1.1.0-complete'" >>  /home/pipeman/.bashrc \
+  && sed -i '$aPATH=${PATH}:/usr/local/pipeline/savant-v1.1.0-complete' /root/.bashrc
+
+#-------------------------------PERMISSIONS--------------------------
+RUN chmod -R 766 /usr/local/pipeline/***
+>>>>>>> 7ea2ff7bd9089cf957f5097e745f7b6adf4f873b
 RUN chown -R pipeman:ngsgroup /usr/local/pipeline
 
 # Cleanup the temp dir
