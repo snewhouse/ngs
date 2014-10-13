@@ -4,10 +4,14 @@ NGSeasy
 
 **With NGSeasy you can now have full suite of NGS tools up and running on any high end workstation in an afternoon**
 
+**Note:** NGSeasy is under **continous development** and the dev version evolves quickly. 
+
+Please contact us for help/guidance on using the beat release. Our public server is down, so please to email us for access to the NGS resources and VM(s).  
+
+- **NGSeasy-v1.0 Full Production release will be available Dec 2014**    
+
 ## Latest Version
 *****************
-**Note:** NGSeasy is under continous development and the dev version evolves quickly. NGSeasy-v1.0 Full Production release will be available Dec 2014  
-
 [NGSeasy-v0.9.3](https://github.com/KHP-Informatics/ngs/tree/release-0.9.3) - NGSeasy: Latest Release  
 
 - NB: so far full_no_gatk.sh is the most developed module. 
@@ -20,11 +24,13 @@ NGSeasy
 
 ### Coming Soon
 - Savant 
+- SLOPE (CNV fo targetted NSG)  
 - Cancer Pipelines
 - Annotation Pipelines and Databases
 - Visualisation Pipelines
 - New Aligners:- GSNAP, mr- and mrs-Fast,gem
 - Var Callers:- VarScan2
+- SGE scripts and basic BASH scrips for running outside of Docker
 
 ### Authors
 - Amos Folarin <amosfolarin@gmail.com>  
