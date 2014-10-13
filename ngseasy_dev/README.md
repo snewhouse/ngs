@@ -99,7 +99,7 @@ ngseasy_volumes_container -d /media/ngs_projects
 
 # Running a full pipeline : from raw fastq to vcf calls
 
-``{bash}
+```{bash}
 
 ngseasy_initiate_project -c config.file.tsv -d /media/ngs_projects
 
