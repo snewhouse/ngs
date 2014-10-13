@@ -35,7 +35,7 @@ NCPU|number|Number of cores to call|
 ## Step 2. Initiate the Project
 The user needs to make the relevent directory structure on their local machine. Running this script ensures that all relevant directories are set up, ans also enforces a clean structure to the NGS project.  
 
-On our sysetm we typically set up a top-level driectory called `ngs_projects` within which we store output from all our individual NGS projects.  
+On our sysetm we typically set up a top-level driectory called `ngs_projects` within which we store output from all our individual NGS projects. Within this we make a `raw_fastq` folder, where we temporarily store all the raw fastq files for each project. This folder acts as an initial stagging area for the raw fastq files. During the project set up, we copy/move project/sample related fastq files to their own specific directories.
 
 Running `ngseasy_initiate_project` with the relevent configuration file, will set up the following directory structure for every project and sample within a project:-  
 
