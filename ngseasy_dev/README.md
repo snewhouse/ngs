@@ -39,6 +39,7 @@ On our sysetm we typically set up a top-level driectory called `ngs_projects` wi
 
 Running `ngseasy_initiate_project` with the relevent configuration file, will set up the following directory structure for every project and sample within a project:-  
 
+```
 .
 ngs_projects  
 |  
@@ -52,6 +53,7 @@ ngs_projects
 		|__vcf  
 		|__reports  
 		|__config_files  
+```
 
 ```
 ${PROJECT_DIR}  
