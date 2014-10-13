@@ -99,7 +99,7 @@ ngseasy_volumes_container -d /media/ngs_projects
 
 ## Running a full pipeline : from raw fastq to vcf calls
 
-See https://github.com/KHP-Informatics/ngs/tree/dev2/ngseasy_dev for dev functions:-  
+See https://github.com/KHP-Informatics/ngs/tree/dev2/ngseasy_dev for dev functions (Still workin on these):-  
 
 ```{bash}
 
