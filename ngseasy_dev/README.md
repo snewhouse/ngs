@@ -99,7 +99,7 @@ ngseasy_volumes_container -d /media/ngs_projects
 
 ## Running a full pipeline : from raw fastq to vcf calls
 
-See https://github.com/KHP-Informatics/ngs/tree/dev2/ngseasy_dev for dev functions (Still workin on these):-  
+See https://github.com/KHP-Informatics/ngs/tree/dev2/ngseasy_dev for dev functions (Still workin on these). Each of these will call a separate container and run a part of the NGS pipeline. A full pipeline is set out below :-  
 
 ```{bash}
 
