@@ -99,9 +99,44 @@ ngseasy_volumes_container -d /media/ngs_projects
 
 # Running a full pipeline : from raw fastq to vcf calls
 
+``{bash}
 
+ngseasy_initiate_project -c config.file.tsv -d /media/ngs_projects
+
+ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
+
+ngseasy_volumes_container -d /media/ngs_projects
+
+ngseasy_fastq_qc -c config.file.tsv -d /media/ngs_projects
+
+ngseasy_fastq_trimm -c config.file.tsv -d /media/ngs_projects
+
+ngseasy_alignment -c config.file.tsv -d /media/ngs_projects
+
+ngseasy_mark_dupes -c config.file.tsv -d /media/ngs_projects
+
+nsgeasy_add_readgroups -c config.file.tsv -d /media/ngs_projects
+
+nsgeasy_indel_realignment -c config.file.tsv -d /media/ngs_projects
+
+nsgeasy_base_recalibration -c config.file.tsv -d /media/ngs_projects
+
+ngseasy_alignment_qc -c config.file.tsv -d /media/ngs_projects
+
+nsgeasy_var_callers -c config.file.tsv -d /media/ngs_projects
+
+nsgeasy_cnv_callers -c config.file.tsv -d /media/ngs_projects
+
+nsgeasy_variant_annotation -c config.file.tsv -d /media/ngs_projects
+
+nsgeasy_variant_combine -c config.file.tsv -d /media/ngs_projects
+
+nsgeasy_variant_report -c config.file.tsv -d /media/ngs_projects
+
+```
 ****
 
 To add :
 - getting the pipeline and setting up resources data
-- 
+- not all steps need config?
+- pipeline option need to be set how? list of steps, specified full, full_no_gatk, var_call_only, cnv_call_only, qc_reports??
