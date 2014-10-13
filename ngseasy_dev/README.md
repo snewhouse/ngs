@@ -105,12 +105,18 @@ A full pipeline is set out below :-
 
 ```{bash}
 
-# to be run outside of docker 
+#-----------------------------#
+# to be run outside of docker #
+#-----------------------------#
 ngseasy_initiate_project -c config.file.tsv -d /media/ngs_projects
 
 ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
 
-# Dockerised
+#------------#
+# Dockerised #
+#------------#
+
+# here [full] is a wrapper/fucntion for calling the pipeline
 
 full() { 
 
