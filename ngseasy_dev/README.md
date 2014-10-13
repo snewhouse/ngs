@@ -103,6 +103,8 @@ See https://github.com/KHP-Informatics/ngs/tree/dev2/ngseasy_dev for dev functio
 
 ```{bash}
 
+full() { 
+
 ngseasy_initiate_project -c config.file.tsv -d /media/ngs_projects
 
 ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
@@ -134,6 +136,8 @@ nsgeasy_variant_annotation -c config.file.tsv -d /media/ngs_projects
 nsgeasy_variant_combine -c config.file.tsv -d /media/ngs_projects
 
 nsgeasy_variant_report -c config.file.tsv -d /media/ngs_projects
+
+}
 
 ```
 ****
