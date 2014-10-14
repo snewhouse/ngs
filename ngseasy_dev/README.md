@@ -156,7 +156,8 @@ mkdir ngs_projects/gatk_resources
 cd ngs_projects/nsgeasy
 git clone https://github.com/KHP-Informatics/ngs.git
 git checkout dev2
-export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/bin
+export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/ngeasy_dev/bin
+ln -s /media/ngs_projects/nsgeasy/ngs/ngeasy_dev/bin /media/ngs_projects/ngseasy_scripts
 
 #-----------------------------#
 # to be run outside of docker #
