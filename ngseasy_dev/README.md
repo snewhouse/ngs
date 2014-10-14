@@ -6,6 +6,18 @@ NGSeasy
 NGSeasy Project Set up
 --------------------------
 
+## Step 0. Set up project directories
+
+```{bash}
+#--------------------------------#
+# make top level dirs 
+#--------------------------------#
+cd media
+mkdir ngs_projects
+mkdir ngs_projects/raw_fastq
+mkdir ngs_projects/config_files
+```
+
 ## Step 1. Set up project configuration file
 
 In Excel make config file and save as [TAB] Delimited file with ``.tsv`` extenstion.  
@@ -84,8 +96,10 @@ ngseasy_volumes_container -d /media/ngs_projects
 
 ```{bash}
 #make top level dirs 
+
 mkdir ngs_projects
-mkdir raw_fastq
+mkdir ngs_projects/raw_fastq
+mkdir ngs_projects/config_files
 
 #copy/download raw fastq file to [ngs_projects/raw_fastq]
 
@@ -109,11 +123,22 @@ A full pipeline is set out below :-
 
 ```{bash}
 
+#--------------------------------#
 # get and PATH nsgeasy scripts
+#--------------------------------#
+
 cd media
 git clone https://github.com/KHP-Informatics/ngs.git
 git checkout dev2
 export PATH=$PATH:/media/ngs/nsgeasy_dev/bin
+
+#--------------------------------#
+# make top level dirs 
+#--------------------------------#
+cd media
+mkdir ngs_projects
+mkdir ngs_projects/raw_fastq
+mkdir ngs_projects/config_files
 
 #-----------------------------#
 # to be run outside of docker #
