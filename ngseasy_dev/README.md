@@ -17,6 +17,7 @@ mkdir ngs_projects
 mkdir ngs_projects/raw_fastq
 mkdir ngs_projects/config_files
 ```
+****
 
 ## Step 1. Set up project configuration file
 
@@ -43,6 +44,7 @@ GTMODEGATK|string|GATK Variant Caller Mode|
 CLEANUP|string|Clean Up Files (TRUE/FALSE)|
 NCPU|number|Number of cores to call|
 
+****
 
 ## Step 2. Initiate the Project
 The user needs to make the relevent directory structure on their local machine. Running this script ensures that all relevant directories are set up, ans also enforces a clean structure to the NGS project.  
@@ -77,17 +79,20 @@ ngs_projects
 		|__config_files  
 
 ```
-Running **ngseasy_initiate_project**
+### Running **ngseasy_initiate_project**
 
 ```{bash}
 ngseasy_initiate_project -c config.file.tsv -d /media/ngs_projects
 ```
+****
 
 ## Step 3. Copy Project Fastq files to relevent Project/Sample Directories
 
 ```{bash}
 ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
 ```
+
+****
 
 ## Step 4. Start the NGSeasy Volume Contaier
 
