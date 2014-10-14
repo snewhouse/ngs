@@ -1,5 +1,4 @@
-#!/bin/nash
-
+#!/bin/bash
 
 # Run NGSeasy : top level master scrip
 
@@ -25,6 +24,12 @@ cat << EOF
     ngseasy -c config.file.tsv -d /media/nsg_projects
 
 EOF
+}
+
+#logging
+log_ngseasy(){
+
+	echo `date` ":[NGSeasy Log]" ${1} >> ${2}.log
 }
 
 #check exists.
@@ -90,6 +95,11 @@ do
   GTMODEGATK=$f13
   CLEANUP=$f14
   NCPU=$f15
+
+#log it 
+LOGFILE=${project_directory}/logs/${SAMPLE_ID}
+
+log_ngseasy "ngseasy: run pipeline: ${PIPELINE}" 
 
 # Call pipelien specified in config file #
 

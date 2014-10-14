@@ -105,6 +105,12 @@ A full pipeline is set out below :-
 
 ```{bash}
 
+# get and PATH nsgeasy scripts
+cd media
+git clone https://github.com/KHP-Informatics/ngs.git
+git checkout dev2
+export PATH=$PATH:/media/ngs/nsgeasy_dev/bin
+
 #-----------------------------#
 # to be run outside of docker #
 #-----------------------------#
