@@ -16,10 +16,14 @@ cat << EOF
   See NGSEasy containerized instructions.
 
   ARGUMENTS:
+  
   -h      Flag: Show this help message
   -d      Base directory for (fastq_raw, reference_genomes_b37, gatk_resources, ngs_projects, ngseasy_scripts)
+  
   EXAMPLE USAGE:
-  ngseasy_volumes_container -d /media/D/docker_ngs/ngseasy/
+  
+  ngseasy_volumes_container -d /media/D/ngs_projects
+
 EOF
 }
 

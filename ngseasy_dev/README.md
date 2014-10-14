@@ -14,7 +14,7 @@ NGSeasy Project Set up
 #--------------------------------#
 cd media
 mkdir ngs_projects
-mkdir ngs_projects/raw_fastq
+mkdir ngs_projects/fastq_raw
 mkdir ngs_projects/config_files
 ```
 ****
@@ -108,10 +108,10 @@ ngseasy_volumes_container -d /media/ngs_projects
 #make top level dirs 
 
 mkdir ngs_projects
-mkdir ngs_projects/raw_fastq
+mkdir ngs_projects/fastq_raw
 mkdir ngs_projects/config_files
 
-#copy/download raw fastq file to [ngs_projects/raw_fastq]
+#copy/download raw fastq file to [ngs_projects/fastq_raw]
 
 #set up project specific configuration file [config.file.tsv]
 
@@ -134,21 +134,27 @@ A full pipeline is set out below :-
 ```{bash}
 
 #--------------------------------#
-# get and PATH nsgeasy scripts
-#--------------------------------#
-
-cd media
-git clone https://github.com/KHP-Informatics/ngs.git
-git checkout dev2
-export PATH=$PATH:/media/ngs/nsgeasy_dev/bin
-
-#--------------------------------#
 # make top level dirs 
 #--------------------------------#
 cd media
 mkdir ngs_projects
-mkdir ngs_projects/raw_fastq
+mkdir ngs_projects/fastq_raw
 mkdir ngs_projects/config_files
+mkdir ngs_projects/nsgeasy_scripts
+
+#get NGSeasy resources
+reference_genomes_b37
+gatk_resources
+
+
+#--------------------------------#
+# get and PATH nsgeasy scripts
+#--------------------------------#
+
+cd ngs_projects/nsgeasy_scripts
+git clone https://github.com/KHP-Informatics/ngs.git
+git checkout dev2
+export PATH=$PATH:/media/ngs_projects/nsgeasy_scripts/ngs/bin
 
 #-----------------------------#
 # to be run outside of docker #
