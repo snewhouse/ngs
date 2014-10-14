@@ -29,7 +29,7 @@ EOF
 #logging
 log_ngseasy(){
 
-	echo `date` ":[NGSeasy Log]" ${1} >> ${2}.log
+	echo `date` ":[NGSeasy Log]:" ${1} >> ${2}.log
 }
 
 #check exists.

@@ -70,6 +70,8 @@ then
 	    usage;
 	    exit 1;
 fi
+
+# TO ADD: check if volumes container is running and exit if not
   
 #run compbio/ngseasy-fastq
   sudo docker run \

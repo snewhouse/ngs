@@ -60,6 +60,9 @@ ngs_projects
 |  
 |__raw_fastq  
 |__config_files  
+|__reference_genomes_b37  
+|__gatk_resources  
+|__ngseasy
 |
 |__ project_id  
 	|  
@@ -140,21 +143,20 @@ cd media
 mkdir ngs_projects
 mkdir ngs_projects/fastq_raw
 mkdir ngs_projects/config_files
-mkdir ngs_projects/nsgeasy_scripts
+mkdir ngs_projects/nsgeasy
 
 #get NGSeasy resources
-reference_genomes_b37
-gatk_resources
-
+mkdir ngs_projects/reference_genomes_b37  
+mkdir ngs_projects/gatk_resources  
 
 #--------------------------------#
 # get and PATH nsgeasy scripts
 #--------------------------------#
 
-cd ngs_projects/nsgeasy_scripts
+cd ngs_projects/nsgeasy
 git clone https://github.com/KHP-Informatics/ngs.git
 git checkout dev2
-export PATH=$PATH:/media/ngs_projects/nsgeasy_scripts/ngs/bin
+export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/bin
 
 #-----------------------------#
 # to be run outside of docker #
