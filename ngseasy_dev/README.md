@@ -44,9 +44,12 @@ Running `ngseasy_initiate_project` with the relevent configuration file, will se
 ngs_projects  
 |  
 |__raw_fastq
+|__config_files
 |
 |__ project_id  
 	|  
+	|__run_logs
+	|__config_files
 	|__sample_id  
 		|  
 		|__fastq  
@@ -55,6 +58,7 @@ ngs_projects
 		|__vcf  
 		|__reports  
 		|__config_files  
+
 ```
 Running **ngseasy_initiate_project**
 
