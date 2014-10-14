@@ -1,0 +1,103 @@
+#!/bin/bash
+# Collection of NGSeasy Functions
+# Stephen Newhouse <stephen.j.newhouse@gmail.com>
+# Version 0.9.0
+
+##--------------------------------------------------##
+## Pre Alignemnt Fastqc
+##--------------------------------------------------##
+
+ngseasy_fastqc () {
+#usage printing func
+usage()
+{
+cat << EOF
+  This script sets up the NGSeasy docker fastqc container:
+  See NGSEasy containerized instructions.
+
+  ARGUMENTS:
+  -h      Flag: Show this help message
+  -c      NGSeasy project and run configureation file
+  -t      1 = pre quality trim; 0 = post quality trim
+
+  EXAMPLE USAGE:
+    
+    ngseasy_fastqc -c config.file.tsv -t pre
+
+EOF
+}
+
+#Default settings
+fastq_prefix="NULL"
+sample_id=""
+project_directory=""
+config_tsv=""
+
+#get options for command line args
+  while  getopts "h:c:t" opt
+  do
+
+      case ${opt} in
+	  h)
+	  usage #print help
+	  exit 0
+	  ;;
+	  
+	  c)
+	  config_tsv=${OPTARG}
+	  ;;
+	 
+	  t)
+	  fastqc_pre=${OPTARG}
+	  ;; 
+      esac
+  done
+
+ 
+
+
+#check config file exists.
+if [ ! -e ${config_tsv} ] 
+then
+	    echo "ERROR :  ${config_tsv} does not exist "
+	    usage;
+	    exit 1;
+fi
+
+if [ "${fastqc_pre}"!= "1" ] || [ "${fastqc_pre}"!= "0" ]
+then
+	    echo "ERROR : Unexpected argument "
+	    usage;
+	    exit 1;
+fi
+
+# TO ADD: check if volumes container is running and exit if not
+  
+#run compbio/ngseasy-fastq
+  sudo docker run \
+  -d \
+  -P \
+  --name fastqc \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-fastqc:v0.9 /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_fastqc.sh ${fastqc_pre} /home/pipeman/ngs_projects/${config_tsv}
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
