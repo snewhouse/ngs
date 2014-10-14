@@ -159,6 +159,9 @@ echo  "#------------------------------------------------------------#"
         mkdir ${PROJECT_DIR}/${POJECT_ID}/
         mkdir ${PROJECT_DIR}/${POJECT_ID}/config_files
         mkdir ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs
+        mkdir ${PROJECT_DIR}/${POJECT_ID}/cohort_bams
+        mkdir ${PROJECT_DIR}/${POJECT_ID}/cohort_reports
+        mkdir ${PROJECT_DIR}/${POJECT_ID}/run_logs
         
   else
     echo  " Project Directory Exists"
