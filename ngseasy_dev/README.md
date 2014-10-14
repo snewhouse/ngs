@@ -116,6 +116,11 @@ ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
 # Dockerised #
 #------------#
 
+# A pipeline is called using :-
+
+    ngseasy -c config.file.tsv -d /media/nsg_projects
+
+# in the config file we as to call the pipeline [full]
 # here [full] is a wrapper/fucntion for calling the pipeline
 
 full() { 
