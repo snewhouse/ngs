@@ -8,6 +8,9 @@ NGSeasy Project Set up
 
 ## Step 0. Set up project directories
 
+Fastq files must have suffix and be gzipped: **_1.fq.gz** or **_2.fq.gz**  
+furture version will allow any format  
+
 ```{bash}
 #--------------------------------#
 # make top level dirs 
@@ -130,7 +133,7 @@ ngseasy_volumes_container -d /media/ngs_projects
 
 ## Running a full pipeline : from raw fastq to vcf calls
 
-See https://github.com/KHP-Informatics/ngs/tree/dev2/ngseasy_dev for dev functions (Still workin on these). Each of these will call a separate container and run a part of the NGS pipeline. Each step is usually dependent on the previous step(s) - in that they require certain data/input/output in the correct format and with the correct nameing conventions enforced by our pipeline to exist, before executing.
+See https://github.com/KHP-Informatics/ngs/tree/dev2/bin for dev functions (Still workin on these). Each of these will call a separate container and run a part of the NGS pipeline. Each step is usually dependent on the previous step(s) - in that they require certain data/input/output in the correct format and with the correct nameing conventions enforced by our pipeline to exist, before executing.
 
 A full pipeline is set out below :-  
 
@@ -148,8 +151,12 @@ mkdir ngs_projects/humandb # for annovar databses
 
 #get NGSeasy resources
 # sftp From ........copy data to and extract
-mkdir ngs_projects/reference_genomes_b37  
-mkdir ngs_projects/gatk_resources  
+cd ngs_projects
+sftp....
+
+tar xvf gatk_resources.tar.gz; gunzip *
+tar xvf reference_genomes_b37.tgz; gunzip *
+
 
 #--------------------------------#
 # get and PATH nsgeasy scripts
@@ -162,6 +169,9 @@ export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/ngeasy_dev/bin
 ln -s /media/ngs_projects/nsgeasy/ngs/ngeasy_dev/bin /media/ngs_projects/ngseasy_scripts
 
 #to do [get_annovar_humandb]
+
+#get images
+bash get_containers.sh
 
 #-----------------------------#
 # to be run outside of docker #

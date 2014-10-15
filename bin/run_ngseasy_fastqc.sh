@@ -12,7 +12,9 @@ usage()
   See NGSEasy containerized instructions.
 
   EXAMPLE USAGE:
+
   bash run_ngseasy_fastqc_pre_trimm.sh <1> <config.file.tsv>
+
 EOF 
 }
 
@@ -91,6 +93,7 @@ echo " NGSeasy: START FASTQC " `date`
 #check if qc'd data alread exists 
 if [ -s ${SOUT}/fastq/${rawFASTQ1}_1.fq_fastqc.zip ] && [ -s ${SOUT}/fastq/${rawFASTQ2}_2.fq_fastqc.zip ]
 then
+  echo " FastQC Data already exists...skipping"
 else
 fi
 
@@ -108,8 +111,11 @@ then
     --outdir ${SOUT}/fastq \
     ${SOUT}/fastq/${rawFASTQ1}_1.fq.gz \
     ${SOUT}/fastq/${rawFASTQ2}_2.fq.gz
-    
-else
+fi
+
+#if after trimmomatic
+if [ "${pre_or_post}" == "0" ]
+then
 # Trimmomatic paired output
   qcdPeFASTQ1=${SOUT}/fastq/${rawFASTQ1}_1.filtered.fq.gz;
   qcdPeFASTQ2=${SOUT}/fastq/${rawFASTQ2}_2.filtered.fq.gz;
@@ -124,7 +130,7 @@ then
   exit 1
 fi
 
-echo " NGSeasy: Run QC on Trimmed Fastq files " `date`
+echo " NGSeasy: Run FastQC on Trimmed Fastq files " `date`
 
   /usr/local/pipeline/FastQC/fastqc \
     --threads ${NCPU} \
