@@ -1,6 +1,6 @@
 #!/bin/bash
 
-full() { 
+ngs_full_gatk() { 
 
 #usage printing func
 usage()

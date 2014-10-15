@@ -1,0 +1,104 @@
+#!/bin/bash
+
+ngs_full_no_gatk() { 
+
+#usage printing func
+usage()
+{
+cat << EOF
+  This script sets up the NGSeasy docker fastqc container:
+  See NGSEasy containerized instructions.
+
+  ARGUMENTS:
+  -h      Flag: Show this help message
+  -c      NGSeasy project and run configureation file
+  -d      Base directory
+
+  EXAMPLE USAGE:
+    
+    ngseasy -c ${config_tsv} -d /media/nsg_projects
+
+EOF
+}
+
+#get options for command line args
+while  getopts "h:c:d:" opt
+do
+
+    case ${opt} in
+        h)
+        usage #print help
+        exit 0
+        ;;
+        
+        c)
+        config_tsv=${OPTARG}
+        ;;
+        
+        d)
+        project_directory=${OPTARG}
+        ;;
+
+    esac
+done
+
+#check config file exists.
+if [ ! -e "${config_tsv}" ] 
+then
+	    echo "ERROR :  ${config_tsv} does not exist "
+	    usage;
+	    exit 1;
+fi
+
+#check exists.
+  if [ ! -d "${project_directory}" ] 
+  then
+	  echo " ERROR : ${host_vol_dir} does not exist "
+	  usage;
+	  exit 1;
+  fi
+
+#step through a full pipeline
+
+#1 FastQC raw data
+ngseasy_fastqc -c ${config_tsv} -d ${project_directory} -t 1;
+
+#2 Trimm Fastq files
+ngseasy_fastq_trimm -c ${config_tsv} -d ${project_directory};
+
+#3 FastQC trimmed file
+ngseasy_fastqqc -c ${config_tsv} -d ${project_directory} -t 0;
+
+#4 Run Alignment
+ngseasy_alignment -c ${config_tsv} -d ${project_directory};
+
+#5 Add read groups ie sample info to BAM file
+nsgeasy_add_readgroups -c ${config_tsv} -d ${project_directory};
+
+#5 Mark Duplicates
+ngseasy_mark_dupes -c ${config_tsv} -d ${project_directory};
+
+#6 Indel Realignment
+nsgeasy_indel_realignment -c ${config_tsv} -d ${project_directory};
+
+#7 Base Recalibration
+nsgeasy_base_recalibration -c ${config_tsv} -d ${project_directory};
+
+#8 Alignment QC reports
+ngseasy_alignment_qc -c ${config_tsv} -d ${project_directory};
+
+#9 Call Vairants : SNPS and small Indels
+nsgeasy_var_callers -c ${config_tsv} -d ${project_directory};
+
+#10 CNV Calling
+nsgeasy_cnv_callers -c ${config_tsv} -d ${project_directory};
+
+#11 Variant Annotation: Annovar
+nsgeasy_variant_annotation -c ${config_tsv} -d ${project_directory};
+
+#TODO
+#variant filter
+#nsgeasy_variant_combine -c ${config_tsv} -d ${project_directory}
+#nsgeasy_variant_report -c ${config_tsv} -d ${project_directory}
+
+}
