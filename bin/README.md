@@ -141,11 +141,13 @@ A full pipeline is set out below :-
 #--------------------------------#
 cd media
 mkdir ngs_projects
-mkdir ngs_projects/fastq_raw
-mkdir ngs_projects/config_files
-mkdir ngs_projects/nsgeasy
+mkdir ngs_projects/fastq_raw # fastq staging area
+mkdir ngs_projects/config_files # config files
+mkdir ngs_projects/nsgeasy # for scripts
+mkdir ngs_projects/humandb # for annovar databses
 
 #get NGSeasy resources
+# sftp From ........copy data to and extract
 mkdir ngs_projects/reference_genomes_b37  
 mkdir ngs_projects/gatk_resources  
 
@@ -158,6 +160,8 @@ git clone https://github.com/KHP-Informatics/ngs.git
 git checkout dev2
 export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/ngeasy_dev/bin
 ln -s /media/ngs_projects/nsgeasy/ngs/ngeasy_dev/bin /media/ngs_projects/ngseasy_scripts
+
+#to do [get_annovar_humandb]
 
 #-----------------------------#
 # to be run outside of docker #
