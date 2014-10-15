@@ -18,23 +18,23 @@ cat << EOF
   ARGUMENTS:
   -h      Flag: Show this help message
   -c      NGSeasy project and run configureation file
+  -d      project_directory
   -t      1 = pre quality trim; 0 = post quality trim
 
   EXAMPLE USAGE:
     
-    ngseasy_fastqc -c config.file.tsv -t pre
+    ngseasy_fastqc -c config.file.tsv -d /media/ngs_projects -t pre
 
 EOF
 }
 
 #Default settings
-fastq_prefix="NULL"
-sample_id=""
+fastq_pre="NULL"
 project_directory=""
 config_tsv=""
 
 #get options for command line args
-  while  getopts "h:c:t" opt
+  while  getopts "h:c:d:t" opt
   do
 
       case ${opt} in
@@ -47,6 +47,10 @@ config_tsv=""
 	  config_tsv=${OPTARG}
 	  ;;
 	 
+    d)
+    project_directory=${OPTARG}
+    ;;
+
 	  t)
 	  fastqc_pre=${OPTARG}
 	  ;; 

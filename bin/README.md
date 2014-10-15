@@ -203,7 +203,7 @@ cat << EOF
   ARGUMENTS:
   -h      Flag: Show this help message
   -c      NGSeasy project and run configureation file
-  -t      1 = pre quality trim; 0 = post quality trim
+  -d      1 = pre quality trim; 0 = post quality trim
 
   EXAMPLE USAGE:
     

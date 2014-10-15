@@ -1,3 +1,5 @@
+#!/bin/bash
+
 full() { 
 
 #usage printing func
@@ -10,41 +12,92 @@ cat << EOF
   ARGUMENTS:
   -h      Flag: Show this help message
   -c      NGSeasy project and run configureation file
-  -t      1 = pre quality trim; 0 = post quality trim
+  -d      Base directory
 
   EXAMPLE USAGE:
     
-    ngseasy -c config.file.tsv -d /media/nsg_projects
+    ngseasy -c ${config_tsv} -d /media/nsg_projects
 
 EOF
 }
 
-ngseasy_volumes_container -d /media/ngs_projects
+#get options for command line args
+while  getopts "h:c:d:" opt
+do
 
-ngseasy_fastq_qc -c config.file.tsv -d /media/ngs_projects
+    case ${opt} in
+        h)
+        usage #print help
+        exit 0
+        ;;
+        
+        c)
+        config_tsv=${OPTARG}
+        ;;
+        
+        d)
+        project_directory=${OPTARG}
+        ;;
 
-ngseasy_fastq_trimm -c config.file.tsv -d /media/ngs_projects
+    esac
+done
 
-ngseasy_alignment -c config.file.tsv -d /media/ngs_projects
+#check config file exists.
+if [ ! -e ${config_tsv} ] 
+then
+	    echo "ERROR :  ${config_tsv} does not exist "
+	    usage;
+	    exit 1;
+fi
 
-ngseasy_mark_dupes -c config.file.tsv -d /media/ngs_projects
+#check exists.
+  if [[ ! -d ${project_directory} ]] 
+  then
+	  echo " ERROR : ${host_vol_dir} does not exist "
+	  usage;
+	  exit 1;
+  fi
 
-nsgeasy_add_readgroups -c config.file.tsv -d /media/ngs_projects
+#step through a full pipeline
 
-nsgeasy_indel_realignment -c config.file.tsv -d /media/ngs_projects
+#1 FastQC raw data
+ngseasy_fastqc -c ${config_tsv} -d ${project_directory} -t 1
 
-nsgeasy_base_recalibration -c config.file.tsv -d /media/ngs_projects
+#2 Trimm Fastq files
+ngseasy_fastq_trimm -c ${config_tsv} -d ${project_directory}
 
-ngseasy_alignment_qc -c config.file.tsv -d /media/ngs_projects
+#3 FastQC trimmed file
+ngseasy_fastqqc -c ${config_tsv} -d ${project_directory} -t 0
 
-nsgeasy_var_callers -c config.file.tsv -d /media/ngs_projects
+#4 Run Alignment
+ngseasy_alignment -c ${config_tsv} -d ${project_directory}
 
-nsgeasy_cnv_callers -c config.file.tsv -d /media/ngs_projects
+#5 Add read groups ie sample info to BAM file
+nsgeasy_add_readgroups -c ${config_tsv} -d ${project_directory}
 
-nsgeasy_variant_annotation -c config.file.tsv -d /media/ngs_projects
+#5 Mark Duplicates
+ngseasy_mark_dupes -c ${config_tsv} -d ${project_directory}
 
-nsgeasy_variant_combine -c config.file.tsv -d /media/ngs_projects
+#6 Indel Realignment
+nsgeasy_indel_realignment -c ${config_tsv} -d ${project_directory}
 
-nsgeasy_variant_report -c config.file.tsv -d /media/ngs_projects
+#7 Base Recalibration
+nsgeasy_base_recalibration -c ${config_tsv} -d ${project_directory}
+
+#8 Alignment QC reports
+ngseasy_alignment_qc -c ${config_tsv} -d ${project_directory}
+
+#9 Call Vairants : SNPS and small Indels
+nsgeasy_var_callers -c ${config_tsv} -d ${project_directory}
+
+#10 CNV Calling
+nsgeasy_cnv_callers -c ${config_tsv} -d ${project_directory}
+
+#11 Variant Annotation: Annovar
+nsgeasy_variant_annotation -c ${config_tsv} -d ${project_directory}
+
+#TODO
+#nsgeasy_variant_combine -c ${config_tsv} -d ${project_directory}
+#nsgeasy_variant_report -c ${config_tsv} -d ${project_directory}
 
 }
