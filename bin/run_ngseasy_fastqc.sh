@@ -59,7 +59,7 @@ do
   BAM_PREFIX=${SAMPLE_ID}.${NGS_TYPE}.${NGS_PLATFORM}.${ALIGNER}
   echo " NGSeasy: Setting BAM_PREFIX directory [$BAM_PREFIX]"
  
-#OUTPUT SAMPLE DIR
+#OUTPUT SAMPLE DIR /home/pipeman/
  SOUT=${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}
 #-------------------------------------------------------------------#
 

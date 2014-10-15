@@ -16,7 +16,7 @@ cat << EOF
 
   EXAMPLE USAGE:
     
-    ngseasy -c ${config_tsv} -d /media/nsg_projects
+    ngseasy -c ${config_tsv} -d /media/nsg_projects/project_id
 
 EOF
 }

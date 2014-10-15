@@ -21,7 +21,7 @@ cat << EOF
 
   EXAMPLE USAGE:
     
-    ngseasy -c config.file.tsv -d /media/ngs_projects
+    ngseasy -c config.file.tsv -d /media/ngs_projects 
 
 EOF
 }
@@ -98,25 +98,31 @@ do
   CLEANUP=$f14
   NCPU=$f15
 
+#mounted docker dir
+#script run in docker container and will look for volumes specifef in ngseasy_volumes_contaier
+DOCKERHOME="/home/pipeman/ngs_projects"
+
 #log it 
-LOGFILE=${project_directory}/logs/${SAMPLE_ID}
+LOGFILE=${DOCKERHOME}/${PROJECT_ID}/run_logs/${SAMPLE_ID}
 
 log_ngseasy "ngseasy: run pipeline: ${PIPELINE}"  ${LOGFILE}
 
 #OUTPUT SAMPLE DIR
- SOUT=${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}
+# /home/pipeman/ngs_projects/ is the mounted docker volume
+
+SOUT=${DOCKERHOME}/${POJECT_ID}/${SAMPLE_ID}
 
 #time stamp
 run=`date +"%d%m%y-%H%M%S"`
 
-#make sample spec config file
-awk -v OFS='\t' '{print $f1, $f2, $f3, $f4, $f5, $f6, $f7, $f8, $f9, $f10, $f11, $f12, $f13, $f14, $f15}' > ${SOUT}/${SAMPLE_ID}.${PIPELINE}.${run}.config.tsv
+#make sample spec config file and save to sample run folder 
+awk -v OFS='\t' '{print $f1, $f2, $f3, $f4, $f5, $f6, $f7, $f8, $f9, $f10, $f11, $f12, $f13, $f14, $f15}' > ${SOUT}/${SAMPLE_ID}_${PIPELINE}_${run}.config.tsv
 
 #sample config 
-sample_config=${SOUT}/${SAMPLE_ID}.${run}.config.tsv
+sample_config=${SOUT}/${SAMPLE_ID}_${PIPELINE}_${run}.config.tsv
 
 # Call pipelien specified in config file 
-bash ${PIPELINE} -c ${sample_config} -d ${PROJECT_DIR}
+bash ${PIPELINE} -c ${sample_config} -d ${PROJECT_ID}
 
 done < ${config_tsv}
 

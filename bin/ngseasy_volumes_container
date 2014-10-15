@@ -18,7 +18,7 @@ cat << EOF
   ARGUMENTS:
   
   -h      Flag: Show this help message
-  -d      Base directory for (fastq_raw, reference_genomes_b37, gatk_resources, ngs_projects, ngseasy_scripts)
+  -d      Base directory for (fastq_raw, reference_genomes_b37, gatk_resources, ngs_projects, ngs/bin)
   
   EXAMPLE USAGE:
   
@@ -93,15 +93,17 @@ EOF
   fi   
   
 #run docker image  
-# /media/ngs_projects/XXXXXX
+# HOST_VOL_DIR=/media/ngs_projects
+
   sudo docker run \
   -d \
   -P \
   -v ${host_vol_dir}/fastq_raw:/home/pipeman/fastq_raw \
   -v ${host_vol_dir}/reference_genomes_b37:/home/pipeman/reference_genomes_b37 \
   -v ${host_vol_dir}/gatk_resources:/home/pipeman/gatk_resources \
-  -v ${host_vol_dir}/ngs_projects:/home/pipeman/ngs_projects \
+  -v ${host_vol_dir}:/home/pipeman/ngs_projects \
   -v ${host_vol_dir}/ngs/bin:/home/pipeman/ngseasy_scripts \
   --name data_volumes \
   -t compbio/ngseasy-base:wheezy
+
 }
