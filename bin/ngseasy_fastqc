@@ -83,7 +83,7 @@ fi
   -P \
   --name fastqc \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-fastqc:v0.9 /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_fastqc.sh ${fastqc_pre} /home/pipeman/ngs_projects/${config_tsv}
+  -t compbio/ngseasy-fastqc:v0.9 /bin/bash /home/pipeman/ngs/bin/run_ngseasy_fastqc.sh ${fastqc_pre} /home/pipeman/ngs_projects/${config_tsv}
 
 
 }
