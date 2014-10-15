@@ -93,6 +93,7 @@ EOF
   fi   
   
 #run docker image  
+# /media/ngs_projects/XXXXXX
   sudo docker run \
   -d \
   -P \
@@ -100,7 +101,7 @@ EOF
   -v ${host_vol_dir}/reference_genomes_b37:/home/pipeman/reference_genomes_b37 \
   -v ${host_vol_dir}/gatk_resources:/home/pipeman/gatk_resources \
   -v ${host_vol_dir}/ngs_projects:/home/pipeman/ngs_projects \
-  -v ${host_vol_dir}/ngseasy_scripts:/home/pipeman/ngseasy_scripts \
+  -v ${host_vol_dir}/ngs/bin:/home/pipeman/ngseasy_scripts \
   --name data_volumes \
   -t compbio/ngseasy-base:wheezy
 }

@@ -1,5 +1,0 @@
-#logging
-log_ngseasy(){
-
-	echo `date` ":[Log]:" ${1} >> ${2}.log
-}
