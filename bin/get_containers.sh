@@ -35,7 +35,6 @@ sudo docker pull compbio/ngseasy-fastx-toolkit:v0.9
 sudo docker pull compbio/ngseasy-mhmm:v0.9
 sudo docker pull compbio/ngseasy-exomedepth:v0.9
 sudo docker pull compbio/ngseasy-cnmops:v0.9
-sudo docker pull compbio/rnaseq-tophat:v0.9
 sudo docker pull compbio/ngseasy-gsnap:v0.9
 sudo docker pull compbio/ngseasy-gem:v0.9
 sudo docker pull compbio/ngseasy-annovar:v0.9
@@ -44,7 +43,6 @@ sudo docker pull compbio/ngseasy-delly:v0.9
 sudo docker pull compbio/ngseasy-varscan2:v0.9
 sudo docker pull compbio/ngseasy-freebayes:v0.9
 sudo docker pull compbio/ngseasy-platypus:v0.9
-sudo docker pull compbio/ngseasy-novoalign-private:v0.9
 sudo docker pull compbio/ngseasy-novoalign:v0.9
 sudo docker pull compbio/ngseasy-stampy:v0.9
 sudo docker pull compbio/ngseasy-bowtie2:v0.9
