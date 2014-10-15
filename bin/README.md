@@ -173,25 +173,28 @@ ln -s /media/ngs_projects/nsgeasy/ngs/ngeasy_dev/bin /media/ngs_projects/ngseasy
 #get images
 bash get_containers.sh
 
-#-----------------------------#
-# to be run outside of docker #
-#-----------------------------#
+#------------------------------------------------#
+# to be run outside of docker and before ngseasy #
+#------------------------------------------------#
+
 ngseasy_initiate_project -c config.file.tsv -d /media/ngs_projects
 
 ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
 
-#------------#
-# Dockerised #
-#------------#
+ngseasy_get_annovar_db -d /media/ngs_projects/humandb
+
+#--------------------#
+# NGSEASY Dockerised #
+#--------------------#
 
 # A pipeline is called using :-
 
     ngseasy -c config.file.tsv -d /media/nsg_projects
 
 # in the config file we as to call the pipeline [full]
-# here [full] is a wrapper/fucntion for calling the pipeline
+# here [ngs_full_gatk] is a wrapper/fucntion for calling the pipeline
 
-full() { 
+ngs_full_gatk() { 
 
 
 #step through a full pipeline
