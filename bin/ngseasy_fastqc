@@ -61,7 +61,7 @@ config_tsv=""
 
 
 #check config file exists.
-if [ ! -e ${config_tsv} ] 
+if [ ! -e "${config_tsv}" ] 
 then
 	    echo "ERROR :  ${config_tsv} does not exist "
 	    usage;

@@ -193,52 +193,50 @@ ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
 
 full() { 
 
-#usage printing func
-usage()
-{
-cat << EOF
-  This script sets up the NGSeasy docker fastqc container:
-  See NGSEasy containerized instructions.
 
-  ARGUMENTS:
-  -h      Flag: Show this help message
-  -c      NGSeasy project and run configureation file
-  -d      1 = pre quality trim; 0 = post quality trim
+#step through a full pipeline
 
-  EXAMPLE USAGE:
-    
-    ngseasy -c config.file.tsv -d /media/nsg_projects
+#1 FastQC raw data
+ngseasy_fastqc -c ${config_tsv} -d ${project_directory} -t 1;
 
-EOF
-}
+#2 Trimm Fastq files
+ngseasy_fastq_trimm -c ${config_tsv} -d ${project_directory};
 
-ngseasy_volumes_container -d /media/ngs_projects
+#3 FastQC trimmed file
+ngseasy_fastqqc -c ${config_tsv} -d ${project_directory} -t 0;
 
-ngseasy_fastq_qc -c config.file.tsv -d /media/ngs_projects
+#4 Run Alignment
+ngseasy_alignment -c ${config_tsv} -d ${project_directory};
 
-ngseasy_fastq_trimm -c config.file.tsv -d /media/ngs_projects
+#5 Add read groups ie sample info to BAM file
+nsgeasy_add_readgroups -c ${config_tsv} -d ${project_directory};
 
-ngseasy_alignment -c config.file.tsv -d /media/ngs_projects
+#5 Mark Duplicates
+ngseasy_mark_dupes -c ${config_tsv} -d ${project_directory};
 
-ngseasy_mark_dupes -c config.file.tsv -d /media/ngs_projects
+#6 Indel Realignment
+nsgeasy_indel_realignment -c ${config_tsv} -d ${project_directory};
 
-nsgeasy_add_readgroups -c config.file.tsv -d /media/ngs_projects
+#7 Base Recalibration
+nsgeasy_base_recalibration -c ${config_tsv} -d ${project_directory};
 
-nsgeasy_indel_realignment -c config.file.tsv -d /media/ngs_projects
+#8 Alignment QC reports
+ngseasy_alignment_qc -c ${config_tsv} -d ${project_directory};
 
-nsgeasy_base_recalibration -c config.file.tsv -d /media/ngs_projects
+#9 Call Vairants : SNPS and small Indels
+nsgeasy_var_callers -c ${config_tsv} -d ${project_directory};
 
-ngseasy_alignment_qc -c config.file.tsv -d /media/ngs_projects
+#10 CNV Calling
+nsgeasy_cnv_callers -c ${config_tsv} -d ${project_directory};
 
-nsgeasy_var_callers -c config.file.tsv -d /media/ngs_projects
+#11 Variant Annotation: Annovar
+nsgeasy_variant_annotation -c ${config_tsv} -d ${project_directory};
 
-nsgeasy_cnv_callers -c config.file.tsv -d /media/ngs_projects
+#TODO
+#variant filter
+#nsgeasy_variant_combine -c ${config_tsv} -d ${project_directory}
+#nsgeasy_variant_report -c ${config_tsv} -d ${project_directory}
 
-nsgeasy_variant_annotation -c config.file.tsv -d /media/ngs_projects
-
-nsgeasy_variant_combine -c config.file.tsv -d /media/ngs_projects
-
-nsgeasy_variant_report -c config.file.tsv -d /media/ngs_projects
 
 }
 
