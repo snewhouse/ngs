@@ -1,0 +1,50 @@
+full() { 
+
+#usage printing func
+usage()
+{
+cat << EOF
+  This script sets up the NGSeasy docker fastqc container:
+  See NGSEasy containerized instructions.
+
+  ARGUMENTS:
+  -h      Flag: Show this help message
+  -c      NGSeasy project and run configureation file
+  -t      1 = pre quality trim; 0 = post quality trim
+
+  EXAMPLE USAGE:
+    
+    ngseasy -c config.file.tsv -d /media/nsg_projects
+
+EOF
+}
+
+ngseasy_volumes_container -d /media/ngs_projects
+
+ngseasy_fastq_qc -c config.file.tsv -d /media/ngs_projects
+
+ngseasy_fastq_trimm -c config.file.tsv -d /media/ngs_projects
+
+ngseasy_alignment -c config.file.tsv -d /media/ngs_projects
+
+ngseasy_mark_dupes -c config.file.tsv -d /media/ngs_projects
+
+nsgeasy_add_readgroups -c config.file.tsv -d /media/ngs_projects
+
+nsgeasy_indel_realignment -c config.file.tsv -d /media/ngs_projects
+
+nsgeasy_base_recalibration -c config.file.tsv -d /media/ngs_projects
+
+ngseasy_alignment_qc -c config.file.tsv -d /media/ngs_projects
+
+nsgeasy_var_callers -c config.file.tsv -d /media/ngs_projects
+
+nsgeasy_cnv_callers -c config.file.tsv -d /media/ngs_projects
+
+nsgeasy_variant_annotation -c config.file.tsv -d /media/ngs_projects
+
+nsgeasy_variant_combine -c config.file.tsv -d /media/ngs_projects
+
+nsgeasy_variant_report -c config.file.tsv -d /media/ngs_projects
+
+}

@@ -193,6 +193,25 @@ ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
 
 full() { 
 
+#usage printing func
+usage()
+{
+cat << EOF
+  This script sets up the NGSeasy docker fastqc container:
+  See NGSEasy containerized instructions.
+
+  ARGUMENTS:
+  -h      Flag: Show this help message
+  -c      NGSeasy project and run configureation file
+  -t      1 = pre quality trim; 0 = post quality trim
+
+  EXAMPLE USAGE:
+    
+    ngseasy -c config.file.tsv -d /media/nsg_projects
+
+EOF
+}
+
 ngseasy_volumes_container -d /media/ngs_projects
 
 ngseasy_fastq_qc -c config.file.tsv -d /media/ngs_projects

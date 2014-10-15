@@ -101,9 +101,14 @@ LOGFILE=${project_directory}/logs/${SAMPLE_ID}
 
 log_ngseasy "ngseasy: run pipeline: ${PIPELINE}" 
 
+#OUTPUT SAMPLE DIR
+ SOUT=${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}
+
 # Call pipelien specified in config file #
 
-/bin/bash ${PIPELINE}
+awk 'IFS="\t' "${PROJECT_ID} ${}" > ${SOUT}/${SAMPLE_ID}.config.tsv
+
+/bin/bash ${PIPELINE} -c ${SOUT}/${SAMPLE_ID}.config.tsv -d ${PROJECT_DIR}
 
 done < ${config_tsv}
 
