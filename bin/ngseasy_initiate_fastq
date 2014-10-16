@@ -63,7 +63,7 @@ if [ ! -e "${config_tsv}" ]
 fi
 
 #check exists.
-if [ ! -d "${project_directory}" S] 
+if [ ! -d "${project_directory}" ] 
   then
 	  echo "ERROR :  ${project_directory} does not exist "
 	  usage;
@@ -107,7 +107,7 @@ do
 #check exists.
 if [ ! -d "${SOUT}" ] 
   then
-	  log_ngseasy "ERROR :  ${SOUT} does not exist " ${LOGFILE}
+	  logger_ngseasy "ERROR :  ${SOUT} does not exist " ${LOGFILE}
 	  usage;
 	  exit 1;
 fi
@@ -116,12 +116,12 @@ fi
 #copy fastq files to sample directory
 if [ ! -s "${SOUT}/fastq/${FASTQ1}" ] && [ ! -s "${SOUT}/fastq/${FASTQ2}" ]
 then
-  log_ngseasy " NGSeasy: Copying fastq files from ${FASTQDIR}/ to ${SOUT}/fastq/ " ${LOGFILE}
+  logger_ngseasy " NGSeasy: Copying fastq files from ${FASTQDIR}/ to ${SOUT}/fastq/ " ${LOGFILE}
     cp -v ${FASTQDIR}/${FASTQ1} ${SOUT}/fastq/${FASTQ1}
     cp -v ${FASTQDIR}/${FASTQ2} ${SOUT}/fastq/${FASTQ2}
 
 else
-  log_ngseasy " NGSeasy: Fastq Files exist in  ${SOUT}/fastq/ " ${LOGFILE}
+  logger_ngseasy " NGSeasy: Fastq Files exist in  ${SOUT}/fastq/ " ${LOGFILE}
   ls ${SOUT}/fastq/
 fi
 
