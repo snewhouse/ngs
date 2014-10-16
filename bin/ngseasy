@@ -2,9 +2,7 @@
 
 # Run NGSeasy : top level master scrip
 
-ngseasy() {
 
-	
 #usage printing func
 usage()
 {
@@ -121,4 +119,3 @@ bash ${PIPELINE} -c ${sample_config} -d ${PROJECT_ID}
 
 done < ${config_tsv}
 
-}
