@@ -26,13 +26,8 @@ cat << EOF
 EOF
 }
 
-#Default settings
-fastq_pre="NULL"
-project_directory=""
-config_tsv=""
-
 #get options for command line args
-  while  getopts "h:c:t" opt
+  while  getopts "hc:t" opt
   do
 
       case ${opt} in
@@ -87,40 +82,6 @@ do
   CLEANUP=$f14
   NCPU=$f15
 
-#check local dir exists
-if [ ! -d "${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}" ]
-then
-  log_ngseasy " Cant Find Project directory. This is then end. Please Stop and check everything is ok "
-  exit 1
-
-else 
-  log_ngseasy " Setting OUTPUT directory [${SOUT}]"
-fi
-
-#check for fastq files exist
-if [ ! -s "${SOUT}/fastq/${FASTQ1}" ] && [ ! -s "${SOUT}/fastq/${FASTQ2}" ]
-then
-  log_ngseasy " Can't Find fastq files [${SOUT}/fastq/${FASTQ1}] and [${SOUT}/fastq/${FASTQ2}] in ${SOUT}/fastq/ "
-  exit 1
-fi
-
-#set new names for copied fastq files
-  rawFASTQ1=`basename ${SOUT}/fastq/${FASTQ1} _1.fq.gz`
-  rawFASTQ2=`basename ${SOUT}/fastq/${FASTQ2} _2.fq.gz`
-    
-log_ngseasy " NGSeasy: Fastq Basename : [$rawFASTQ1] "
-
-#-------------------------------------------------------------------#
-#FASTQC on raw files
-log_ngseasy " NGSeasy: START FASTQC " 
-
-#check if qc'd data alread exists 
-if [ -s "${SOUT}/fastq/${rawFASTQ1}_1.fq_fastqc.zip" ] && [ -s "${SOUT}/fastq/${rawFASTQ2}_2.fq_fastqc.zip" ]
-then
-  log_ngseasy " FastQC Data already exists...skipping"
-else
-fi
-
 #Docker Output Dir: this is the mouned directory set by ngseasy_volumes_container
 DOCKERHOME="/home/pipeman/ngs_projects"
 
@@ -130,10 +91,44 @@ LOGFILE=${PROJECT_DIR}/${POJECT_ID}/run_logs/${SAMPLE_ID}.${DATE}
 #OUTPUT SAMPLE DIR 
 SOUT=${DOCKERHOME}/${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}
 
+#check local dir exists
+if [ ! -d "${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}" ]
+then
+  logger_ngseasy " Cant Find Project directory. This is then end. Please Stop and check everything is ok " ${LOGFILE}
+  exit 1
+
+else 
+  logger_ngseasy " Setting OUTPUT directory [${SOUT}]" ${LOGFILE}
+fi
+
+#check for fastq files exist
+if [ ! -s "${SOUT}/fastq/${FASTQ1}" ] && [ ! -s "${SOUT}/fastq/${FASTQ2}" ]
+then
+  logger_ngseasy " Can't Find fastq files [${SOUT}/fastq/${FASTQ1}] and [${SOUT}/fastq/${FASTQ2}] in ${SOUT}/fastq/ " ${LOGFILE}
+  exit 1
+fi
+
+#set new names for copied fastq files
+  rawFASTQ1=`basename ${SOUT}/fastq/${FASTQ1} _1.fq.gz`
+  rawFASTQ2=`basename ${SOUT}/fastq/${FASTQ2} _2.fq.gz`
+    
+logger_ngseasy " NGSeasy: Fastq Basename : [$rawFASTQ1] " ${LOGFILE}
+
+#-------------------------------------------------------------------#
+#FASTQC on raw files
+logger_ngseasy " NGSeasy: START FASTQC "  ${LOGFILE}
+
+#check if qc'd data alread exists 
+if [ -s "${SOUT}/fastq/${rawFASTQ1}_1.fq_fastqc.zip" ] && [ -s "${SOUT}/fastq/${rawFASTQ2}_2.fq_fastqc.zip" ] 
+then
+  logger_ngseasy " FastQC Data already exists...skipping" ${LOGFILE}
+else
+fi
+
 # if before trimmomatic
 if [ "${pre_or_post}" == "1" ]
 then
-  log_ngseasy " START: FastQC on raw Fastq files " ${LOGFILE}
+  logger_ngseasy " START: FastQC on raw Fastq files " ${LOGFILE}
 
 #run compbio/ngseasy-fastq
   sudo docker run \
@@ -150,7 +145,7 @@ then
     ${SOUT}/fastq/${rawFASTQ1}_1.fq.gz \
     ${SOUT}/fastq/${rawFASTQ2}_2.fq.gz
 #log 
-  log_ngseasy " END: FastQC on raw Fastq files " 
+  logger_ngseasy " END: FastQC on raw Fastq files "  ${LOGFILE}
 fi
 
 if [ "${pre_or_post}" == "0" ]
@@ -166,11 +161,11 @@ then
 #check if fastq files exist
 if [ ! -s ${SOUT}/fastq/${rawFASTQ1}_1.filtered.fq.gz ] && [ ! -s ${SOUT}/fastq/${rawFASTQ2}_2.filtered.fq.gz ]
 then
-  log_ngseasy " Cant'd Find Trimmed Fastq files in ${SOUT}/fastq/ ie [${rawFASTQ1}_1.filtered.fq.gz] or [${rawFASTQ1}_1.unpaired.fq.gz] "
+  logger_ngseasy " Cant'd Find Trimmed Fastq files in ${SOUT}/fastq/ ie [${rawFASTQ1}_1.filtered.fq.gz] or [${rawFASTQ1}_1.unpaired.fq.gz] " ${LOGFILE}
   exit 1
 fi
 
-  log_ngseasy " START: FastQC on Trimmed Fastq files " 
+  logger_ngseasy " START: FastQC on Trimmed Fastq files "  ${LOGFILE}
 
 #run compbio/ngseasy-fastq
   sudo docker run \
@@ -187,7 +182,7 @@ fi
     ${SOUT}/fastq/${rawFASTQ1}_1.fq.gz \
     ${SOUT}/fastq/${rawFASTQ2}_2.fq.gz
 #log
-  log_ngseasy " END: FastQC on Trimmed Fastq files " 
+  logger_ngseasy " END: FastQC on Trimmed Fastq files "  ${LOGFILE}
 fi
 
 done < ${config_tsv}
