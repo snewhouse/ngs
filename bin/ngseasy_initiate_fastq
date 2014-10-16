@@ -55,7 +55,7 @@ config_tsv=""
 
 
 #check exists.
-if [[ ! -e ${config_tsv} ]] 
+if [ ! -e "${config_tsv}" ] 
   then
 	  echo "ERROR : ${config_tsv} does not exist "
 	  usage;
@@ -63,7 +63,7 @@ if [[ ! -e ${config_tsv} ]]
 fi
 
 #check exists.
-if [[ ! -d ${project_directory} ]] 
+if [ ! -d "${project_directory}" S] 
   then
 	  echo "ERROR :  ${project_directory} does not exist "
 	  usage;
