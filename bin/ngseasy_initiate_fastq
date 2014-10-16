@@ -99,12 +99,13 @@ do
 #-------------------------------------------------------------------#
 #OUTPUT SAMPLE DIR
  SOUT=${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}
+ echo "$SOUT"
  #Logfile
  LOGFILE=${PROJECT_DIR}/${POJECT_ID}/run_logs/${SAMPLE_ID}.${DATE}
 #-------------------------------------------------------------------#
 
 #check exists.
-if [[ ! -d ${SOUT} ]] 
+if [ ! -d "${SOUT}" ] 
   then
 	  log_ngseasy "ERROR :  ${SOUT} does not exist " ${LOGFILE}
 	  usage;
@@ -113,7 +114,7 @@ fi
 
 
 #copy fastq files to sample directory
-if [ ! -s ${SOUT}/fastq/${FASTQ1} ] && [ ! -s ${SOUT}/fastq/${FASTQ2} ]
+if [ ! -s "${SOUT}/fastq/${FASTQ1}" ] && [ ! -s "${SOUT}/fastq/${FASTQ2}" ]
 then
   log_ngseasy " NGSeasy: Copying fastq files from ${FASTQDIR}/ to ${SOUT}/fastq/ " ${LOGFILE}
     cp -v ${FASTQDIR}/${FASTQ1} ${SOUT}/fastq/${FASTQ1}
