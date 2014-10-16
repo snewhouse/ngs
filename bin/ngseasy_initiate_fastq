@@ -40,19 +40,19 @@ EOF
 	  
 	  c)
 	  config_tsv=${OPTARG}
-    echo ${config_tsv}
+    echo "-c = " ${config_tsv}
 	  ;;
 	 
 	  d)
 	  project_directory=${OPTARG}
-	  echo ${project_directory}
+	  echo "-d = " ${project_directory}
     ;; 
       esac
   done
 
 echo "checking if files exist"
 #check exists.
-if [ ! -e "${config_tsv}" ] 
+if [ ! -e "${config_tsv}" ]
   then
 	  echo "ERROR : config file ${config_tsv} does not exist "
 	  usage;
@@ -60,7 +60,7 @@ if [ ! -e "${config_tsv}" ]
 fi
 
 #check exists.
-if [ ! -d "${project_directory}" ] 
+if [ ! -d "${project_directory}" ]
   then
 	  echo "ERROR : project_directory ${project_directory} does not exist "
 	  usage;
