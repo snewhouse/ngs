@@ -34,7 +34,7 @@ project_directory=""
 config_tsv=""
 
 #get options for command line args
-  while  getopts "h:c:t" opt
+  while  getopts "hc:d" opt
   do
 
       case ${opt} in
