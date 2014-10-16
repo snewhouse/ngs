@@ -68,14 +68,14 @@ do
 done
 
 #check exists.
-  if [[ ! -e ${host_vol_dir} ]] 
+  if [ ! -e "${host_vol_dir}" ] 
   then
 	  echo " ${host_vol_dir} does not exist "
 	  usage;
 	  exit 1;
   fi
 #check exists.
-  if [[ ! -e ${config_tsv} ]] 
+  if [ ! -e "${config_tsv}" ] 
   then
 	  echo " ${config_tsv} does not exist "
 	  usage;
