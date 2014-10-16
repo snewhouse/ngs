@@ -74,22 +74,7 @@ EOF
 	  usage;
 	  exit 1;
   fi   
-  
-#check exists.
-  if [[ ! -d ${host_vol_dir}/ngs_projects ]] 
-  then
-	  echo " ERROR : ${host_vol_dir}/ngs_projects does not exist "
-	  usage;
-	  exit 1;
-  fi   
-  
-#check exists.
-  if [[ ! -d ${host_vol_dir}/ngseasy_scripts ]] 
-  then
-	  echo " ERROR : ${host_vol_dir}/ngseasy_scripts does not exist "
-	  usage;
-	  exit 1;
-  fi   
+ 
   
 #run docker image  
 # HOST_VOL_DIR=/media/ngs_projects
