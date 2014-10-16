@@ -92,6 +92,7 @@ do
   GTMODEGATK=$f13
   CLEANUP=$f14
   NCPU=$f15
+  FASTQDIR=${project_directory}/fastq_raw
 
 #-------------------------------------------------------------------#
 #OUTPUT SAMPLE DIR
