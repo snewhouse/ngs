@@ -12,5 +12,4 @@ ngseasy_initiate_fastq -c /media/container-vol/ngs_projects/config_files/example
 ## To Test
 
 
-ngseasy -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects
 

@@ -161,7 +161,7 @@ then
 #check if fastq files exist
 if [ ! -s ${SOUT}/fastq/${rawFASTQ1}_1.filtered.fq.gz ] && [ ! -s ${SOUT}/fastq/${rawFASTQ2}_2.filtered.fq.gz ]
 then
-  logger_ngseasy " Cant'd Find Trimmed Fastq files in ${SOUT}/fastq/ ie [${rawFASTQ1}_1.filtered.fq.gz] or [${rawFASTQ1}_1.unpaired.fq.gz] " ${LOGFILE}
+  logger_ngseasy " Can't Find Trimmed Fastq files in ${SOUT}/fastq/ ie [${rawFASTQ1}_1.filtered.fq.gz] or [${rawFASTQ1}_1.unpaired.fq.gz] " ${LOGFILE}
   exit 1
 fi
 
