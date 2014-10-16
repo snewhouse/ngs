@@ -24,29 +24,8 @@ cat << EOF
 EOF
 }
 
-
-#check exists.
-if [[ ! -e ${config_tsv} ]] 
-  then
-	  echo "ERROR : ${config_tsv} does not exist "
-	  usage;
-	  exit 1;
-fi
-
-#check exists.
-if [[ ! -d ${project_directory} ]] 
-  then
-	  echo "ERROR :  ${project_directory} does not exist "
-	  usage;
-	  exit 1;
-fi
-
-#Default settings
-project_directory=""
-config_tsv=""
-
 #get options for command line args
-  while  getopts "h:c:d" opt
+  while  getopts "hc:d:" opt
   do
 
       case ${opt} in
@@ -57,13 +36,32 @@ config_tsv=""
 	  
 	  c)
 	  config_tsv=${OPTARG}
+	  echo "-c = ${config_tsv}"
 	  ;;
 	 
 	  d)
 	  project_directory=${OPTARG}
+	  echo "-d = ${project_directory}"
 	  ;; 
       esac
   done
+
+#check exists.
+if [ ! -e "${config_tsv}" ] 
+  then
+	  echo "ERROR : ${config_tsv} does not exist "
+	  usage;
+	  exit 1;
+fi
+
+#check exists.
+if [ ! -d "${project_directory}" ] 
+  then
+	  echo "ERROR :  ${project_directory} does not exist "
+	  usage;
+	  exit 1;
+fi
+
 
 # read config file #
 # begin reading config file line by line
@@ -96,14 +94,14 @@ do
 DOCKERHOME="/home/pipeman/ngs_projects"
 
 #log it 
-LOGFILE=${DOCKERHOME}/${PROJECT_ID}/run_logs/${SAMPLE_ID}
+LOGFILE=${PROJECT_DIR}/${PROJECT_ID}/run_logs/${SAMPLE_ID}
 
 log_ngseasy "ngseasy: run pipeline: ${PIPELINE}"  ${LOGFILE}
 
 #OUTPUT SAMPLE DIR
 # /home/pipeman/ngs_projects/ is the mounted docker volume
 
-SOUT=${DOCKERHOME}/${POJECT_ID}/${SAMPLE_ID}
+SOUT=${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}
 
 #time stamp
 run=`date +"%d%m%y-%H%M%S"`

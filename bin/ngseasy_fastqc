@@ -27,7 +27,7 @@ EOF
 }
 
 #get options for command line args
-  while  getopts "hc:t" opt
+  while  getopts "hc:t:" opt
   do
 
       case ${opt} in
@@ -133,6 +133,7 @@ then
 #run compbio/ngseasy-fastq
   sudo docker run \
   -P \
+  --rm \
   --name fastqc.${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-fastqc:v0.9 /usr/local/pipeline/FastQC/fastqc \
@@ -140,7 +141,6 @@ then
     --extract \
     --quiet \
     --dir ${SOUT}/tmp \
-    --rm \
     --outdir ${SOUT}/fastq \
     ${SOUT}/fastq/${rawFASTQ1}_1.fq.gz \
     ${SOUT}/fastq/${rawFASTQ2}_2.fq.gz
@@ -170,6 +170,7 @@ fi
 #run compbio/ngseasy-fastq
   sudo docker run \
   -P \
+  --rm \
   --name fastqc.${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-fastqc:v0.9 /usr/local/pipeline/FastQC/fastqc \
@@ -177,7 +178,6 @@ fi
     --extract \
     --quiet \
     --dir ${SOUT}/tmp \
-    --rm \
     --outdir ${SOUT}/fastq \
     ${SOUT}/fastq/${rawFASTQ1}_1.fq.gz \
     ${SOUT}/fastq/${rawFASTQ2}_2.fq.gz
