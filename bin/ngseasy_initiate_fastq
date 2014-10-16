@@ -28,11 +28,6 @@ EXAMPLE USAGE:
 EOF
 }
 
-
-#Default settings
-project_directory=""
-config_tsv=""
-
 #get options for command line args
   while  getopts "hc:d" opt
   do
