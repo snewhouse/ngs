@@ -8,6 +8,7 @@
 ##--------------------------------------------------##
 
 ngseasy_fastqc () {
+
 #usage printing func
 usage()
 {
@@ -18,7 +19,6 @@ cat << EOF
   ARGUMENTS:
   -h      Flag: Show this help message
   -c      NGSeasy project and run configureation file
-  -d      project_directory on local machine
   -t      1 = pre quality trim; 0 = post quality trim
 
   EXAMPLE USAGE:
