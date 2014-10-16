@@ -29,7 +29,7 @@ EOF
 }
 
 #get options for command line args
-  while  getopts "hc:d" opt
+  while  getopts "hc:d:" opt
   do
 
       case ${opt} in
