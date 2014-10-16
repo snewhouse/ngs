@@ -146,7 +146,6 @@ cd media
 mkdir ngs_projects
 mkdir ngs_projects/fastq_raw # fastq staging area
 mkdir ngs_projects/config_files # config files
-mkdir ngs_projects/nsgeasy # for scripts
 mkdir ngs_projects/humandb # for annovar databses
 
 #get NGSeasy resources

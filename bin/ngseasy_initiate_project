@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Collection of NGSeasy Functions
 # Stephen Newhouse <stephen.j.newhouse@gmail.com>
 # Version 0.9.0
@@ -7,7 +8,6 @@
 ## create project directories
 ##--------------------------------------------------##
 
-ngseasy_initiate_project () {
 
 # NSGeasy Project Initiation
 # Makes Project and Sample Directories needed for NGSesy
@@ -47,7 +47,7 @@ EOF
 
 
 #get options for command line args
-while  getopts "h:c:d:" opt
+while  getopts "hc:d:" opt
 do
 
     case ${opt} in
@@ -74,6 +74,7 @@ done
 	  usage;
 	  exit 1;
   fi
+
 #check exists.
   if [ ! -e "${config_tsv}" ] 
   then
@@ -210,4 +211,4 @@ echo  " Saving Project configuration settings to : [${PROJECT_DIR}/${POJECT_ID}/
 echo  "$DATE $f1 $f2 $f3 $f4 $f5 $f6 $f7 $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15 ${SAMPLE_ID}.${NGS_TYPE}.${NGS_PLATFORM}.${ALIGNER} ${PROJECT_DIR}/${POJECT_ID}" >> ${PROJECT_DIR}/${POJECT_ID}/config_files/project.config.file.${DATE};
   
 done < ${config_tsv}
-}
+

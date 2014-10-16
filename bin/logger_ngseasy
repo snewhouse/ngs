@@ -1,6 +1,6 @@
 #!/bin/bash
 
 # logging function for ngseasy
-log_ngseasy(){
+
 	echo [`date`]":[Run_Log]:" ${1} >> ${2}.log
-}
+

@@ -7,8 +7,6 @@
 ## Pre Alignemnt Fastqc
 ##--------------------------------------------------##
 
-ngseasy_fastqc () {
-
 #usage printing func
 usage()
 {
@@ -194,7 +192,6 @@ fi
 
 done < ${config_tsv}
 
-}
 
 
 

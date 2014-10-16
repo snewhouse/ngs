@@ -6,7 +6,6 @@
 ## create and run data_volumes container 
 ##--------------------------------------------------##
 
-ngseasy_volumes_container() {
 
 #usage printing func
 usage()
@@ -106,4 +105,4 @@ EOF
   --name data_volumes \
   -t compbio/ngseasy-base:wheezy
 
-}
+
