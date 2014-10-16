@@ -1,0 +1,10 @@
+#logging
+
+
+log_text=${1}
+logfile=${2}
+
+log_ngseasy(){
+
+	echo `date` ":[Log]:" ${log_text} >> ${logfile}.log
+}

@@ -26,11 +26,6 @@ cat << EOF
 EOF
 }
 
-#logging
-log_ngseasy(){
-
-	echo `date` ":[NGSeasy Log]:" ${1} >> ${2}.log
-}
 
 #check exists.
 if [[ ! -e ${config_tsv} ]] 
