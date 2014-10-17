@@ -10,6 +10,7 @@ ENV HOME /root
 # Update
 RUN apt-get update -y
 
+
 #---------------------------------------------annotation-------------------------------------------------
 
 # + ANNOVAR (see licence, and registration)
@@ -28,8 +29,6 @@ COPY get_annovar_gene_databases.sh /usr/local/pipeline/annovar/
 #-------------------------------PERMISSIONS--------------------------
 RUN chmod -R 776 /usr/local/pipeline/
 RUN chown -R pipeman:ngsgroup /usr/local/pipeline
-RUN adduser pipeman sudo
-RUN usermod -a -G sudo pipeman
 
 #---------------------------------------------------------------------------------
 # Cleanup the temp dir
