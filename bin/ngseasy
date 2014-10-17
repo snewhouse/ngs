@@ -108,16 +108,14 @@ SOUT=${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}
 run=`date +"%d%m%y-%H%M%S"`
 
 #make sample spec config file and save to sample run folder 
-awk 'BEGIN {OFS="\t"} {print $POJECT_ID, $SAMPLE_ID, $FASTQ1, $FASTQ2, $PROJECT_DIR, $DNA_PREP_LIBRARY_ID, $NGS_PLATFORM, $NGS_TYPE, $BED_ANNO, $PIPELINE, $ALIGNER, $VARCALLER, $GTMODEGATK, $CLEANUP, $NCPU}' > ${SOUT}/${SAMPLE_ID}_${PIPELINE}_${run}.config.tsv
+awk 'BEGIN {OFS="\t"}; print ${POJECT_ID}, ${SAMPLE_ID}, ${FASTQ1}, ${FASTQ2}, ${PROJECT_DIR}, ${DNA_PREP_LIBRARY_ID}, ${NGS_PLATFORM}, ${NGS_TYPE}, ${BED_ANNO}, ${PIPELINE}, ${ALIGNER}, ${VARCALLER}, ${GTMODEGATK}, ${CLEANUP}, $NCPU} }' > ${SOUT}/${SAMPLE_ID}_${PIPELINE}_${run}.config.tsv
 
 #sample config 
 sample_config=${SOUT}/${SAMPLE_ID}_${PIPELINE}_${run}.config.tsv
 
 logger_ngseasy "Running: bash ${PIPELINE} -c ${sample_config} -d ${PROJECT_DIR}" ${LOGFILE}
 
-	bash ${PIPELINE} -c ${sample_config} -d ${PROJECT_DIR}
-
-
+${PIPELINE} -c ${sample_config} -d ${PROJECT_DIR}
 
 done < ${config_tsv}
 
