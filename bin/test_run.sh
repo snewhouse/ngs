@@ -36,3 +36,6 @@ sudo docker run \
 ngseasy -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects
 
 
+
+
+
