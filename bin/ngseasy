@@ -71,7 +71,8 @@ do
 
 
 
-# set varibales  
+# set varibales
+  DATE=`date +"%d%m%y"`
   POJECT_ID=$f1
   SAMPLE_ID=$f2
   FASTQ1=$f3
@@ -95,7 +96,7 @@ do
 DOCKERHOME="/home/pipeman/ngs_projects"
 
 #log it 
-LOGFILE=${PROJECT_DIR}/${PROJECT_ID}/run_logs/${SAMPLE_ID}
+LOGFILE=${PROJECT_DIR}/${POJECT_ID}/run_logs/${SAMPLE_ID}.${DATE}
 
 logger_ngseasy "ngseasy: run pipeline: ${PIPELINE}"  ${LOGFILE}
 
