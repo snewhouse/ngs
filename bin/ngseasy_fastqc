@@ -17,6 +17,7 @@ cat << EOF
   ARGUMENTS:
   -h      Flag: Show this help message
   -c      NGSeasy project and run configureation file
+  -d      NGSeasy project directory
 
   EXAMPLE USAGE:
     
@@ -82,14 +83,12 @@ do
   CLEANUP=$f14
   NCPU=$f15
 
-#Docker Output Dir: this is the mouned directory set by ngseasy_volumes_container
-DOCKERHOME="/home/pipeman/ngs_projects"
 
 #Logfile 
 LOGFILE=${PROJECT_DIR}/${POJECT_ID}/run_logs/${SAMPLE_ID}.${DATE}
 
 #OUTPUT SAMPLE DIR 
-SOUT=${DOCKERHOME}/${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}
+SOUT=${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}
 
 #check local dir exists
 if [ ! -d "${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}" ]
@@ -133,20 +132,28 @@ fi
 #---------------------------------------FASTQC-----------------------------------------------------------#
   logger_ngseasy " START: FastQC on raw Fastq files " ${LOGFILE}
 
+
 #run compbio/ngseasy-fastq
+#Docker Output Dir: this is the mouned directory set by ngseasy_volumes_container
+DOCKERHOME="/home/pipeman/ngs_projects"
+#OUTPUT SAMPLE DIR 
+SOUTDocker=${DOCKERHOME}/${POJECT_ID}/${SAMPLE_ID}
+
   sudo docker run \
   -P \
   --rm \
+  --user pipeman \
+  --env HOME="/home/pipeman" \
   --name fastqc.${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-fastqc:v0.9 /usr/local/pipeline/FastQC/fastqc \
     --threads ${NCPU} \
     --extract \
     --quiet \
-    --dir ${SOUT}/tmp \
-    --outdir ${SOUT}/fastq \
-    ${SOUT}/fastq/${rawFASTQ1}_1.fq.gz \
-    ${SOUT}/fastq/${rawFASTQ2}_2.fq.gz
+    --dir ${SOUTDocker}/tmp \
+    --outdir ${SOUTDocker}/fastq \
+    ${SOUTDocker}/fastq/${rawFASTQ1}_1.fq.gz \
+    ${SOUTDocker}/fastq/${rawFASTQ2}_2.fq.gz
 
 #log 
   logger_ngseasy "Running : /usr/local/pipeline/FastQC/fastqc --threads ${NCPU} --extract --quiet --dir ${SOUT}/tmp --outdir ${SOUT}/fastq ${SOUT}/fastq/${rawFASTQ1}_1.fq.gz ${SOUT}/fastq/${rawFASTQ2}_2.fq.gz" ${LOGFILE}

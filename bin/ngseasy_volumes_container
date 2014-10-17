@@ -82,6 +82,8 @@ EOF
   sudo docker run \
   -d \
   -P \
+  --user pipeman \
+  --env HOME="/home/pipeman" \
   -v ${host_vol_dir}/fastq_raw:/home/pipeman/fastq_raw \
   -v ${host_vol_dir}/reference_genomes_b37:/home/pipeman/reference_genomes_b37 \
   -v ${host_vol_dir}/gatk_resources:/home/pipeman/gatk_resources \
