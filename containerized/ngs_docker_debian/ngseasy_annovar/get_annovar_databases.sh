@@ -10,7 +10,10 @@ for annovardatabase in \
   snp138 \
   nci60 \
   clinvar_20140929 \
-  gerp++elem; 
+  gerp++elem \
+  targetScanS \
+  tfbsConsSites \
+  wgRna;
 do 
   ./annotate_variation.pl --buildver hg19 --downdb --webfrom annovar ${annovardatabase} humandb/ ; 
 done
