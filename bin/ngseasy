@@ -90,7 +90,6 @@ do
   CLEANUP=$f14
   NCPU=$f15
 
-
 #mounted docker dir
 #script run in docker container and will look for volumes specifef in ngseasy_volumes_contaier
 DOCKERHOME="/home/pipeman/ngs_projects"
@@ -109,7 +108,7 @@ SOUT=${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}
 run=`date +"%d%m%y-%H%M%S"`
 
 #make sample spec config file and save to sample run folder 
-awk -v OFS='\t' '{print $POJECT_ID, $SAMPLE_ID, $FASTQ1, $FASTQ2, $PROJECT_DIR, $DNA_PREP_LIBRARY_ID, $NGS_PLATFORM, $NGS_TYPE, $BED_ANNO, $PIPELINE, $ALIGNER, $VARCALLER, $GTMODEGATK, $CLEANUP, $NCPU}' > ${SOUT}/${SAMPLE_ID}_${PIPELINE}_${run}.config.tsv
+awk 'BEGIN {OFS="\t"} {print $POJECT_ID, $SAMPLE_ID, $FASTQ1, $FASTQ2, $PROJECT_DIR, $DNA_PREP_LIBRARY_ID, $NGS_PLATFORM, $NGS_TYPE, $BED_ANNO, $PIPELINE, $ALIGNER, $VARCALLER, $GTMODEGATK, $CLEANUP, $NCPU}' > ${SOUT}/${SAMPLE_ID}_${PIPELINE}_${run}.config.tsv
 
 #sample config 
 sample_config=${SOUT}/${SAMPLE_ID}_${PIPELINE}_${run}.config.tsv
