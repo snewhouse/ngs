@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 # Collection of NGSeasy Functions
 # Stephen Newhouse <stephen.j.newhouse@gmail.com>
 # Version 0.9.0
