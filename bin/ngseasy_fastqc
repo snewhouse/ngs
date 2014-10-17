@@ -11,23 +11,22 @@
 usage()
 {
 cat << EOF
-  This script sets up the NGSeasy docker fastqc container:
+  This script sets up the NGSeasy docker fastqc container and runs FastQC on raw fastq files
   See NGSEasy containerized instructions.
 
   ARGUMENTS:
   -h      Flag: Show this help message
   -c      NGSeasy project and run configureation file
-  -t      1 = pre quality trim; 0 = post quality trim
 
   EXAMPLE USAGE:
     
-    ngseasy_fastqc -c config.file.tsv -t pre
+    ngseasy_fastqc -c config.file.tsv -d project_directory
 
 EOF
 }
 
 #get options for command line args
-  while  getopts "hc:t:" opt
+  while  getopts "hc:d:" opt
   do
 
       case ${opt} in
@@ -40,8 +39,8 @@ EOF
 	  config_tsv=${OPTARG}
 	  ;;
 
-	  t)
-	  fastqc_pre=${OPTARG}
+	  d)
+	  project_directory=${OPTARG}
 	  ;; 
       esac
   done
@@ -54,11 +53,12 @@ then
 	    exit 1;
 fi
 
-if [ "${fastqc_pre}"!= "1" ] || [ "${fastqc_pre}"!= "0" ]
-then
-	    echo "ERROR : Unexpected argument....exiting "
-	    usage;
-	    exit 1;
+#check exists.
+if [ ! -d "${project_directory}" ]
+  then
+    echo "ERROR : project_directory ${project_directory} does not exist "
+    usage;
+    exit 1;
 fi
 
 #Read config file 
@@ -85,7 +85,7 @@ do
 #Docker Output Dir: this is the mouned directory set by ngseasy_volumes_container
 DOCKERHOME="/home/pipeman/ngs_projects"
 
-#Logfile
+#Logfile 
 LOGFILE=${PROJECT_DIR}/${POJECT_ID}/run_logs/${SAMPLE_ID}.${DATE}
 
 #OUTPUT SAMPLE DIR 
@@ -115,19 +115,22 @@ fi
 logger_ngseasy " NGSeasy: Fastq Basename : [$rawFASTQ1] " ${LOGFILE}
 
 #-------------------------------------------------------------------#
-#FASTQC on raw files
-logger_ngseasy " NGSeasy: START FASTQC "  ${LOGFILE}
 
 #check if qc'd data alread exists 
 if [ -s "${SOUT}/fastq/${rawFASTQ1}_1.fq_fastqc.zip" ] && [ -s "${SOUT}/fastq/${rawFASTQ2}_2.fq_fastqc.zip" ] 
 then
   logger_ngseasy " FastQC Data already exists...skipping" ${LOGFILE}
-else
+  exit 1
 fi
 
-# if before trimmomatic
-if [ "${pre_or_post}" == "1" ]
+#check if qc'd data alread exists 
+if [ -s "${SOUT}/fastq/${rawFASTQ1}_1.filtered.fq.gz" ] && [ -s "${SOUT}/fastq/${rawFASTQ2}_2.filtered.fq.gz" ]
 then
+  logger_ngseasy " FastQC Data already exists...skipping" ${LOGFILE}
+  exit 1
+fi
+
+#---------------------------------------FASTQC-----------------------------------------------------------#
   logger_ngseasy " START: FastQC on raw Fastq files " ${LOGFILE}
 
 #run compbio/ngseasy-fastq
@@ -144,64 +147,10 @@ then
     --outdir ${SOUT}/fastq \
     ${SOUT}/fastq/${rawFASTQ1}_1.fq.gz \
     ${SOUT}/fastq/${rawFASTQ2}_2.fq.gz
+
 #log 
+  logger_ngseasy echo "Running : /usr/local/pipeline/FastQC/fastqc --threads ${NCPU} --extract --quiet --dir ${SOUT}/tmp --outdir ${SOUT}/fastq ${SOUT}/fastq/${rawFASTQ1}_1.fq.gz ${SOUT}/fastq/${rawFASTQ2}_2.fq.gz" ${LOGFILE}
+
   logger_ngseasy " END: FastQC on raw Fastq files "  ${LOGFILE}
-fi
-
-if [ "${pre_or_post}" == "0" ]
-then
-# if run after trimmomatic
-# Trimmomatic paired output
-  qcdPeFASTQ1=${SOUT}/fastq/${rawFASTQ1}_1.filtered.fq.gz;
-  qcdPeFASTQ2=${SOUT}/fastq/${rawFASTQ2}_2.filtered.fq.gz;
-# Trimmomatic unpaired ouput
-  qcdSeFASTQ1=${SOUT}/fastq/${rawFASTQ1}_1.unpaired.fq.gz;
-  qcdSeFASTQ2=${SOUT}/fastq/${rawFASTQ2}_2.unpaired.fq.gz;
-   
-#check if fastq files exist
-if [ ! -s ${SOUT}/fastq/${rawFASTQ1}_1.filtered.fq.gz ] && [ ! -s ${SOUT}/fastq/${rawFASTQ2}_2.filtered.fq.gz ]
-then
-  logger_ngseasy " Can't Find Trimmed Fastq files in ${SOUT}/fastq/ ie [${rawFASTQ1}_1.filtered.fq.gz] or [${rawFASTQ1}_1.unpaired.fq.gz] " ${LOGFILE}
-  exit 1
-fi
-
-  logger_ngseasy " START: FastQC on Trimmed Fastq files "  ${LOGFILE}
-
-#run compbio/ngseasy-fastq
-  sudo docker run \
-  -P \
-  --rm \
-  --name fastqc.${SAMPLE_ID} \
-  --volumes-from volumes_container \
-  -t compbio/ngseasy-fastqc:v0.9 /usr/local/pipeline/FastQC/fastqc \
-    --threads ${NCPU} \
-    --extract \
-    --quiet \
-    --dir ${SOUT}/tmp \
-    --outdir ${SOUT}/fastq \
-    ${SOUT}/fastq/${rawFASTQ1}_1.fq.gz \
-    ${SOUT}/fastq/${rawFASTQ2}_2.fq.gz
-#log
-  logger_ngseasy " END: FastQC on Trimmed Fastq files "  ${LOGFILE}
-fi
 
 done < ${config_tsv}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

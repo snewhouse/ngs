@@ -113,14 +113,7 @@ awk -v OFS='\t' '{print $f1, $f2, $f3, $f4, $f5, $f6, $f7, $f8, $f9, $f10, $f11,
 #sample config 
 sample_config=${SOUT}/${SAMPLE_ID}_${PIPELINE}_${run}.config.tsv
 
-if[ "${PIPELINE}"=="ngseasy_fastqc" ]
-	then
-# Call pipelien specified in config file 
-bash ${PIPELINE} -c ${sample_config} -t ${f16}
-
-else 
-	bash ${PIPELINE} -c ${sample_config} -d ${PROJECT_ID}
-fi
+	bash ${PIPELINE} -c ${sample_config} -d ${PROJECT_DIR}
 
 done < ${config_tsv}
 
