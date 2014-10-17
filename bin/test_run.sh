@@ -11,6 +11,7 @@ ngseasy_initiate_fastq -c /media/container-vol/ngs_projects/config_files/example
 
 # get annovar databases
 sudo docker run \
+	--rm=true \
 	--name annovar_db_get \
 	--volumes-from data_volumes \
 	-i \
@@ -20,17 +21,18 @@ sudo docker run \
 	/usr/local/pipeline/annovar/get_annovar_gene_databases.sh
 
 sudo docker run \
-	--rm true \
+	--rm=true \
 	--volumes-from data_volumes \
 	-i \
 	-t \
-	compbio/ngseasy-annovar:v0.9.1 \
+	compbio/ngseasy-annovar:v0.9.2 \
 	/bin/bash \
 	/usr/local/pipeline/annovar/get_annovar_databases.sh
 
 ## To Test
 
-# PIPELINE SET TO ngseasy_fastq
+# PIPELINE SET TO ngseasy_fastq in config file
+# this creates new sample confog file from project confif file and feeds as input to pipeline ngseasy_fastq
 ngseasy -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects
 
 
