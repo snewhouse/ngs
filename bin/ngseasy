@@ -109,7 +109,7 @@ SOUT=${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}
 run=`date +"%d%m%y-%H%M%S"`
 
 #make sample spec config file and save to sample run folder 
-awk -v OFS='\t' '{print $f1, $f2, $f3, $f4, $f5, $f6, $f7, $f8, $f9, $f10, $f11, $f12, $f13, $f14, $f15}' > ${SOUT}/${SAMPLE_ID}_${PIPELINE}_${run}.config.tsv
+awk -v OFS='\t' '{print $POJECT_ID, $SAMPLE_ID, $FASTQ1, $FASTQ2, $PROJECT_DIR, $DNA_PREP_LIBRARY_ID, $NGS_PLATFORM, $NGS_TYPE, $BED_ANNO, $PIPELINE, $ALIGNER, $VARCALLER, $GTMODEGATK, $CLEANUP, $NCPU}' > ${SOUT}/${SAMPLE_ID}_${PIPELINE}_${run}.config.tsv
 
 #sample config 
 sample_config=${SOUT}/${SAMPLE_ID}_${PIPELINE}_${run}.config.tsv
