@@ -13,7 +13,7 @@ ngseasy_initiate_fastq -c /media/container-vol/ngs_projects/config_files/example
 sudo docker run \
 	--rm=true \
 	--name annovar_db_get \
-	--volumes-from data_volumes \
+	--volumes-from volumes_container \
 	-i \
 	-t \
 	compbio/ngseasy-annovar:v0.9.2 \
@@ -22,7 +22,7 @@ sudo docker run \
 
 sudo docker run \
 	--rm=true \
-	--volumes-from data_volumes \
+	--volumes-from volumes_container \
 	-i \
 	-t \
 	compbio/ngseasy-annovar:v0.9.2 \
