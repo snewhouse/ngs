@@ -136,6 +136,8 @@ SOUTDocker=${DOCKERHOME}/${POJECT_ID}/${SAMPLE_ID}
 # Trimmomatic unpaired ouput
   qcdSeFASTQ1=${SOUTDocker}/fastq/${rawFASTQ1}_1.unpaired.fq.gz;
   qcdSeFASTQ2=${SOUTDocker}/fastq/${rawFASTQ2}_2.unpaired.fq.gz;
+# adapter_fa
+adapter_fa="/home/pipeman/reference_genomes_b37/contaminant_list.fa"
 
   sudo docker run \
   -P \
