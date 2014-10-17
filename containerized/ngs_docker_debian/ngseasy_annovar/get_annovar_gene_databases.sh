@@ -1,16 +1,16 @@
 #!/bin/bash
 
 #ANNOVAR DATA BASES
-./annotate_variation.pl --buildver hg19 --downdb seq humandb/hg19_seq
+/usr/local/pipeline/annovar/annotate_variation.pl --buildver hg19 --downdb seq /home/pipeman/ngs_projects/humandb/hg19_seq
 
-./annotate_variation.pl --buildver hg19 --downdb --webfrom annovar refGene  humandb/
+/usr/local/pipeline/annovar/annotate_variation.pl --buildver hg19 --downdb --webfrom annovar refGene  /home/pipeman/ngs_projects/humandb/
 
-./annotate_variation.pl --buildver hg19 --downdb --webfrom annovar knownGene  humandb/
+/usr/local/pipeline/annovar/annotate_variation.pl --buildver hg19 --downdb --webfrom annovar knownGene  /home/pipeman/ngs_projects/humandb/
 
-./annotate_variation.pl --buildver hg19 --downdb --webfrom annovar ensGene  humandb/
+/usr/local/pipeline/annovar/annotate_variation.pl --buildver hg19 --downdb --webfrom annovar ensGene  /home/pipeman/ngs_projects/humandb/
 
-./retrieve_seq_from_fasta.pl humandb/hg19_refGene.txt -seqdir humandb/hg19_seq -format refGene -outfile humandb/hg19_refGeneMrna.fa
+/usr/local/pipeline/annovar/retrieve_seq_from_fasta.pl /home/pipeman/ngs_projects/humandb/hg19_refGene.txt -seqdir /home/pipeman/ngs_projects/humandb/hg19_seq -format refGene -outfile /home/pipeman/ngs_projects/humandb/hg19_refGeneMrna.fa
 
-./retrieve_seq_from_fasta.pl humandb/hg19_knownGene.txt -seqdir humandb/hg19_seq -format knownGene -outfile humandb/hg19_knownGeneMrna.fa
+/usr/local/pipeline/annovar/retrieve_seq_from_fasta.pl /home/pipeman/ngs_projects/humandb/hg19_knownGene.txt -seqdir /home/pipeman/ngs_projects/humandb/hg19_seq -format knownGene -outfile /home/pipeman/ngs_projects/humandb/hg19_knownGeneMrna.fa
 
-./retrieve_seq_from_fasta.pl humandb/hg19_ensGene.txt -seqdir humandb/hg19_seq -format ensGene -outfile humandb/hg19_ensGeneMrna.fa
+/usr/local/pipeline/annovar/retrieve_seq_from_fasta.pl /home/pipeman/ngs_projects/humandb/hg19_ensGene.txt -seqdir /home/pipeman/ngs_projects/humandb/hg19_seq -format ensGene -outfile /home/pipeman/ngs_projects/humandb/hg19_ensGeneMrna.fa
