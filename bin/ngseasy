@@ -97,7 +97,7 @@ DOCKERHOME="/home/pipeman/ngs_projects"
 #log it 
 LOGFILE=${PROJECT_DIR}/${PROJECT_ID}/run_logs/${SAMPLE_ID}
 
-log_ngseasy "ngseasy: run pipeline: ${PIPELINE}"  ${LOGFILE}
+logger_ngseasy "ngseasy: run pipeline: ${PIPELINE}"  ${LOGFILE}
 
 #OUTPUT SAMPLE DIR
 # /home/pipeman/ngs_projects/ is the mounted docker volume
@@ -113,7 +113,11 @@ awk -v OFS='\t' '{print $f1, $f2, $f3, $f4, $f5, $f6, $f7, $f8, $f9, $f10, $f11,
 #sample config 
 sample_config=${SOUT}/${SAMPLE_ID}_${PIPELINE}_${run}.config.tsv
 
+logger_ngseasy "Running: bash ${PIPELINE} -c ${sample_config} -d ${PROJECT_DIR}" ${LOGFILE}
+
 	bash ${PIPELINE} -c ${sample_config} -d ${PROJECT_DIR}
+
+
 
 done < ${config_tsv}
 

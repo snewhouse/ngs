@@ -149,7 +149,7 @@ fi
     ${SOUT}/fastq/${rawFASTQ2}_2.fq.gz
 
 #log 
-  logger_ngseasy echo "Running : /usr/local/pipeline/FastQC/fastqc --threads ${NCPU} --extract --quiet --dir ${SOUT}/tmp --outdir ${SOUT}/fastq ${SOUT}/fastq/${rawFASTQ1}_1.fq.gz ${SOUT}/fastq/${rawFASTQ2}_2.fq.gz" ${LOGFILE}
+  logger_ngseasy "Running : /usr/local/pipeline/FastQC/fastqc --threads ${NCPU} --extract --quiet --dir ${SOUT}/tmp --outdir ${SOUT}/fastq ${SOUT}/fastq/${rawFASTQ1}_1.fq.gz ${SOUT}/fastq/${rawFASTQ2}_2.fq.gz" ${LOGFILE}
 
   logger_ngseasy " END: FastQC on raw Fastq files "  ${LOGFILE}
 
