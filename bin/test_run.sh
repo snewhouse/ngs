@@ -29,13 +29,11 @@ sudo docker run \
 	/bin/bash \
 	/usr/local/pipeline/annovar/get_annovar_databases.sh
 
-## To Test
-
 # PIPELINE SET TO ngseasy_fastq in config file
 # this creates new sample confog file from project confif file and feeds as input to pipeline ngseasy_fastq
 ngseasy -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects
 
-
-
+# sep call to ngseasy_trimmomatic
+ngseasy_trimmomatic -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects 
 
 
