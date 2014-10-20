@@ -140,19 +140,26 @@ DOCKERHOME="/home/pipeman/ngs_projects"
 #Docker OUTPUT SAMPLE DIR 
 SOUTDocker=${DOCKERHOME}/${POJECT_ID}/${SAMPLE_ID}
 
+# Trimmomatic paired output
+  qcdPeFASTQ1=${SOUTDocker}/fastq/${rawFASTQ1}_1.filtered.fq.gz;
+  qcdPeFASTQ2=${SOUTDocker}/fastq/${rawFASTQ2}_2.filtered.fq.gz;
+# Trimmomatic unpaired ouput
+  qcdSeFASTQ1=${SOUTDocker}/fastq/${rawFASTQ1}_1.unpaired.fq.gz;
+  qcdSeFASTQ2=${SOUTDocker}/fastq/${rawFASTQ2}_2.unpaired.fq.gz;
+
 #---------------------------------------------#
 # BWA 
 #---------------------------------------------#
 
 if[ "${ALIGNER}" == "bwa" ]
 then
-  logger_ngseasy " START Basic BWA Alignment " ${LOGFILE}
+  logger_ngseasy " START Basic ${ALIGNER} Alignment " ${LOGFILE}
 
 # align wih bwa
   sudo docker run \
   -P \
   --rm=true \
-  --name bwa_${SAMPLE_ID} \
+  --name ${ALIGNER}_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-bwa:v0.9 \
     /usr/local/pipeline/bwa-0.7.10/bwa \
@@ -161,10 +168,11 @@ then
     /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
     ${qcdPeFASTQ1} ${qcdPeFASTQ2} > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.sam
 
-    sudo docker logs bwa_${SAMPLE_ID} >> ${LOGFILE}.log
+#log docker run 
+    sudo docker logs ${ALIGNER}_${SAMPLE_ID} >> ${LOGFILE}.log
 
 # sam to bam then sort and index
-  logger_ngseasy " START BWA SAM to BAM  "  ${LOGFILE}
+  logger_ngseasy " START ${ALIGNER} SAM to BAM  "  ${LOGFILE}
 
   sudo docker run \
   -P \
@@ -176,9 +184,10 @@ then
   view -bhS \
   ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.sam > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bam;
 
+#log docker run 
     sudo docker logs sam2bam_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  logger_ngseasy " START BWA SORT BAM  "  ${LOGFILE}
+  logger_ngseasy " START ${ALIGNER} SORT BAM  "  ${LOGFILE}
   sudo docker run \
   -P \
   --rm=true \
@@ -189,9 +198,10 @@ then
   sort -f \
   ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bam ${SOUTDocker}/alignments/${BAM_PREFIX}.sort.bam;
 
+#log docker run 
     sudo docker logs samtools_sort_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  logger_ngseasy " START BWA INDEX BAM  "  ${LOGFILE}
+  logger_ngseasy " START ${ALIGNER} INDEX BAM  "  ${LOGFILE}
 
   sudo docker run \
   -P \
@@ -202,25 +212,93 @@ then
   /usr/local/pipeline/samtools/samtools \
   index \
   ${SOUTDocker}/alignments/${BAM_PREFIX}.sort.bam
-
+#log docker run 
     sudo docker logs samtools_index_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  logger_ngseasy " END Basic BWA Alignment " ${LOGFILE}  
+
+  logger_ngseasy " END Basic ${ALIGNER} Alignment " ${LOGFILE}  
 fi
 
 
-# Novoalign
+#---------------------------------------------#
+# BWA 
+#---------------------------------------------#
 if[ "${ALIGNER}" == "novoalign" ]
 then
   sudo docker run \
   -P \
   --rm=true \
-  --name fastqc.${SAMPLE_ID} \
+  --name ${ALIGNER}_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-novoalign:v0.9 
+  -t compbio/ngseasy-novoalign:v0.9 \
+    /usr/local/pipeline/novocraft/novoalign \
+   -d /home/pipeman/reference_genomes_b37/human_g1k_v37.novoIndex \
+   -f ${qcdPeFASTQ1} ${qcdPeFASTQ2} \
+   -F STDFQ \
+   --Q2Off \
+   --3Prime \
+   -g 40 \
+   -x 6 \
+   -r All \
+   -i PE 300,150 \
+   -c ${NCPU} \
+   -k -K ${SOUTDocker}/alignments/${BAM_PREFIX}.K.stats -o SAM > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.sam;
+
+  #log docker run 
+    sudo docker logs ${ALIGNER}_${SAMPLE_ID} >> ${LOGFILE}.log
+
+# sam to bam then sort and index
+  logger_ngseasy " START ${ALIGNER} SAM to BAM  "  ${LOGFILE}
+
+  sudo docker run \
+  -P \
+  --rm=true \
+  --name sam2bam_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-samtools:v0.9 \
+  /usr/local/pipeline/samtools/samtools \
+  view -bhS \
+  ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.sam > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bam;
+
+#log docker run 
+    sudo docker logs sam2bam_${SAMPLE_ID} >> ${LOGFILE}.log
+
+  logger_ngseasy " START ${ALIGNER} SORT BAM  "  ${LOGFILE}
+  sudo docker run \
+  -P \
+  --rm=true \
+  --name samtools_sort_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-samtools:v0.9 \
+  /usr/local/pipeline/samtools/samtools \
+  sort -f \
+  ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bam ${SOUTDocker}/alignments/${BAM_PREFIX}.sort.bam;
+
+#log docker run 
+    sudo docker logs samtools_sort_${SAMPLE_ID} >> ${LOGFILE}.log
+
+  logger_ngseasy " START ${ALIGNER} INDEX BAM  "  ${LOGFILE}
+
+  sudo docker run \
+  -P \
+  --rm=true \
+  --name samtools_index_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-samtools:v0.9 \
+  /usr/local/pipeline/samtools/samtools \
+  index \
+  ${SOUTDocker}/alignments/${BAM_PREFIX}.sort.bam
+#log docker run 
+    sudo docker logs samtools_index_${SAMPLE_ID} >> ${LOGFILE}.log
+
+  logger_ngseasy " END Basic ${ALIGNER} Alignment " ${LOGFILE}  
 fi
 
-# Stampy
+
+
+#---------------------------------------------#
+# Stampy 
+#---------------------------------------------#
 if[ "${ALIGNER}" == "stampy" ]
 then
   sudo docker run \
