@@ -255,12 +255,30 @@ To add :
 - pipeline option need to be set how? list of steps, specified full, full_no_gatk, var_call_only, cnv_call_only, qc_reports??
 
 
-### Alignment Output
+## Alignment Output
 *.raw.sam
 *.raw.bam
 *.raw.bai
 *.sort.bam
 *.sort.bai
 
+****
 
+## Gottchas
 
+*bin/bash -c*
+
+- need to add ```/bin/bash -c ${COMMAND}``` when software require ```>``` redirect to some output
+
+example below for bwa:-  
+
+```
+  sudo docker run \
+  -P \
+  --name sam2bam_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c \
+  "/usr/local/pipeline/samtools/samtools view -bhS ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bwa.sam > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bwa.bam"
+  ```
+
+runnig this without ```/bin/bash -c``` breaks. The ```>``` is called outside of the container
