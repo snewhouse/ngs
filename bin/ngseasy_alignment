@@ -528,7 +528,7 @@ then
     sudo docker rm samtools_index_${SAMPLE_ID}
 
     logger_ngseasy " END Basic ${ALIGNER} Basic Alignment" ${LOGFILE}  
-
+fi
 #------permissions------------#
 chmod -R 766 ${SOUTDocker}/alignments/*
 
