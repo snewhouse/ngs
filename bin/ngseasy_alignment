@@ -384,7 +384,7 @@ then
   -P \
   --name sam2bam_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 /bin/bash - c \
+  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c \
   "/usr/local/pipeline/samtools/samtools view -bhS ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.sam > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bam"
 
 #log docker run 

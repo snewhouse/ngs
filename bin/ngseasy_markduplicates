@@ -115,7 +115,7 @@ then
   -P \
   --name MarkDuplicates_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-picardtools:v0.9 /bin/bash - c \
+  -t compbio/ngseasy-picardtools:v0.9 /bin/bash -c \
   "java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.119/MarkDuplicates.jar \
   TMP_DIR=${SOUTDocker}/tmp \
   VALIDATION_STRINGENCY=SILENT \
@@ -134,7 +134,7 @@ fi
   sudo docker rm MarkDuplicates_${SAMPLE_ID}
 
   logger_ngseasy " END MarkDuplicates  "  ${LOGFILE}
-  
+
 #------permissions------------#
 chmod -R 766 ${SOUTDocker}/alignments/*
 
