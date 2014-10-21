@@ -132,6 +132,9 @@ DOCKERHOME="/home/pipeman/ngs_projects"
 #Docker OUTPUT SAMPLE DIR 
 SOUTDocker=${DOCKERHOME}/${POJECT_ID}/${SAMPLE_ID}
 
+#bamprefix
+  BAM_PREFIX=${SAMPLE_ID}.${NGS_TYPE}.${NGS_PLATFORM}.${ALIGNER}
+
 # Trimmomatic paired output
   qcdPeFASTQ1=${SOUTDocker}/fastq/${rawFASTQ1}_1.filtered.fq.gz;
   qcdPeFASTQ2=${SOUTDocker}/fastq/${rawFASTQ2}_2.filtered.fq.gz;
