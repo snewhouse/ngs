@@ -305,8 +305,7 @@ then
   -P \
   --name ${ALIGNER}_bwa_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-bwa:v0.9 \
-    $(/usr/local/pipeline/bwa-0.7.10/bwa mem-t ${NCPU} /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta ${qcdPeFASTQ1} ${qcdPeFASTQ2} > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bwa.sam);
+  -t compbio/ngseasy-bwa:v0.9 /usr/local/pipeline/bwa-0.7.10/bwa mem-t ${NCPU} /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta ${qcdPeFASTQ1} ${qcdPeFASTQ2} > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bwa.sam;
 
 #log docker run 
     sudo docker logs ${ALIGNER}_bwa_${SAMPLE_ID} >> ${LOGFILE}.log
