@@ -423,7 +423,7 @@ then
 
 # remove BWA aligned files
     logger_ngseasy " Remove Basic ${ALIGNER} Alignment BWA BAMs " ${LOGFILE}  
-    rm -v ${SOUTDocker}/alignments/${BAM_PREFIX}.*.bwa.*
+    rm -v ${SOUT}/alignments/${BAM_PREFIX}.*.bwa.*
 fi
 
 #---------------------------------------------#
