@@ -256,21 +256,21 @@ To add :
 
 ****
 ### Alignment Output
-*.raw.sam
-*.raw.bam
-*.raw.bai
-*.sort.bam
-*.sort.bai
+*.raw.sam  
+*.raw.bam  
+*.raw.bai  
+*.sort.bam  
+*.sort.bai  
 
 ****
 ### Addreadgroup
-*.addrg.bam
-*.addrg.bam.bai
+*.addrg.bam  
+*.addrg.bam.bai  
 
 ****
 ### Dupemark
-*.dupemk.bam
-*.dupemk.bam.bai
+*.dupemk.bam  
+*.dupemk.bam.bai  
 
 
 ****
