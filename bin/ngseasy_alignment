@@ -385,6 +385,7 @@ then
       --bamsortprefix ${SOUTDocker}/tmp \
       --bamkeepgoodreads \
       --sanger \
+      --bwamark \
       --gapopen=40 \
       --gapextend=3 \
       --noautosense \
