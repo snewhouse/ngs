@@ -254,13 +254,27 @@ To add :
 - not all steps need config?
 - pipeline option need to be set how? list of steps, specified full, full_no_gatk, var_call_only, cnv_call_only, qc_reports??
 
-
-## Alignment Output
+****
+### Alignment Output
 *.raw.sam
 *.raw.bam
 *.raw.bai
 *.sort.bam
 *.sort.bai
+
+****
+### Addreadgroup
+*.addrg.bam
+*.addrg.bam.bai
+
+****
+### Dupemark
+*.dupemk.bam
+*.dupemk.bam.bai
+
+
+****
+blah blah blah
 
 ****
 
