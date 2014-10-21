@@ -266,7 +266,7 @@ To add :
 
 ## Gottchas
 
-*bin/bash -c*
+**bin/bash -c**
 
 - need to add ```/bin/bash -c ${COMMAND}``` when software require ```>``` redirect to some output
 
