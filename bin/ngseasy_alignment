@@ -453,7 +453,9 @@ then
     rm -v ${SOUTDocker}/alignments/${BAM_PREFIX}.*.bwa.*
 fi
 
-#------------------------------bowtie2------------------------------------------------------------
+#---------------------------------------------#
+# Bowtie2
+#---------------------------------------------#
 # align wih bowtie2
 if[ "${ALIGNER}" == "bowtie2" ]
 then
@@ -525,9 +527,8 @@ then
     sudo docker rm samtools_index_${SAMPLE_ID}
 
     logger_ngseasy " END Basic ${ALIGNER} Basic Alignment" ${LOGFILE}  
-fi
 
 #------permissions------------#
-chmod -R 766 ${SOUTDocker}/*
+chmod -R 766 ${SOUTDocker}/alignments/*
 
 done < ${config_tsv}
