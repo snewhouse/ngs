@@ -123,5 +123,8 @@ else
   ls ${SOUT}/fastq/
 fi
 
+#------permissions------------#
+chmod -R 766 ${SOUT}/*
+
 done < ${config_tsv}
 

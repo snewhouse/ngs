@@ -115,7 +115,13 @@ sample_config=${SOUT}/${SAMPLE_ID}_${PIPELINE}_${run}.config.tsv
 
 logger_ngseasy "Running: bash ${PIPELINE} -c ${sample_config} -d ${PROJECT_DIR}" ${LOGFILE}
 
-${PIPELINE} -c ${sample_config} -d ${PROJECT_DIR}
+/bin/bash ${PIPELINE} -c ${sample_config} -d ${PROJECT_DIR}
 
 done < ${config_tsv}
+
+
+
+
+
+
 

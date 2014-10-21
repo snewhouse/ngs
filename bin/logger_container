@@ -2,5 +2,5 @@
 
 # logging function for ngseasy
 
-	echo [`date`]":[Run_Log]:" ${1} >> ${2}.log
+	echo [`date`]":[Container_log]:" >> ${1}.log
 

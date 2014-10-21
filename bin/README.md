@@ -242,7 +242,8 @@ nsgeasy_variant_annotation -c ${config_tsv} -d ${project_directory};
 
 }
 
-
+recommend full : trimmed aln gatk filtered and ensemble calls (multi SNP/INDELS/SV callers) base recalibration
+if not novoalign then stampy (bwa with stampy)
 
 
 ```
