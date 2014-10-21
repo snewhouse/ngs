@@ -4,14 +4,14 @@
 # Version 0.9.0
 
 ##--------------------------------------------------##
-## NGS AddOrReplaceReadGroups
+## NGS MarkDuplicates
 ##--------------------------------------------------##
 
 #usage printing func
 usage()
 {
 cat << EOF
-  This script sets up the NGSeasy docker picardtools container and runs AddOrReplaceReadGroups on raw BAM files
+  This script sets up the NGSeasy docker picardtools container and runs MarkDuplicates on raw BAM files
   See NGSEasy containerized instructions.
 
   ARGUMENTS:
@@ -21,7 +21,7 @@ cat << EOF
 
   EXAMPLE USAGE:
     
-    ngseasy_addreadgroup -c config.file.tsv -d project_directory
+    ngseasy_markduplicates -c config.file.tsv -d project_directory
 
 EOF
 }
@@ -106,46 +106,35 @@ SOUTDocker=${DOCKERHOME}/${POJECT_ID}/${SAMPLE_ID}
 BAM_PREFIX=${SAMPLE_ID}.${NGS_TYPE}.${NGS_PLATFORM}.${ALIGNER}
 
 #picardtools
-if [ ! -e ${SOUT}/alignments/${BAM_PREFIX}.addrg.bam ]
+if [ ! -e ${SOUT}/alignments/${BAM_PREFIX}.dupemk.bam ]
 then
   
-	logger_ngseasy " START AddOrReplaceReadGroups  "  ${LOGFILE}
-	logger_ngseasy " Adding Read Group Information " ${LOGFILE}
-	logger_ngseasy " Getting Platform Unit Information "  ${LOGFILE}
-
-	platform_unit=`zcat ${qcdPeFASTQ1} | head -1 | perl -p -i -e 's/:/\t/' | cut -f 1 | perl -p -i -e 's/@//g'`
-
-	logger_ngseasy " Platform Unit: [${platform_unit}]"  
+	logger_ngseasy " START MarkDuplicates  "  ${LOGFILE}
 
   sudo docker run \
   -P \
-  --name AddOrReplaceReadGroups_${SAMPLE_ID} \
+  --name MarkDuplicates_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-picardtools:v0.9 /bin/bash - c \
-  "java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.119/AddOrReplaceReadGroups.jar \
+  "java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.119/MarkDuplicates.jar \
   TMP_DIR=${SOUTDocker}/tmp \
   VALIDATION_STRINGENCY=SILENT \
   MAX_RECORDS_IN_RAM=100000 \
   CREATE_INDEX=true \
-  SORT_ORDER=coordinate \
-  RGID=${BAM_PREFIX} \
-  RGLB=${DNA_PREP_LIBRARY_ID} \
-  RGPL=${NGS_PLATFORM} \
-  RGPU=${platform_unit} \
-  RGSM=${SAMPLE_ID} \
-  RGDT=${DATE} \
-  INPUT=${SOUTDocker}/alignments/${BAM_PREFIX}.sort.bam \
-  OUTPUT=${SOUTDocker}/alignments/${BAM_PREFIX}.addrg.bam"
+  REMOVE_DUPLICATES=false \
+  ASSUME_SORTED=true \
+  INPUT=${SOUTDocker}/alignments/${BAM_PREFIX}.addrg.bam \
+  OUTPUT=${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bam \
+  METRICS_FILE=${SOUTDocker}/reports/${BAM_PREFIX}.dupemk_metrics"
 
 fi
 
-# logs
-    sudo docker logs AddOrReplaceReadGroups_${SAMPLE_ID} >> ${LOGFILE}.log
+  sudo docker logs MarkDuplicates_${SAMPLE_ID} >> ${LOGFILE}.log
 
-    sudo docker rm AddOrReplaceReadGroups_${SAMPLE_ID}
+  sudo docker rm MarkDuplicates_${SAMPLE_ID}
 
-	logger_ngseasy " END AddOrReplaceReadGroups  "  ${LOGFILE}
-	
+  logger_ngseasy " END MarkDuplicates  "  ${LOGFILE}
+  
 #------permissions------------#
 chmod -R 766 ${SOUTDocker}/alignments/*
 
