@@ -253,3 +253,14 @@ To add :
 - getting the pipeline and setting up resources data
 - not all steps need config?
 - pipeline option need to be set how? list of steps, specified full, full_no_gatk, var_call_only, cnv_call_only, qc_reports??
+
+
+### Output
+*.raw.sam
+*.raw.bam
+*.raw.bai
+*.sort.bam
+*.sort.bai
+
+
+
