@@ -255,7 +255,7 @@ To add :
 - pipeline option need to be set how? list of steps, specified full, full_no_gatk, var_call_only, cnv_call_only, qc_reports??
 
 
-### Output
+### Alignment Output
 *.raw.sam
 *.raw.bam
 *.raw.bai
