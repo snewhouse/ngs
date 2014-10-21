@@ -144,7 +144,8 @@ SOUTDocker=${DOCKERHOME}/${POJECT_ID}/${SAMPLE_ID}
 #---------------------------------------------#
 
 if[ "${ALIGNER}" == "bwa" ]
-then
+  then
+  
   logger_ngseasy " START Basic ${ALIGNER} Alignment " ${LOGFILE}
 
 # align wih bwa
