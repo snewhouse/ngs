@@ -371,13 +371,28 @@ then
 
 # align wih stampy
 
+    logger_ngseasy " START ${ALIGNER} Alignment on BWA Aligned BAM" ${LOGFILE}  
 
-  sudo docker run \
-  -P \
-  --name ${ALIGNER}_${SAMPLE_ID} \
-  --volumes-from volumes_container \
-  -t compbio/ngseasy-stampy:v0.9 
-
+    sudo docker run \
+    -P \
+    --name ${ALIGNER}_${SAMPLE_ID} \
+    --volumes-from volumes_container \
+    -t compbio/ngseasy-stampy:v0.9 \
+    python  /usr/local/pipeline/stampy-1.0.23/stampy.py \
+      -g ${REFGenomes}/human_g1k_v37 \
+      -h ${REFGenomes}/human_g1k_v37 \
+      -t ${NCPU} \
+      --bamsortprefix ${SOUTDocker}/tmp \
+      --bamkeepgoodreads \
+      --sanger \
+      --gapopen=40 \
+      --gapextend=3 \
+      --noautosense \
+      --insertsize=300 \
+      --insertsd=150 \
+      -M ${SOUTDocker}/alignments/${BAM_PREFIX}.sort.bwa.bam \
+      -o ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.sam \
+      -f sam
 fi
 
 
