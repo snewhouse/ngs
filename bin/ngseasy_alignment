@@ -133,7 +133,7 @@ DOCKERHOME="/home/pipeman/ngs_projects"
 SOUTDocker=${DOCKERHOME}/${POJECT_ID}/${SAMPLE_ID}
 
 #bamprefix
-  BAM_PREFIX=${SAMPLE_ID}.${NGS_TYPE}.${NGS_PLATFORM}.${ALIGNER}
+BAM_PREFIX=${SAMPLE_ID}.${NGS_TYPE}.${NGS_PLATFORM}.${ALIGNER}
 
 # Trimmomatic paired output
   qcdPeFASTQ1=${SOUTDocker}/fastq/${rawFASTQ1}_1.filtered.fq.gz;
@@ -157,11 +157,7 @@ if [ "${ALIGNER}" == "bwa" ]
   --name ${ALIGNER}_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-bwa:v0.9 \
-    /usr/local/pipeline/bwa-0.7.10/bwa \
-    -M \
-    -t ${NCPU} \
-    /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
-    ${qcdPeFASTQ1} ${qcdPeFASTQ2} > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.sam
+  /usr/local/pipeline/bwa-0.7.10/bwa mem -t ${NCPU} /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta ${qcdPeFASTQ1} ${qcdPeFASTQ2} > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.sam
 
 #log docker run 
     sudo docker logs ${ALIGNER}_${SAMPLE_ID} >> ${LOGFILE}.log
@@ -250,7 +246,6 @@ then
 
   sudo docker run \
   -P \
-  --rm=true \
   --name sam2bam_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-samtools:v0.9 \
@@ -266,7 +261,6 @@ then
   
   sudo docker run \
   -P \
-  --rm=true \
   --name samtools_sort_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-samtools:v0.9 \
@@ -282,7 +276,6 @@ then
   
     sudo docker run \
     -P \
-    --rm=true \
     --name samtools_index_${SAMPLE_ID} \
     --volumes-from volumes_container \
     -t compbio/ngseasy-samtools:v0.9 \
@@ -313,11 +306,7 @@ then
   --name ${ALIGNER}_bwa_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-bwa:v0.9 \
-    /usr/local/pipeline/bwa-0.7.10/bwa \
-    -M \
-    -t ${NCPU} \
-    /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
-    ${qcdPeFASTQ1} ${qcdPeFASTQ2} > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bwa.sam
+    /usr/local/pipeline/bwa-0.7.10/bwa mem-t ${NCPU} /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta ${qcdPeFASTQ1} ${qcdPeFASTQ2} > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bwa.sam
 
 #log docker run 
     sudo docker logs ${ALIGNER}_bwa_${SAMPLE_ID} >> ${LOGFILE}.log
