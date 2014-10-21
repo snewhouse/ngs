@@ -143,7 +143,7 @@ SOUTDocker=${DOCKERHOME}/${POJECT_ID}/${SAMPLE_ID}
 # BWA 
 #---------------------------------------------#
 
-if[ "${ALIGNER}" == "bwa" ]
+if [ "${ALIGNER}" == "bwa" ]
   then
   
   logger_ngseasy " START Basic ${ALIGNER} Alignment " ${LOGFILE}
@@ -216,7 +216,7 @@ fi
 #---------------------------------------------#
 # BWA 
 #---------------------------------------------#
-if[ "${ALIGNER}" == "novoalign" ]
+if [ "${ALIGNER}" == "novoalign" ]
 then
   logger_ngseasy " START Basic ${ALIGNER} Alignment " ${LOGFILE}
 
@@ -299,7 +299,7 @@ fi
 #---------------------------------------------#
 # Stampy : BWA > STAMPY
 #---------------------------------------------#
-if[ "${ALIGNER}" == "stampy" ]
+if [ "${ALIGNER}" == "stampy" ]
 then
 
   logger_ngseasy " START Basic ${ALIGNER} Alignment: BWA " ${LOGFILE}
@@ -458,7 +458,7 @@ fi
 # Bowtie2
 #---------------------------------------------#
 # align wih bowtie2
-if[ "${ALIGNER}" == "bowtie2" ]
+if [ "${ALIGNER}" == "bowtie2" ]
 then
 
     logger_ngseasy " START ${ALIGNER} Basic Alignment" ${LOGFILE}  
