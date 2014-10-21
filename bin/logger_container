@@ -1,6 +1,0 @@
-#!/bin/bash
-
-# logging function for ngseasy
-
-	echo [`date`]":[Container_log]:" >> ${1}.log
-
