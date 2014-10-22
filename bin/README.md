@@ -280,6 +280,15 @@ Output suffixes
 
 ***
 ### Indel realign
+*.realn.bam  
+*.realn.bai
+*.realn.bam.bai  
+
+***
+### Base recal
+*.recal.bam  
+*.recal.bai
+*.recal.bam.bai  
 
 
 

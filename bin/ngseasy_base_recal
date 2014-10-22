@@ -11,7 +11,7 @@
 usage()
 {
 cat << EOF
-  This script sets up the NGSeasy docker GATK container and runs RealignerTargetCreator then IndelRealigner on raw BAM files
+  This script sets up the NGSeasy docker GATK container and runs BaseRecalibrator then PrintReads BQSR recalibration on *.realn.bam files
   See NGSEasy containerized instructions.
 
   ARGUMENTS:
@@ -21,7 +21,7 @@ cat << EOF
 
   EXAMPLE USAGE:
     
-    ngseasy_indel_realn -c config.file.tsv -d project_directory
+    ngseasy_base_recal -c config.file.tsv -d project_directory
 
 EOF
 }
@@ -102,56 +102,50 @@ SOUTDocker=${DOCKERHOME}/${POJECT_ID}/${SAMPLE_ID}
 #bamprefix
 BAM_PREFIX=${SAMPLE_ID}.${NGS_TYPE}.${NGS_PLATFORM}.${ALIGNER}
 
-#known indels
+#known indels and SNPs
 KNOWN_INDELS=/home/pipeman/gatk_resources/Mills_and_1000G_gold_standard.indels.b37.vcf
+KNOWN_SNPS_1000G=/home/pipeman/gatk_resources/1000G_phase1.snps.high_confidence.b37.vcf
+KNOWN_SNPS_b138=/home/pipeman/gatk_resources/dbsnp_138.b37.vcf
 
 #---------------------------------------------------------------------------------#
 if [ ! -e ${SOUT}/alignments/${BAM_PREFIX}.realn.bam ]
 then
 
-#RealignerTargetCreator
-	logger_ngseasy " START RealignerTargetCreator  "  ${LOGFILE}
+# BaseRecalibrator pre recal
+	logger_ngseasy " START BaseRecalibrator  "  ${LOGFILE}
 
   sudo docker run \
   -P \
-  --name RealignerTargetCreator_${SAMPLE_ID} \
+  --name BaseRecalibrator_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-gatk:v0.9.1 \
   java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
-  -T RealignerTargetCreator \
-  -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
-  -nt ${NCPU} \
-  --known ${KNOWN_INDELS} \
-  -I ${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bam \
-  -o ${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bam.IndelRealigner.intervals;
+  -T BaseRecalibrator \
+  -R ${REFGenomes}/human_g1k_v37.fasta \
+  -nct ${NCPU}  \
+  -I ${SOUTDocker}/alignments/${BAM_PREFIX}.realn.bam \
+  -o ${SOUTDocker}/alignments/${BAM_PREFIX}.realn.bam.BaseRecalibrator.table \
+  --knownSites ${KNOWN_INDELS} \
+  --knownSites ${KNOWN_SNPS_1000G} \
+  --knownSites ${KNOWN_SNPS_b138};
 
-  sudo docker logs RealignerTargetCreator_${SAMPLE_ID} >> ${LOGFILE}.log
+  sudo docker logs BaseRecalibrator_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  sudo docker rm RealignerTargetCreator_${SAMPLE_ID}
+  sudo docker rm BaseRecalibrator_${SAMPLE_ID}
 
-	logger_ngseasy " END RealignerTargetCreator  "  ${LOGFILE}
+  logger_ngseasy " END BaseRecalibrator  "  ${LOGFILE}
 
-#IndelRealigner
-	logger_ngseasy " START IndelRealigner  "  ${LOGFILE}
+#PrintReads BQSR recalibration 
+  logger_ngseasy " START PrintReads BQSR recalibration   "  ${LOGFILE}
 
   sudo docker run \
   -P \
-  --name IndelRealignerr_${SAMPLE_ID} \
+  --name BaseRecalibrator_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-gatk:v0.9.1 \
   java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
-  -T IndelRealigner \
-  -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
-  -known ${KNOWN_INDELS} \
-  -I ${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bam \
-  -targetIntervals ${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bam.IndelRealigner.intervals \
-  -o ${SOUTDocker}/alignments/${BAM_PREFIX}.realn.bam \
-  --consensusDeterminationModel USE_READS \
-  -LOD 0.4;
 
-  sudo docker logs IndelRealignerr_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  sudo docker rm IndelRealignerr_${SAMPLE_ID}
 
 #index bam
 	logger_ngseasy " START samtools index [${SOUTDocker}/alignments/${BAM_PREFIX}.realn.bam]  "  ${LOGFILE}
@@ -175,5 +169,45 @@ fi
 
 #------permissions------------#
 chmod -R 777 ${SOUT}/*
+
+
+
+
+
+##---------------------- GATK BASE RECALIBRATION ----------------------##
+
+if [ ! -e ${SOUT}/alignments/${BAM_PREFIX}.bam.BaseRecalibrator.table ] && [ ! -e ${SOUT}/alignments/${BAM_PREFIX}.bam ]
+then
+
+
+
+
+echo " NGSeasy: Running PrintReads BQSR recalibration " `date`
+# PrintReads BQSR recalibration
+java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T PrintReads -R ${REFGenomes}/human_g1k_v37.fasta -nct ${NCPU} \
+--baq RECALCULATE \
+--baqGapOpenPenalty 40 \
+--BQSR ${SOUT}/alignments/${BAM_PREFIX}.realn.bam.BaseRecalibrator.table \
+-I ${SOUT}/alignments/${BAM_PREFIX}.realn.bam \
+-o ${SOUT}/alignments/${BAM_PREFIX}.bam;
+# index bam file
+/usr/local/pipeline/samtools/samtools index ${SOUT}/alignments/${BAM_PREFIX}.bam; 
+
+echo " NGSeasy: Running BaseRecalibrator post recalibration" `date`
+# BaseRecalibrator post recal
+java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T BaseRecalibrator -R ${REFGenomes}/human_g1k_v37.fasta -nct ${NCPU} \
+-I ${SOUT}/alignments/${BAM_PREFIX}.bam \
+-o ${SOUT}/alignments/${BAM_PREFIX}.bam.BaseRecalibrator.table \
+--knownSites ${KNOWN_INDELS} \
+--knownSites ${KNOWN_SNPS_1000G} \
+--knownSites ${KNOWN_SNPS_b138};
+
+# index bam file
+/usr/local/pipeline/samtools/samtools index ${SOUT}/alignments/${BAM_PREFIX}.bam;
+
+else
+
+fi
+
 
 done < ${config_tsv}
