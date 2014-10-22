@@ -256,10 +256,10 @@ To add :
 
 ****
 ### Alignment Output
-*.raw.sam  
+*.raw.sam  (WEX ~ 8GB)
 *.raw.bam  
 *.raw.bai  
-*.sort.bam  
+*.sort.bam  (WEX ~ 3GB)
 *.sort.bai  
 
 ****
