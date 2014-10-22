@@ -492,7 +492,8 @@ then
 
     logger_ngseasy " END Basic ${ALIGNER} Basic Alignment" ${LOGFILE}  
 fi
+
 #------permissions------------#
-chmod -R 766 ${SOUTDocker}/alignments/*
+chmod -R 777 ${SOUT}/*
 
 done < ${config_tsv}

@@ -140,6 +140,6 @@ fi
   logger_ngseasy " END MarkDuplicates  "  ${LOGFILE}
 
 #------permissions------------#
-chmod -R 766 ${SOUTDocker}/alignments/*
+chmod -R 777 ${SOUT}/*
 
 done < ${config_tsv}

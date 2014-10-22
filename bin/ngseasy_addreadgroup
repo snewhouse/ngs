@@ -158,6 +158,6 @@ fi
 	logger_ngseasy " END AddOrReplaceReadGroups  "  ${LOGFILE}
 
 #------permissions------------#
-chmod -R 766 ${SOUTDocker}/alignments/*
+chmod -R 777 ${SOUT}/*
 
 done < ${config_tsv}
