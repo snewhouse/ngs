@@ -49,6 +49,10 @@ ngseasy_markduplicates -c /media/container-vol/ngs_projects/config_files/example
 #GATK Indel Realn
 ngseasy_indel_realn -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects 
 
+#GATK Base Recal
+ngseasy_base_recal -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects 
+
+
 *****
 
 #Messing around
