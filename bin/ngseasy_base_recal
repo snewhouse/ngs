@@ -215,6 +215,7 @@ fi
   -t compbio/ngseasy-gatk:v0.9.2 \
   java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
   -T AnalyzeCovariates \
+  -l DEBUG \
   -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
   -before ${SOUTDocker}/alignments/${BAM_PREFIX}.realn.bam.BaseRecalibrator.table \
   -after ${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam.BaseRecalibrator.table \
