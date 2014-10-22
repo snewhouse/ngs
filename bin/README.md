@@ -255,6 +255,10 @@ To add :
 - pipeline option need to be set how? list of steps, specified full, full_no_gatk, var_call_only, cnv_call_only, qc_reports??
 
 ****
+
+Output suffixes 
+===================
+
 ### Alignment Output
 *.raw.sam  (WEX ~ 8GB)
 *.raw.bam  
@@ -265,12 +269,18 @@ To add :
 ****
 ### Addreadgroup
 *.addrg.bam  
+*.addrg.bai  
 *.addrg.bam.bai  
 
 ****
 ### Dupemark
 *.dupemk.bam  
+*.dupemk.bai
 *.dupemk.bam.bai  
+
+***
+### Indel realign
+
 
 
 ****
