@@ -216,6 +216,6 @@ fi
   #sudo docker rm -f trimmomatic.${SAMPLE_ID} fastqc_post_trimm.${SAMPLE_ID} 
 
 #------permissions------------#
-chmod -R 766 ${SOUTDocker}/*
+chmod -R 777 ${SOUT}/*
 
 done < ${config_tsv}

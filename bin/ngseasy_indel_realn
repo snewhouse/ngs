@@ -11,7 +11,7 @@
 usage()
 {
 cat << EOF
-  This script sets up the NGSeasy docker picardtools container and runs MarkDuplicates on raw BAM files
+  This script sets up the NGSeasy docker GATK container and runs RealignerTargetCreator then IndelRealigner on raw BAM files
   See NGSEasy containerized instructions.
 
   ARGUMENTS:
@@ -21,7 +21,7 @@ cat << EOF
 
   EXAMPLE USAGE:
     
-    ngseasy_markduplicates -c config.file.tsv -d project_directory
+    ngseasy_indel_realn -c config.file.tsv -d project_directory
 
 EOF
 }
@@ -178,7 +178,7 @@ then
     logger_ngseasy " END IndelRealigner  "  ${LOGFILE}
 
 else
-	logger_ngseasy " START samtools index [${SOUT}/alignments/${BAM_PREFIX}.realn.bam]  already exists"  ${LOGFILE}
+	logger_ngseasy " [${SOUT}/alignments/${BAM_PREFIX}.realn.bam]  already exists"  ${LOGFILE}
 fi
 
 #------permissions------------#

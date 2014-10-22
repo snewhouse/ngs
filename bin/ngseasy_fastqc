@@ -160,7 +160,7 @@ SOUTDocker=${DOCKERHOME}/${POJECT_ID}/${SAMPLE_ID}
   logger_ngseasy " END: FastQC on raw Fastq files "  ${LOGFILE}
 
 #------permissions------------#
-chmod -R 766 ${SOUTDocker}/*
+chmod -R 777 ${SOUT}/*
 
 
 done < ${config_tsv}

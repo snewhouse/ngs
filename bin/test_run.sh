@@ -46,7 +46,8 @@ ngseasy_addreadgroup -c /media/container-vol/ngs_projects/config_files/example.c
 #Mark Dupes
 ngseasy_markduplicates -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects 
 
-
+#GATK Indel Realn
+ ngseasy_indel_realn -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects 
 
 *****
 
