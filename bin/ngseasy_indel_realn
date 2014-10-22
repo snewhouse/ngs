@@ -116,7 +116,7 @@ then
   -P \
   --name RealignerTargetCreator_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-gatk:v0.9.1 \
+  -t compbio/ngseasy-gatk:v0.9.2 \
   java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
   -T RealignerTargetCreator \
   -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
@@ -138,7 +138,7 @@ then
   -P \
   --name IndelRealignerr_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-gatk:v0.9.1 \
+  -t compbio/ngseasy-gatk:v0.9.2 \
   java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
   -T IndelRealigner \
   -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
