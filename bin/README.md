@@ -287,18 +287,18 @@ Output suffixes
 ***
 ### Base recal
 *.recal.bam  
-*.recal.bai
+*.recal.bai  
 *.recal.bam.bai  
 
 ***
 ### Base recal
-*.recal.bam  
-*.recal.bai
+*.recal.bam  (WEX ~ 4.4G)  
+*.recal.bai  
 *.recal.bam.bai  
-*.realn.bam.BaseRecalibrator.table
-*.recal.bam.BaseRecalibrator.table
-*.recal.bam.BaseRecalibrator.BQSR.csv
-*.recal.bam.BaseRecalibrator.BQSR.pdf
+*.realn.bam.BaseRecalibrator.table  
+*.recal.bam.BaseRecalibrator.table  
+*.recal.bam.BaseRecalibrator.BQSR.csv  
+*.recal.bam.BaseRecalibrator.BQSR.pdf  
 
 
 ****
