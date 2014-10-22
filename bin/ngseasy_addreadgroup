@@ -122,7 +122,7 @@ then
 
 	platform_unit=`zcat ${qcdPeFASTQ1} | head -1 | perl -p -i -e 's/:/\t/' | cut -f 1 | perl -p -i -e 's/@//g'`
 
-	logger_ngseasy " Platform Unit: [${platform_unit}]"  
+	logger_ngseasy " Platform Unit: [${platform_unit}]"  ${LOGFILE}
 
   sudo docker run \
   -P \
@@ -144,13 +144,14 @@ then
   INPUT=${SOUTDocker}/alignments/${BAM_PREFIX}.sort.bam \
   OUTPUT=${SOUTDocker}/alignments/${BAM_PREFIX}.addrg.bam && cp -v ${SOUTDocker}/alignments/${BAM_PREFIX}.addrg.bai ${SOUTDocker}/alignments/${BAM_PREFIX}.addrg.bam.bai;
 
-fi
-
-
 # logs
     sudo docker logs AddOrReplaceReadGroups_${SAMPLE_ID} >> ${LOGFILE}.log
 
     sudo docker rm AddOrReplaceReadGroups_${SAMPLE_ID}
+
+else
+	logger_ngseasy " ${SOUT}/alignments/${BAM_PREFIX}.addrg.bam already exists "  ${LOGFILE}
+fi
 
 	logger_ngseasy " END AddOrReplaceReadGroups  "  ${LOGFILE}
 

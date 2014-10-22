@@ -127,11 +127,13 @@ then
   OUTPUT=${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bam \
   METRICS_FILE=${SOUTDocker}/reports/${BAM_PREFIX}.dupemk_metrics && cp -v ${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bai ${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bam.bai;
 
-fi
-
   sudo docker logs MarkDuplicates_${SAMPLE_ID} >> ${LOGFILE}.log
 
   sudo docker rm MarkDuplicates_${SAMPLE_ID}
+
+else 
+  logger_ngseasy " ${SOUT}/alignments/${BAM_PREFIX}.dupemk.bam already exists  "  ${LOGFILE}
+fi
 
   logger_ngseasy " END MarkDuplicates  "  ${LOGFILE}
 
