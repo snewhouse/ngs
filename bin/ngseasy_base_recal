@@ -201,7 +201,6 @@ then
 
   logger_ngseasy " END BaseRecalibrator post recal "  ${LOGFILE}
 
-
 # AnalyzeCovariates post recal plots
   logger_ngseasy " START AnalyzeCovariates post recal  "  ${LOGFILE}
 
