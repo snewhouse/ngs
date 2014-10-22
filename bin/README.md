@@ -306,3 +306,10 @@ example below for bwa:-
   ```
 
 runnig this without ```/bin/bash -c``` breaks. The ```>``` is called outside of the container
+
+### The Annoying thing about GATK!
+This will break your runs if multiple calls try and access the file when the first call deletes it!  
+```
+WARN  11:05:27,577 RMDTrackBuilder - Index file /home/pipeman/gatk_resources/Mills_and_1000G_gold_standard.indels.b37.vcf.idx is out of date (index older than input file), deleting and updating the index file 
+INFO  11:05:31,699 RMDTrackBuilder - Writing Tribble index to disk for file /home/pipeman/gatk_resources/Mills_and_1000G_gold_standard.indels.b37.vcf.idx 
+```
