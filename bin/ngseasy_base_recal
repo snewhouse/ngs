@@ -201,6 +201,10 @@ then
 
   logger_ngseasy " END BaseRecalibrator post recal "  ${LOGFILE}
 
+else
+  logger_ngseasy " [${SOUT}/alignments/${BAM_PREFIX}.recal.bam]  already exists"  ${LOGFILE}
+fi
+
 # AnalyzeCovariates post recal plots
   logger_ngseasy " START AnalyzeCovariates post recal  "  ${LOGFILE}
 
@@ -212,8 +216,8 @@ then
   java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
   -T AnalyzeCovariates \
   -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
-  -before ${SOUTDocker}/alignments/${BAM_PREFIX}.relan.bam.BaseRecalibrator.table  \
-  -after ${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam.BaseRecalibrator.table  \
+  -before ${SOUTDocker}/alignments/${BAM_PREFIX}.realn.bam.BaseRecalibrator.table \
+  -after ${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam.BaseRecalibrator.table \
   -csv ${SOUTDocker}/reports/${BAM_PREFIX}.recal.bam.BaseRecalibrator.BQSR.csv \
   -plots ${SOUTDocker}/reports/${BAM_PREFIX}.recal.bam.BaseRecalibrator.BQSR.pdf;
 
@@ -223,9 +227,6 @@ then
 
   logger_ngseasy " END AnalyzeCovariates post recal "  ${LOGFILE}
 
-else
-	logger_ngseasy " [${SOUT}/alignments/${BAM_PREFIX}.recal.bam]  already exists"  ${LOGFILE}
-fi
 
 #------permissions------------#
 chmod -R 777 ${SOUT}/*
