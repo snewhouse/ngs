@@ -144,6 +144,7 @@ then
   -t compbio/ngseasy-gatk:v0.9.1 \
   java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
   -T IndelRealigner \
+  -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
   -known ${KNOWN_INDELS} \
   -I ${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bam \
   -targetIntervals ${SOUT}/alignments/${BAM_PREFIX}.dupemk.bam.IndelRealigner.intervals \
