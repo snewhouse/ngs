@@ -147,7 +147,7 @@ then
   -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
   -known ${KNOWN_INDELS} \
   -I ${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bam \
-  -targetIntervals ${SOUT}/alignments/${BAM_PREFIX}.dupemk.bam.IndelRealigner.intervals \
+  -targetIntervals ${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bam.IndelRealigner.intervals \
   -o ${SOUTDocker}/alignments/${BAM_PREFIX}.realn.bam \
   --consensusDeterminationModel USE_READS \
   -LOD 0.4;
