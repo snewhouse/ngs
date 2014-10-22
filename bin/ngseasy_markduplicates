@@ -115,8 +115,8 @@ then
   -P \
   --name MarkDuplicates_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-picardtools:v0.9 /bin/bash -c \
-  "java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.119/MarkDuplicates.jar \
+  -t compbio/ngseasy-picardtools:v0.9 \
+  java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.119/MarkDuplicates.jar \
   TMP_DIR=${SOUTDocker}/tmp \
   VALIDATION_STRINGENCY=SILENT \
   MAX_RECORDS_IN_RAM=100000 \
@@ -125,7 +125,7 @@ then
   ASSUME_SORTED=true \
   INPUT=${SOUTDocker}/alignments/${BAM_PREFIX}.addrg.bam \
   OUTPUT=${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bam \
-  METRICS_FILE=${SOUTDocker}/reports/${BAM_PREFIX}.dupemk_metrics"
+  METRICS_FILE=${SOUTDocker}/reports/${BAM_PREFIX}.dupemk_metrics && cp -v ${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bai ${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bam.bai;
 
 fi
 

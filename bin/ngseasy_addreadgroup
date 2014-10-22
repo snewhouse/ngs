@@ -142,9 +142,10 @@ then
   RGSM=${SAMPLE_ID} \
   RGDT=${DATE} \
   INPUT=${SOUTDocker}/alignments/${BAM_PREFIX}.sort.bam \
-  OUTPUT=${SOUTDocker}/alignments/${BAM_PREFIX}.addrg.bam
+  OUTPUT=${SOUTDocker}/alignments/${BAM_PREFIX}.addrg.bam && cp -v ${SOUTDocker}/alignments/${BAM_PREFIX}.addrg.bai ${SOUTDocker}/alignments/${BAM_PREFIX}.addrg.bam.bai;
 
 fi
+
 
 # logs
     sudo docker logs AddOrReplaceReadGroups_${SAMPLE_ID} >> ${LOGFILE}.log
