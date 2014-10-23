@@ -422,3 +422,10 @@ associated with different variant representations.
 [8]: https://github.com/chapmanb/bcbio-nextgen
 
 ******
+
+## Java issues in docker 
+All java set as 1.6. Updated and commit in docker images interactively
+
+```
+sudo update-alternatives --config java
+```
