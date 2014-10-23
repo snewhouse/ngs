@@ -339,3 +339,25 @@ EXCAVATOR: detecting copy number variants from whole-exome sequencing data @ htt
 
 >We developed a novel software tool, EXCAVATOR, for the detection of copy number variants (CNVs) from whole-exome sequencing data. EXCAVATOR combines a three-step normalization procedure with a novel heterogeneous hidden Markov model algorithm and a calling method that classifies genomic regions into five copy number states. We validate EXCAVATOR on three datasets and compare the results with three other methods. These analyses show that EXCAVATOR outperforms the other methods and is therefore a valuable tool for the investigation of CNVs in largescale projects, as well as in clinical research and diagnostics. EXCAVATOR is freely available at http://sourceforge.net/projects/excavatortool/ webcite.
 
+## AnalyzeCovariates post recal plots ~ needs R rehsape and gplots
+
+AnalyzeCovariates keeps failing - due to R. GATK dont document R requirements for these scripts to work!  
+
+```
+library("ggplot2")
+library(gplots)
+library("reshape")
+library("grid")
+library("tools") #For compactPDF in R 2.13+
+library(gsalib)
+```
+
+URL: https://github.com/broadgsa/gatk-protected/blob/323f22f852c90a6cf53ece5e72c165b1166ad8c7/public/gatk-tools-public/src/main/resources/org/broadinstitute/gatk/utils/recalibration/BQSR.R
+
+```
+install.packages(c("ggplot2","gplots","reshape","grid","tools","gsalib"),dependencies=TRUE)
+
+Warning message:
+packages 'grid', 'tools' are not available (for R version 3.1.1) 
+```
+Drop plots of recal data
