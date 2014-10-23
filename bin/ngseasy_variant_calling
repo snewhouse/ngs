@@ -84,7 +84,6 @@ do
   CLEANUP=$f14
   NCPU=$f15
 
-
 #Logfile 
 LOGFILE=${PROJECT_DIR}/${POJECT_ID}/run_logs/${SAMPLE_ID}.${DATE}
 
