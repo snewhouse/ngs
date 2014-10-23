@@ -33,26 +33,48 @@ sudo docker run \
 # this creates new sample confog file from project confif file and feeds as input to pipeline ngseasy_fastq
 ngseasy -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects
 
+
+#--------------Step through------------------------------------#
+
+# 1. copy fastq to project/sample/fastq
 # sep call to ngseasy_fastqc
 ngseasy_fastqc -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects 
 
+# 2 Trimm
 # sep call to ngseasy_trimmomatic
 ngseasy_trimmomatic -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects 
 
+# 3 Align
 # run aligment 
 ngseasy_alignment -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects 
 
+# 4 Add read groups
 # Add Read Groups
 ngseasy_addreadgroup -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects 
 
+# 5 Mark Duplicates
 #Mark Dupes
 ngseasy_markduplicates -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects 
 
+# 6 Realign Around Indels
 #GATK Indel Realn
 ngseasy_indel_realn -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects 
 
+# 7 Base recalibration
 #GATK Base Recal
 ngseasy_base_recal -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects 
+
+# 8 Call SNPs and Small Indels (ensembl)
+ngseasy_variant_calling -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects 
+
+
+#Alignment qc
+ngseasy_alignment_qc
+
+
+#
+ngseasy_sv_call
+
 
 
 

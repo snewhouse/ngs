@@ -164,8 +164,16 @@ tar xvf reference_genomes_b37.tgz; gunzip *
 cd ngs_projects/nsgeasy
 git clone https://github.com/KHP-Informatics/ngs.git
 git checkout dev2
+
+# eg :- 
+
 export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/bin
-ln -s /media/ngs_projects/nsgeasy/ngs/ngeasy_dev/bin /media/ngs_projects/ngseasy_scripts
+
+# or add to global .bashrc
+
+echo "export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/bin" ~/.bashrc
+source ~/.bashrc
+
 
 #to do [get_annovar_humandb]
 
@@ -193,8 +201,11 @@ ngseasy_get_annovar_db -d /media/ngs_projects/humandb
 # in the config file we as to call the pipeline [full]
 # here [ngs_full_gatk] is a wrapper/fucntion for calling the pipeline
 
-ngs_full_gatk() { 
+Each function is a bash wrapper for an image/container(s)
 
+
+
+ngs_full_gatk() { 
 
 #step through a full pipeline
 
@@ -244,6 +255,17 @@ nsgeasy_variant_annotation -c ${config_tsv} -d ${project_directory};
 
 recommend full : trimmed aln gatk filtered and ensemble calls (multi SNP/INDELS/SV callers) base recalibration
 if not novoalign then stampy (bwa with stampy)
+
+
+# Pipelines :  
+
+
+ngs_full_gatk  
+ngs_full_no_gatk  
+ngs_fq2bam # 
+
+
+
 
 
 ```
@@ -298,7 +320,8 @@ Output suffixes
 *.realn.bam.BaseRecalibrator.table  
 *.recal.bam.BaseRecalibrator.table  
 *.recal.bam.BaseRecalibrator.BQSR.csv  
-*.recal.bam.BaseRecalibrator.BQSR.pdf  
+
+
 
 
 ****

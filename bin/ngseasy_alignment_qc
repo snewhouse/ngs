@@ -1,5 +1,7 @@
 
 
+
+
  # FindCoveredIntervals: these are used in GATK Calling to help speed things up
 
 echo " NGSeasy: START FindCoveredIntervals " `date`  
