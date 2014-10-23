@@ -110,8 +110,9 @@ KNOWN_SNPS_b138=/home/pipeman/gatk_resources/dbsnp_138.b37.vcf
 
 #-----------------------------------------------------------------------------#
 
-
+#-----------------------------------------------------------------------------#
 # Freebayes #
+#-----------------------------------------------------------------------------#
 
 if [ "${VARCALLER}" == "freebayes" ]
 then
@@ -122,9 +123,8 @@ logger_ngseasy " START Variant Calling using Freebayes " ${LOGFILE}
   -P \
   --name Freebayes_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-freebayes:v0.9 \
-  /usr/local/pipeline/freebayes/bin/freebayes \
-    -f ${REFGenomes}/human_g1k_v37.fasta \
+  -t compbio/ngseasy-freebayes:v0.9 /usr/local/pipeline/freebayes/bin/freebayes \
+    -f /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
     -b ${SOUTDocker}/alignments/${BAM_PREFIX}.bam \
     --min-coverage 10 \
     --min-mapping-quality 20 \
@@ -146,31 +146,28 @@ logger_ngseasy " START Variant Calling using Freebayes " ${LOGFILE}
 fi
 
 #-----------------------------------------------------------------------------#
-
 # Platypus #
-
 #-----------------------------------------------------------------------------#
 
 if [ "${VARCALLER}" == "platypus" ]
 then
 
-  echo " NGSeasy: Starting Variant Calling using Platypus " `date`
+  logger_ngseasy " START Variant Calling using Platypus "  ${LOGFILE}
   
     if [ "${NGS_TYPE}" == "TGS" ] || [ "${NGS_TYPE}" == "WEX" ]
     then
   
-    echo " NGSeasy: NGS_TYPE is Targeted so no duplicate filtering  " `date`
+    logger_ngseasy " NGS_TYPE is Targeted/WEX so no duplicate filtering  "  ${LOGFILE}
     # for exome/whole genome data no duplicate filtering
   sudo docker run \
   -P \
   --name platypus_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-platypus:v0.9 \
-      python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
+  -t compbio/ngseasy-platypus:v0.9 python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
       --nCPU ${NCPU} \
-      --bamFiles=${SOUT}/alignments/${BAM_PREFIX}.bam \
-      --refFile=${REFGenomes}/human_g1k_v37.fasta \
-      --output=${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf \
+      --bamFiles=${SOUTDocker}/alignments/${BAM_PREFIX}.bam \
+      --refFile=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
+      --output=${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf \
       --filterDuplicates=0 \
       --minReads=10 \
       --minMapQual=20 \
@@ -180,41 +177,109 @@ then
   cp -v ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
       
      else
-  python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
-    --nCPU ${NCPU} \
-    --bamFiles=${SOUT}/alignments/${BAM_PREFIX}.bam \
-    --refFile=${REFGenomes}/human_g1k_v37.fasta \
-    --output=${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf \
-    --filterDuplicates=1 \
-    --minReads=10 \
-    --minMapQual=30 \
-    --minBaseQual=20;
+
+      sudo docker run \
+      -P \
+      --name platypus_${SAMPLE_ID} \
+      --volumes-from volumes_container \
+      -t compbio/ngseasy-platypus:v0.9 python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
+        --nCPU ${NCPU} \
+        --bamFiles=${SOUTDocker}/alignments/${BAM_PREFIX}.bam \
+        --refFile=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
+        --output=${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf \
+        --filterDuplicates=1 \
+        --minReads=10 \
+        --minMapQual=30 \
+        --minBaseQual=20;
+        
+#logs
+  sudo docker logs platypus_${SAMPLE_ID} >> ${LOGFILE}.log
+
+  sudo docker rm platypus_${SAMPLE_ID}
+
+  # copy vcf to cohort vcf directory
+  cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
+
+  logger_ngseasy " copying [${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf] to [${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/] "  ${LOGFILE}
+
+  logger_ngseasy " END Variant Calling using Platypus "  ${LOGFILE}
     
-      # copy vcf to cohort vcf directory
-  cp -v ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
-  
-    fi
+fi
 
 
 #-----------------------------------------------------------------------------#
-
-# UnifeidGenotyper #
-
+# UnifiedGenotyper #
 #-----------------------------------------------------------------------------#
 
-#-----------------------------------------------------------------------------#
+elif [ "${VARCALLER}" == "gatk_ug" ]
+then
+#filter bam files paired FILTER IF BWA AND IF CALLING IS USING GATK HC
+ /usr/local/pipeline/samtools/samtools view -b -h -q 20 -F 1796 ${SOUT}/alignments/${BAM_PREFIX}.bam  > ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam 
+ /usr/local/pipeline/samtools/samtools index ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam;
+ cp -v ${SOUT}/alignments/${BAM_PREFIX}.filtered.bai ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam.bai;
 
+  # UnifiedGenotyper EMIT_ALL_CONFIDENT_SITES
+  logger_ngseasy " START GATK UnifiedGenotyper " ${LOGFILE}
+
+  sudo docker run \
+  -P \
+  --name UnifiedGenotyper_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-gatk:v0.9.3 \
+  java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
+  -T UnifiedGenotyper \
+  -R ${REFGenomes}/human_g1k_v37.fasta \
+  -nct ${NCPU} \
+  -I ${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam \
+  -o ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf \
+  -stand_call_conf 30 \
+  -stand_emit_conf 10 \
+  --dbsnp ${KNOWN_SNPS_b138} \
+  -dcov 250 \
+  --unsafe ALL \
+  --genotype_likelihoods_model BOTH \
+  --genotyping_mode DISCOVERY \
+  --output_mode ${GTMODEGATK} \
+  --annotation AlleleBalance \
+  --annotation BaseCounts \
+  --annotation BaseQualityRankSumTest \
+  --annotation ChromosomeCounts \
+  --annotation ClippingRankSumTest \
+  --annotation Coverage \
+  --annotation FisherStrand \
+  --annotation GCContent \
+  --annotation HaplotypeScore \
+  --annotation HomopolymerRun \
+  --annotation InbreedingCoeff \
+  --annotation LikelihoodRankSumTest \
+  --annotation LowMQ \
+  --annotation MappingQualityRankSumTest \
+  --annotation MappingQualityZero \
+  --annotation QualByDepth \
+  --annotation RMSMappingQuality \
+  --annotation ReadPosRankSumTest \
+  --annotation SpanningDeletions \
+  --annotation TandemRepeatAnnotator \
+  --annotation VariantType;
+
+
+#-----------------------------------------------------------------------------#
 # HaplotypeCaller #
-
 #-----------------------------------------------------------------------------#
 
 
 #-----------------------------------------------------------------------------#
-
-# Ensembl: Freebayes + Platypus + UnifeidGenotyper + HaplotypeCaller #
-
+# Ensembl: Freebayes + Platypus + UnifiedGenotyper + HaplotypeCaller #
 #-----------------------------------------------------------------------------#
 
+if [ "${VARCALLER}" == "ensembl" ]
+then
+
+  logger_ngseasy " START Ensembl Variant Calling using Freebayes + Platypus + UnifiedGenotyper + HaplotypeCaller "  ${LOGFILE}
+  
+  logger_ngseasy " END Ensembl Variant Calling using Freebayes + Platypus + UnifiedGenotyper + HaplotypeCaller "  ${LOGFILE}
+
+fi
 
 
 
