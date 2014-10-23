@@ -109,7 +109,7 @@ BAM_PREFIX=${SAMPLE_ID}.${NGS_TYPE}.${NGS_PLATFORM}.${ALIGNER}
   -P \
   --name samtools_index_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 \
+  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c \
   "/usr/local/pipeline/samtools/samtools \
   view \
   -b \
@@ -122,7 +122,7 @@ BAM_PREFIX=${SAMPLE_ID}.${NGS_TYPE}.${NGS_PLATFORM}.${ALIGNER}
  cp -v ${SOUT}/alignments/${BAM_PREFIX}.filtered.bai ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam.bai;
 
   logger_ngseasy " END samtools view -bh -q 20 -F 1796 [${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam]  "  ${LOGFILE}
-  
+
 #------permissions------------#
 chmod -R 777 ${SOUT}/*
 
