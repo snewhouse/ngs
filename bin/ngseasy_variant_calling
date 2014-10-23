@@ -352,10 +352,98 @@ then
 
   logger_ngseasy " START Ensembl Variant Calling using Freebayes + Platypus + UnifiedGenotyper + HaplotypeCaller "  ${LOGFILE}
   
+## freebayes
+logger_ngseasy " START Variant Calling using Freebayes " ${LOGFILE}
+  
+VARCALLER="freebayes"
+
+  sudo docker run \
+  -P \
+  --name Freebayes_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-freebayes:v0.9 /usr/local/pipeline/freebayes/bin/freebayes \
+    -f /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
+    -b ${SOUTDocker}/alignments/${BAM_PREFIX}.bam \
+    --min-coverage 10 \
+    --min-mapping-quality 20 \
+    --min-base-quality 20 \
+    --genotype-qualities > ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf;
+
+#logs
+  sudo docker logs Freebayes_${SAMPLE_ID} >> ${LOGFILE}.log#
+
+  sudo docker rm Freebayes_${SAMPLE_ID}
+
+  # copy vcf to cohort vcf directory
+  cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
+
+  logger_ngseasy " copying [${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf] to [${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/] "  ${LOGFILE}
+
+  logger_ngseasy " END Variant Calling using Freebayes "  ${LOGFILE}
+
+
+
+
+
+
   logger_ngseasy " END Ensembl Variant Calling using Freebayes + Platypus + UnifiedGenotyper + HaplotypeCaller "  ${LOGFILE}
 
 fi
 
+## platypus
+VARCALLER="platypus"
+
+  logger_ngseasy " START Variant Calling using Platypus "  ${LOGFILE}
+  
+    if [ "${NGS_TYPE}" == "TGS" ] || [ "${NGS_TYPE}" == "WEX" ]
+    then
+  
+    logger_ngseasy " NGS_TYPE is Targeted/WEX so no duplicate filtering  "  ${LOGFILE}
+    # for exome/whole genome data no duplicate filtering
+  sudo docker run \
+  -P \
+  --name platypus_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-platypus:v0.9 python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
+      --nCPU ${NCPU} \
+      --bamFiles=${SOUTDocker}/alignments/${BAM_PREFIX}.bam \
+      --refFile=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
+      --output=${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf \
+      --filterDuplicates=0 \
+      --minReads=10 \
+      --minMapQual=20 \
+      --minBaseQual=20;
+      
+  # copy vcf to cohort vcf directory
+  cp -v ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
+      
+     else
+
+      sudo docker run \
+      -P \
+      --name platypus_${SAMPLE_ID} \
+      --volumes-from volumes_container \
+      -t compbio/ngseasy-platypus:v0.9 python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
+        --nCPU ${NCPU} \
+        --bamFiles=${SOUTDocker}/alignments/${BAM_PREFIX}.bam \
+        --refFile=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
+        --output=${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf \
+        --filterDuplicates=1 \
+        --minReads=10 \
+        --minMapQual=30 \
+        --minBaseQual=20;
+        
+#logs
+  sudo docker logs platypus_${SAMPLE_ID} >> ${LOGFILE}.log
+
+  sudo docker rm platypus_${SAMPLE_ID}
+
+  # copy vcf to cohort vcf directory
+  cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
+
+  logger_ngseasy " copying [${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf] to [${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/] "  ${LOGFILE}
+
+  logger_ngseasy " END Variant Calling using Platypus "  ${LOGFILE}
 
 
 #------permissions------------#
