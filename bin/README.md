@@ -420,3 +420,5 @@ associated with different variant representations.
 [p1]: http://chapmanb.github.com/bcbio.variation/presentations/variation_bosc_2012/variation_chapman.pdf
 [7]: http://bcbio.wordpress.com/2013/05/06/framework-for-evaluating-variant-detection-methods-comparison-of-aligners-and-callers/
 [8]: https://github.com/chapmanb/bcbio-nextgen
+
+******
