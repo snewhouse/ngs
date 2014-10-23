@@ -342,12 +342,11 @@ then
 
 fi
 
-
 #-------------------------------------------------------------------------------------------#
-# Ensembl: Freebayes + Platypus + UnifiedGenotyper + HaplotypeCaller then CombineVariants   #
+# Ensemble: Freebayes + Platypus + UnifiedGenotyper + HaplotypeCaller then CombineVariants   #
 #-------------------------------------------------------------------------------------------#
 
-if [ "${VARCALLER}" == "ensembl" ]
+if [ "${VARCALLER}" == "ensemble" ]
 then
 
   logger_ngseasy " START Ensembl Variant Calling using Freebayes + Platypus + UnifiedGenotyper + HaplotypeCaller "  ${LOGFILE}
@@ -553,9 +552,9 @@ VARCALLER="UnifiedGenotyper"
 
   logger_ngseasy " END Variant Calling using HaplotypeCaller "  ${LOGFILE}
 
+##
+
  ## END 
-
-
 
   logger_ngseasy " END Ensembl Variant Calling using Freebayes + Platypus + UnifiedGenotyper + HaplotypeCaller "  ${LOGFILE}
 
