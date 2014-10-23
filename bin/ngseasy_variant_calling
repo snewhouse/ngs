@@ -493,63 +493,63 @@ VARCALLER="UnifiedGenotyper"
   logger_ngseasy " END Variant Calling using UnifiedGenotyper "  ${LOGFILE}
 
   ## HaplotypeCaller Standard EMIT_ALL_CONFIDENT_SITES EMIT_VARIANTS_ONLY
- #VARCALLER="HaplotypeCaller"
+ VARCALLER="HaplotypeCaller"
 
- # logger_ngseasy " START Variant Calling using HaplotypeCaller "  ${LOGFILE}
+  logger_ngseasy " START Variant Calling using HaplotypeCaller "  ${LOGFILE}
 
- # sudo docker run \
- # -P \
- # --name HaplotypeCaller_${SAMPLE_ID} \
- # --volumes-from volumes_container \
- # -t compbio/ngseasy-gatk:v0.9.3 \
- # java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
- # -T HaplotypeCaller \
- # -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
- # -nct ${NCPU} \
- # -I ${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam \
- # -o ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf \
- # -stand_call_conf 30 \
- # -stand_emit_conf 10 \
- # --dbsnp ${KNOWN_SNPS_b138} \
- # -dcov 250 \
- # -minPruning 10 \
- # --unsafe ALL \
- # -pairHMM VECTOR_LOGLESS_CACHING \
- # --genotyping_mode DISCOVERY \
- # --output_mode ${GTMODEGATK} \
- # --annotation AlleleBalance \
- # --annotation BaseCounts \
- # --annotation BaseQualityRankSumTest \
- # --annotation ChromosomeCounts \
- # --annotation ClippingRankSumTest \
- # --annotation Coverage \
- # --annotation FisherStrand \
- # --annotation GCContent \
- # --annotation HaplotypeScore \
- # --annotation HomopolymerRun \
- # --annotation InbreedingCoeff \
- # --annotation LikelihoodRankSumTest \
- # --annotation LowMQ \
- # --annotation MappingQualityRankSumTest \
- # --annotation MappingQualityZero \
- # --annotation QualByDepth \
- # --annotation RMSMappingQuality \
- # --annotation ReadPosRankSumTest \
- # --annotation SpanningDeletions \
- # --annotation TandemRepeatAnnotator \
- # --annotation VariantType;
+  sudo docker run \
+  -P \
+  --name HaplotypeCaller_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-gatk:v0.9.3 \
+  java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
+  -T HaplotypeCaller \
+  -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
+  -nct ${NCPU} \
+  -I ${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam \
+  -o ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf \
+  -stand_call_conf 30 \
+  -stand_emit_conf 10 \
+  --dbsnp ${KNOWN_SNPS_b138} \
+  -dcov 250 \
+  -minPruning 10 \
+  --unsafe ALL \
+  -pairHMM VECTOR_LOGLESS_CACHING \
+  --genotyping_mode DISCOVERY \
+  --output_mode ${GTMODEGATK} \
+  --annotation AlleleBalance \
+  --annotation BaseCounts \
+  --annotation BaseQualityRankSumTest \
+  --annotation ChromosomeCounts \
+  --annotation ClippingRankSumTest \
+  --annotation Coverage \
+  --annotation FisherStrand \
+  --annotation GCContent \
+  --annotation HaplotypeScore \
+  --annotation HomopolymerRun \
+  --annotation InbreedingCoeff \
+  --annotation LikelihoodRankSumTest \
+  --annotation LowMQ \
+  --annotation MappingQualityRankSumTest \
+  --annotation MappingQualityZero \
+  --annotation QualByDepth \
+  --annotation RMSMappingQuality \
+  --annotation ReadPosRankSumTest \
+  --annotation SpanningDeletions \
+  --annotation TandemRepeatAnnotator \
+  --annotation VariantType;
 
 #logs
- # sudo docker logs HaplotypeCaller_${SAMPLE_ID} >> ${LOGFILE}.log
+  sudo docker logs HaplotypeCaller_${SAMPLE_ID} >> ${LOGFILE}.log
 
- # sudo docker rm HaplotypeCaller_${SAMPLE_ID}
+  sudo docker rm HaplotypeCaller_${SAMPLE_ID}
 
   # copy vcf to cohort vcf directory
- # cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
+  cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
 
- # logger_ngseasy " copying [${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf] to [${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/] "  ${LOGFILE}
+  logger_ngseasy " copying [${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf] to [${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/] "  ${LOGFILE}
 
- # logger_ngseasy " END Variant Calling using HaplotypeCaller "  ${LOGFILE}
+  logger_ngseasy " END Variant Calling using HaplotypeCaller "  ${LOGFILE}
 
 #------------------------------------------------------------------------------------------#
 ## bcbio.variation
@@ -572,8 +572,8 @@ params.yaml="/home/pipeman/ngseasy_scripts/ensemble.calling.params.yaml"
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.ensemble.vcf \
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.UnifiedGenotyper.vcf \
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.freebayes.vcf \
-  ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.platypus.vcf;
-#  ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.HaplotypeCaller.vcf;
+  ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.platypus.vcf \
+  ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.HaplotypeCaller.vcf;
 
 
   logger_ngseasy " END bcbio-variation in Ensembl Variant Calling using Freebayes + Platypus + UnifiedGenotyper + HaplotypeCaller "  ${LOGFILE}
