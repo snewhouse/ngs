@@ -552,7 +552,8 @@ VARCALLER="UnifiedGenotyper"
 
   logger_ngseasy " END Variant Calling using HaplotypeCaller "  ${LOGFILE}
 
-##
+## bcbio.variation
+## https://github.com/chapmanb/bcbio.variation
 
  ## END 
 

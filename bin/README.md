@@ -384,3 +384,39 @@ Warning message:
 packages 'grid', 'tools' are not available (for R version 3.1.1) 
 ```
 Drop plots of recal data
+
+****
+
+## bcbio.variation
+https://github.com/chapmanb/bcbio.variation
+
+# bcbio.variation
+
+A toolkit to analyze genome variation data, built on top of the
+[Genome Analysis Toolkit (GATK)][1] with Clojure. It supports scoring for the
+[Archon Genomics X PRIZE competition][5] and is also a general framework for
+variant file comparison. It enables validation of variants and exploration of
+algorithm differences between calling methods by automating the process involved
+with comparing two sets of variants. For users, this integrates with the
+[bcbio-nextgen][8] framework to automate variant calling and validation. For
+developers, bcbio.variation provides command line tools and an API to clean and
+normalize variant data in [VCF format][2] avoiding comparison artifacts
+associated with different variant representations.
+
+* [Description of the comparison framework and variant calling algorithm comparisons][7]
+* [Presentation from Bioinformatics Open Source Conference 2012][p1]
+* [Presentation overview of the project][4]
+* [Howto description of interfacing with GATK][6]
+* [Code documentation][3]
+
+[![Build Status](https://secure.travis-ci.org/chapmanb/bcbio.variation.png)](http://travis-ci.org/chapmanb/bcbio.variation)
+
+[1]: http://www.broadinstitute.org/gsa/wiki/index.php/The_Genome_Analysis_Toolkit
+[2]: http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-40
+[3]: http://chapmanb.github.com/bcbio.variation
+[4]: http://chapmanb.github.com/bcbio.variation/presentations/gatk_clojure.pdf
+[5]: http://genomics.xprize.org/
+[6]: http://bcbio.wordpress.com/2012/03/04/extending-the-gatk-for-custom-variant-comparisons-using-clojure/
+[p1]: http://chapmanb.github.com/bcbio.variation/presentations/variation_bosc_2012/variation_chapman.pdf
+[7]: http://bcbio.wordpress.com/2013/05/06/framework-for-evaluating-variant-detection-methods-comparison-of-aligners-and-callers/
+[8]: https://github.com/chapmanb/bcbio-nextgen
