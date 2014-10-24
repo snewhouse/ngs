@@ -568,6 +568,7 @@ params.yaml="/home/pipeman/ngseasy_scripts/ensemble.calling.params.yaml"
   ${params.yaml} \
   /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.ensemble.vcf \
+  ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.UnifiedGenotyper.vcf \
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.freebayes.vcf \
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.platypus.vcf \
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.HaplotypeCaller.vcf;

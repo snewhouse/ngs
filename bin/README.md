@@ -1,6 +1,9 @@
 NGSeasy
 ==========================
 
+Authors: Stephen J Newhouse, Amos Folarin, Maximillian Kerz
+
+
 ....Under Construction...
 
 NGSeasy Project Set up

@@ -67,7 +67,11 @@ ngseasy_base_recal -c /media/container-vol/ngs_projects/config_files/example.con
 # 8 Filter BAM to good paried reads only
 ngseasy_filter_recalbam -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects 
 
-# 8 Call SNPs and Small Indels (ensembl)
+
+# 9 Call SNPs and Small Indels (ensembl)
+
+ngseasy_variant_calling_fast_ensemble -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects 
+
 ngseasy_variant_calling -c /media/container-vol/ngs_projects/config_files/example.config.tsv -d /media/container-vol/ngs_projects 
 
 

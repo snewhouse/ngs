@@ -125,7 +125,7 @@ BAM_PREFIX=${SAMPLE_ID}.${NGS_TYPE}.${NGS_PLATFORM}.${ALIGNER}
 
   cp -v ${SOUT}/alignments/${BAM_PREFIX}.filtered.bai ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam.bai;
 
-  logger_ngseasy " END samtools view -bh -q 20 -F 1796 [${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam]  "  ${LOGFILE}
+  logger_ngseasy " END samtools view -b -h -q 20 -F 1796 [${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam]  "  ${LOGFILE}
 
 #------permissions------------#
 chmod -R 777 ${SOUT}/*
