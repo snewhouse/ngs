@@ -575,7 +575,6 @@ params.yaml="/home/pipeman/ngseasy_scripts/ensemble.calling.params.yaml"
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.platypus.vcf \
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.HaplotypeCaller.vcf;
 
-
   logger_ngseasy " END bcbio-variation in Ensembl Variant Calling using Freebayes + Platypus + UnifiedGenotyper + HaplotypeCaller "  ${LOGFILE}
 
 #------------------------------------params.yaml----------------------------------------------#

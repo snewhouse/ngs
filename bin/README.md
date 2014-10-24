@@ -316,7 +316,22 @@ Output suffixes
 *.recal.bam.BaseRecalibrator.table  
 *.recal.bam.BaseRecalibrator.BQSR.csv  
 
+***
 
+## Thresholds for Variant calling etc
+
+For Freebayes and Platypus tools:-  
+
+- We set min coverage to 10  
+- Min mappinng quality to 20  
+- Min base quality to 20
+
+For GATK HaplotypeCaller (and UnifiedGenotyper)
+
+```-stand_call_conf 30 -stand_emit_conf 10 -dcov 250 -minPruning 10```
+
+Note: ```minPruning 10``` was added as many runs of HaplotypeCaller failed when using non-bwa aligend and GATK best practices cleaned BAMs. This fix sorted all problems out, and you really dont want dodgy variant calls...do you? Same goes for thresholds hard coded for use with Freebayes and Platypus.  
+These setting all work well in our hands. Feel  free to edit the scripts to suit your needs.
 
 
 ****
