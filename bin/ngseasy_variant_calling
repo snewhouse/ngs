@@ -212,10 +212,8 @@ fi
 
 if [ "${VARCALLER}" == "UnifiedGenotyper" ]
 then
-#filter bam files paired FILTER IF BWA AND IF CALLING IS USING GATK HC
- /usr/local/pipeline/samtools/samtools view -b -h -q 20 -F 1796 ${SOUT}/alignments/${BAM_PREFIX}.bam  > ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam 
- /usr/local/pipeline/samtools/samtools index ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam;
- cp -v ${SOUT}/alignments/${BAM_PREFIX}.filtered.bai ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam.bai;
+
+# requires /alignments/${BAM_PREFIX}.filtered.bam
 
   # UnifiedGenotyper EMIT_ALL_CONFIDENT_SITES
   logger_ngseasy " START GATK UnifiedGenotyper " ${LOGFILE}
@@ -570,7 +568,6 @@ params.yaml="/home/pipeman/ngseasy_scripts/ensemble.calling.params.yaml"
   ${params.yaml} \
   /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.ensemble.vcf \
-  ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.UnifiedGenotyper.vcf \
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.freebayes.vcf \
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.platypus.vcf \
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.HaplotypeCaller.vcf;
