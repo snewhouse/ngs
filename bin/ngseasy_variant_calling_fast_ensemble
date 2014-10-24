@@ -154,7 +154,7 @@ VARCALLER="platypus"
 
   logger_ngseasy " START Variant Calling using Platypus "  ${LOGFILE}
   
-  if [ "${NGS_TYPE}" == "TGS" ] || [ "${NGS_TYPE}" == "WEX" ]
+ if [ "${NGS_TYPE}" == "TGS" ] || [ "${NGS_TYPE}" == "WEX" ]
   then
     
       logger_ngseasy " NGS_TYPE is Targeted/WEX so no duplicate filtering  "  ${LOGFILE}
@@ -177,7 +177,6 @@ VARCALLER="platypus"
       cp -v ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
 
     else
-
           sudo docker run \
           -P \
           --name platypus_${SAMPLE_ID} \
@@ -200,7 +199,7 @@ VARCALLER="platypus"
     # copy vcf to cohort vcf directory
     cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
 
-  fi
+fi
 
   logger_ngseasy " copying [${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf] to [${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/] "  ${LOGFILE}
 
