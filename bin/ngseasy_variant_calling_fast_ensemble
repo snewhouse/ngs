@@ -227,6 +227,8 @@ params.yaml="/home/pipeman/ngseasy_scripts/ensemble.fast.calling.params.yaml"
 
   logger_ngseasy " END bcbio-variation in Ensembl Variant Calling using Freebayes + Platypus "  ${LOGFILE}
 
+fi
+
 #------------------------------------------------------------------------------------------#
 # END ALL
 #------------------------------------------------------------------------------------------#
