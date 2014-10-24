@@ -131,7 +131,7 @@ then
   -t compbio/ngseasy-freebayes:v0.9 /bin/bash -c \
   "/usr/local/pipeline/freebayes/bin/freebayes \
     -f /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
-    -b ${SOUTDocker}/alignments/${BAM_PREFIX}.bam \
+    -b ${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam \
     --min-coverage 10 \
     --min-mapping-quality 20 \
     --min-base-quality 20 \
@@ -165,7 +165,7 @@ VARCALLER="platypus"
       --volumes-from volumes_container \
       -t compbio/ngseasy-platypus:v0.9 python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
           --nCPU ${NCPU} \
-          --bamFiles=${SOUTDocker}/alignments/${BAM_PREFIX}.bam \
+          --bamFiles=${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam \
           --refFile=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
           --output=${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf \
           --filterDuplicates=0 \
