@@ -564,7 +564,7 @@ params.yaml="/home/pipeman/ngseasy_scripts/ensemble.calling.params.yaml"
   -P \
   --name bcbio-variation_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-bcbio-variation:v0.9.1 java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar bcbio.variation-0.1.7-standalone.jar variant-ensemble \
+  -t compbio/ngseasy-bcbio-variation:v0.9.1 java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/bcbio/bcbio.variation-0.1.7-standalone.jar variant-ensemble \
   ${params.yaml} \
   /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.ensemble.vcf \
