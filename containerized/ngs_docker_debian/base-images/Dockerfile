@@ -9,9 +9,6 @@ MAINTAINER Stephen Newhouse stephen.j.newhouse@gmail.com
 # Set correct environment variables.
 ENV HOME /root
 
-# Use baseimage-docker's bash.
-CMD ["bash"]
-
 ## Remain current
 RUN apt-get update -qq \
 && apt-get dist-upgrade -y
@@ -38,8 +35,8 @@ RUN apt-get update \
   gfortran \
   git \
   git-core \
-  libblas-dev l\
-  ibatlas-dev \
+  libblas-dev \
+  libatlas-dev \
   libbz2-dev \
   liblzma-dev \
   libpcre3-dev \
@@ -60,10 +57,6 @@ RUN apt-get update \
   vim \
   wget
   
-
-#------------------------------------------------------------------------
-# USER SETUP
-#------------------------------------------------------------------------
 # Create a pipeline user:pipeman and group:ngsgroup
 RUN useradd -m -s /bin/bash pipeman && cd /home/pipeman && echo "#bash config file for user pipeman" >> /home/pipeman/.bashrc
 RUN groupadd ngsgroup
@@ -72,6 +65,9 @@ RUN usermod -aG sudo pipeman
 
 #make pipeline install dirs
 RUN mkdir /usr/local/pipeline && chown pipeman:ngsgroup /usr/local/pipeline && chmod 775 /usr/local/pipeline
+
+# Use baseimage-docker's bash.
+CMD ["/bin/bash"]
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
