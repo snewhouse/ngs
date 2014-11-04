@@ -12,8 +12,9 @@ ENV HOME /root
 # Use baseimage-docker's bash.
 CMD ["bash"]
 
-# Set correct environment variables.
-ENV HOME /root
+## Remain current
+RUN apt-get update -qq \
+&& apt-get dist-upgrade -y
 
 # basic dependencies
 RUN apt-get update \
@@ -37,7 +38,10 @@ RUN apt-get update \
   gfortran \
   git \
   git-core \
-  libblas-dev libatlas-dev libbz2-dev liblzma-dev \
+  libblas-dev l\
+  ibatlas-dev \
+  libbz2-dev \
+  liblzma-dev \
   libpcre3-dev \
   libreadline-dev \
   zlib1g-dev \  
@@ -48,6 +52,7 @@ RUN apt-get update \
   perl \
   php5-curl \
   python \
+  sudo \
   subversion \
   tabix \
   tree \
@@ -62,7 +67,10 @@ RUN apt-get update \
 # Create a pipeline user:pipeman and group:ngsgroup
 RUN useradd -m -s /bin/bash pipeman && cd /home/pipeman && echo "#bash config file for user pipeman" >> /home/pipeman/.bashrc
 RUN groupadd ngsgroup
-RUN usermod -G ngsgroup pipeman
+RUN usermod -aG ngsgroup pipeman
+RUN usermod -aG sudo pipeman
+
+#make pipeline install dirs
 RUN mkdir /usr/local/pipeline && chown pipeman:ngsgroup /usr/local/pipeline && chmod 775 /usr/local/pipeline
 
 # Clean up APT when done.

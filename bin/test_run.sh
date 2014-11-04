@@ -86,3 +86,6 @@ ngseasy_sv_call
 
 
 *****
+
+
+http://basecallbio.wordpress.com/2013/04/23/base-quality-score-rebinning/
