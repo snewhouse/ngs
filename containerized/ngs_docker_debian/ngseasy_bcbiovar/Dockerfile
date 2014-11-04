@@ -18,8 +18,8 @@ RUN apt-get update -y && apt-get upgrade -y
 #-------------------------NGS-TOOL---------------------------------------
 RUN mkdir /usr/local/pipeline/bcbio  && \
   cd /usr/local/pipeline/bcbio && \
-  wget https://github.com/chapmanb/bcbio.variation/releases/download/v0.1.7/bcbio.variation-0.1.7-standalone.jar && \
-  sed -i '$aCLASSPATH=.:${CLASSPATH}:/usr/local/pipeline/bcbio/bcbio.variation-0.1.7-standalone.jar' /home/pipeman/.bashrc && \
+  wget https://github.com/chapmanb/bcbio.variation/releases/download/v0.1.8/bcbio.variation-0.1.8-standalone.jar && \
+  sed -i '$aCLASSPATH=.:${CLASSPATH}:/usr/local/pipeline/bcbio/bcbio.variation-0.1.8-standalone.jar' /home/pipeman/.bashrc && \
   sed -i '$aPATH=${PATH}:/usr/local/pipeline/bcbio/' /home/pipeman/.bashrc && \
   sed -i '$aPATH=${PATH}:/usr/local/pipeline/bcbio/' ~/.bashrc && \
   echo "alias ngsBCBIOVAR'/usr/local/pipeline/bcbio/'" >>  /home/pipeman/.bashrc
