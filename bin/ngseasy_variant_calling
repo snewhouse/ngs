@@ -204,6 +204,8 @@ then
   logger_ngseasy " END Variant Calling using Platypus "  ${LOGFILE}
     
 fi
+fi
+
 
 
 #-----------------------------------------------------------------------------#
