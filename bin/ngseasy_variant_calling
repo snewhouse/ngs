@@ -404,7 +404,8 @@ then
   # copy vcf to cohort vcf directory
   cp -v ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
 
-else sudo docker run \
+else 
+  sudo docker run \
       -P \
       --name platypus_${SAMPLE_ID} \
       --volumes-from volumes_container \
