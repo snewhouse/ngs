@@ -66,7 +66,7 @@ RUN apt-get update -y && \
 
 #set java
 ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java
-RUN echo "export PATH=$PATH:/usr/lib/jvm/java-7-openjdk-amd64/jre/bin >> /root/.bashrc"
+RUN sed -i 'aPATH=$PATH:/usr/lib/jvm/java-7-openjdk-amd64/jre/bin' /root/.bashrc
 
 # Create a pipeline user:pipeman and group:ngsgroup
 RUN useradd -m -s /bin/bash pipeman && cd /home/pipeman && echo "#bash config file for user pipeman" >> /home/pipeman/.bashrc
