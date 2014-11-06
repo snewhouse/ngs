@@ -9,9 +9,9 @@ MAINTAINER Stephen Newhouse stephen.j.newhouse@gmail.com
 # Set correct environment variables.
 ENV HOME /root
 
-## Remain current
-RUN apt-get update -qq \
-&& apt-get dist-upgrade -y
+# Remain current
+RUN apt-get update && \
+  apt-get dist-upgrade -y
 
 # basic dependencies
 RUN apt-get update \
@@ -44,8 +44,6 @@ RUN apt-get update \
   zlib1g-dev \  
   make \
   mercurial \
-  openjdk-7-jdk \
-  openjdk-7-jre \
   perl \
   php5-curl \
   python \
@@ -56,12 +54,19 @@ RUN apt-get update \
   unzip \
   vim \
   wget
-  
+
+# Remain current and upgrade java
+RUN add-apt-repository ppa:openjdk/ppa && \
+  apt-get update && \
+  apt-get install openjdk-7-jdk openjdk-7-doc openjdk-7-jre-lib && \
+  apt-get dist-upgrade -y  
+
 # Create a pipeline user:pipeman and group:ngsgroup
 RUN useradd -m -s /bin/bash pipeman && cd /home/pipeman && echo "#bash config file for user pipeman" >> /home/pipeman/.bashrc
-RUN groupadd ngsgroup
-RUN usermod -aG ngsgroup pipeman
-RUN usermod -aG sudo pipeman
+
+RUN groupadd ngsgroup && \
+  usermod -aG ngsgroup pipeman && \
+  usermod -aG sudo pipeman
 
 #make pipeline install dirs
 RUN mkdir /usr/local/pipeline && chown pipeman:ngsgroup /usr/local/pipeline && chmod 775 /usr/local/pipeline
