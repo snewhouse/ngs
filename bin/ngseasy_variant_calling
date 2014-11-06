@@ -382,8 +382,8 @@ VARCALLER="platypus"
 
   logger_ngseasy " START Variant Calling using Platypus "  ${LOGFILE}
   
-    if [ "${NGS_TYPE}" == "TGS" ] || [ "${NGS_TYPE}" == "WEX" ]
-    then
+if [ "${NGS_TYPE}" == "TGS" ] || [ "${NGS_TYPE}" == "WEX" ]
+then
   
     logger_ngseasy " NGS_TYPE is Targeted/WEX so no duplicate filtering  "  ${LOGFILE}
     # for exome/whole genome data no duplicate filtering
@@ -403,10 +403,8 @@ VARCALLER="platypus"
       
   # copy vcf to cohort vcf directory
   cp -v ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
-      
-     else
 
-      sudo docker run \
+else sudo docker run \
       -P \
       --name platypus_${SAMPLE_ID} \
       --volumes-from volumes_container \
@@ -431,6 +429,7 @@ VARCALLER="platypus"
   logger_ngseasy " copying [${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf] to [${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/] "  ${LOGFILE}
 
   logger_ngseasy " END Variant Calling using Platypus "  ${LOGFILE}
+fi
 
 ## UnifiedGenotyper EMIT_ALL_CONFIDENT_SITES
 VARCALLER="UnifiedGenotyper"
@@ -604,6 +603,7 @@ params.yaml="/home/pipeman/ngseasy_scripts/ensemble.calling.params.yaml"
  ## END ALL
 #------------------------------------------------------------------------------------------#
   logger_ngseasy " END Ensembl Variant Calling using Freebayes + Platypus + UnifiedGenotyper + HaplotypeCaller "  ${LOGFILE}
+fi
 
 #------permissions------------#
 chmod -R 777 ${SOUT}/*
