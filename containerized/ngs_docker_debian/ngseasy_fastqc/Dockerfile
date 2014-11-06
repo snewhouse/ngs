@@ -3,7 +3,7 @@
 #------------------------------------------------#
 
 # Base image
-FROM compbio/ngseasy-base:wheezy
+FROM compbio/base-image
 
 # Maintainer 
 MAINTAINER Stephen Newhouse stephen.j.newhouse@gmail.com
@@ -33,6 +33,9 @@ RUN rm -rf /tmp/*
 
 #open ports private only
 EXPOSE 80
+
+# CMD
+CMD ["/bin/bash"]
 
 #Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
