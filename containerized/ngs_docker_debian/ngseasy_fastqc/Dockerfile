@@ -3,7 +3,7 @@
 #------------------------------------------------#
 
 # Base image
-FROM compbio/base-image
+FROM compbio/base-image:0.5
 
 # Maintainer 
 MAINTAINER Stephen Newhouse stephen.j.newhouse@gmail.com
