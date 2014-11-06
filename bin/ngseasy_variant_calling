@@ -188,7 +188,7 @@ then
         --output=${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf \
         --filterDuplicates=1 \
         --minReads=10 \
-        --minMapQual=30 \
+        --minMapQual=20 \
         --minBaseQual=20;
         
 #logs
@@ -417,7 +417,7 @@ VARCALLER="platypus"
         --output=${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf \
         --filterDuplicates=1 \
         --minReads=10 \
-        --minMapQual=30 \
+        --minMapQual=20 \
         --minBaseQual=20;
         
 #logs
