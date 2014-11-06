@@ -53,13 +53,20 @@ RUN apt-get update \
   tree \
   unzip \
   vim \
-  wget
+  wget \
+  python-software-properties
 
 # Remain current and upgrade java
-RUN add-apt-repository ppa:openjdk/ppa && \
-  apt-get update && \
-  apt-get install openjdk-7-jdk openjdk-7-doc openjdk-7-jre-lib && \
-  apt-get dist-upgrade -y  
+RUN apt-get update -y && \
+  apt-get upgrade -y && \
+  apt-get purge -y openjdk-7-jdk openjdk-6-doc openjdk-6-jre-lib && \
+  apt-get install -y openjdk-7-jdk openjdk-7-doc openjdk-7-jre-lib && \
+  apt-get update -y && \
+  apt-get upgrade -y  
+
+#set java
+ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java
+RUN echo "export PATH=$PATH:/usr/lib/jvm/java-7-openjdk-amd64/jre/bin >> /root/.bashrc"
 
 # Create a pipeline user:pipeman and group:ngsgroup
 RUN useradd -m -s /bin/bash pipeman && cd /home/pipeman && echo "#bash config file for user pipeman" >> /home/pipeman/.bashrc
