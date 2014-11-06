@@ -12,11 +12,12 @@ Please contact us for help/guidance on using the beat release. Our public server
 
 ## Latest Version
 *****************
-[NGSeasy-v0.9.3](https://github.com/KHP-Informatics/ngs/tree/release-0.9.3) - NGSeasy: Latest Release  
+[NGSeasy-v0.9.4](https://github.com/KHP-Informatics/ngs/tree/release-0.9.4) - NGSeasy: Latest Release  
 
 - NB: so far full_no_gatk.sh is the most developed module. 
 
 ### Releases
+[NGSeasy-v0.9.4](https://github.com/KHP-Informatics/ngs/tree/release-0.9.4) - NGSeasy: Latest Release  
 [NGSeasy-v0.9.3](https://github.com/KHP-Informatics/ngs/tree/release-0.9.3) - NGSeasy: Minor Bug Fixes [full_no_gatk.sh]  
 [NGSeasy-v0.9.2](https://github.com/KHP-Informatics/ngs/tree/release-0.9.2) - NGSeasy: Beta NovoIndex Fix  
 [NGSeasy-v0.9.1](https://github.com/KHP-Informatics/ngs/tree/release-0.9.1) - NGSeasy: Beta added gatk cleaning steps  

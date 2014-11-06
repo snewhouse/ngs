@@ -1,10 +1,269 @@
 NGSeasy
+===================
+**A [Dockerized](https://www.docker.com/) and [Virtulaized](https://www.virtualbox.org/) ngs pipeline and tool-box.** 
+
+**With NGSeasy you can now have full suite of NGS tools up and running on any high end workstation in an afternoon**
+
+**Note:** NGSeasy is under **continous development** and the dev version evolves quickly. 
+
+Please contact us for help/guidance on using the beat release. Our public server is down, so please to email us for access to the NGS resources and VM(s).  
+
+- **NGSeasy-v1.0 Full Production release will be available Dec 2014**    
+
+## Latest Version
+*****************
+[NGSeasy-v0.9.4](https://github.com/KHP-Informatics/ngs/tree/release-0.9.4) - NGSeasy: Latest Release  
+
+- NB: so far full_no_gatk.sh is the most developed module. 
+
+### Releases
+[NGSeasy-v0.9.4](https://github.com/KHP-Informatics/ngs/tree/release-0.9.4) - NGSeasy: Latest Release  
+[NGSeasy-v0.9.3](https://github.com/KHP-Informatics/ngs/tree/release-0.9.3) - NGSeasy: Minor Bug Fixes [full_no_gatk.sh]  
+[NGSeasy-v0.9.2](https://github.com/KHP-Informatics/ngs/tree/release-0.9.2) - NGSeasy: Beta NovoIndex Fix  
+[NGSeasy-v0.9.1](https://github.com/KHP-Informatics/ngs/tree/release-0.9.1) - NGSeasy: Beta added gatk cleaning steps  
+[NGSeasy-v0.9](https://github.com/KHP-Informatics/ngs/tree/release-0.9)     - NGSeasy: Beta  
+
+### Coming Soon
+- Savant 
+- SLOPE (CNV fo targetted NSG)  
+- Cancer Pipelines
+- Annotation Pipelines and Databases
+- Visualisation Pipelines
+- New Aligners:- GSNAP, mr- and mrs-Fast,gem
+- Var Callers:- VarScan2
+- SGE scripts and basic BASH scrips for running outside of Docker
+
+### Authors
+- Amos Folarin <amosfolarin@gmail.com>  
+<a href="http://www.linkedin.com/pub/amos-folarin/34/b06/978">
+<img src="http://www.linkedin.com/img/webpromo/btn_viewmy_160x33.png" width="160" height="33" alt="View Amos's profile on LinkedIn">
+</a>
+
+- Stephen J Newhouse <stephen.j.newhouse@gmail.com>  
+<a href="http://uk.linkedin.com/pub/dr-stephen-newhouse/29/89a/11a">
+<img src="http://www.linkedin.com/img/webpromo/btn_viewmy_160x33.png" width="160" height="33" alt="View Steve's profile on LinkedIn">
+</a>
+
+****************
+
+We present **NGSeasy (Easy Analysis of Next Generation Sequencing)**, a flexible and easy-to-use NGS pipeline for automated alignment, quality control, variant calling and annotation. The pipeline allows users with minimal computational/bioinformatic skills to set up and run an NGS analysis on their own samples, in less than an afternoon, on any operating system (Windows, iOS or Linux) or infrastructure (workstation, cluster or cloud).
+
+NGS pipelines typically utilize a large and varied range of software components and incur a substantial configuration burden during deployment which limits their portability to different computational environments. NGSeasy simplifies this by providing the pipeline components encapsulated in Docker™ containers and bundles in a wide choice of tools for each module. Each module of the pipeline represents one functional grouping of tools (e.g. sequence alignment, variant calling etc.).
+
+Deploying the pipeline is as simple as pulling the container images from the public repository into any host running Docker. NGSeasy can be deployed on any medium to high-end workstation, high performance computer cluster and compute clouds (public/private cloud computing) - enabling instant access to elastic scalability without investment overheads for additional compute hardware and makes open and reproducible research straight forward for the greater scientific community.
+
+- **NGSeasy updates every 6 months:**
+
+**Lets us know if you want other tools added to NGSeasy**
+
+***********
+
+## Table of Contents
+[NOTICE TO USERS](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#notice-to-users-of-the-container-image-or-vm)  
+
+[Software requiring registration](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#software-composing-the-pipeline-requiring-registration)  
+
+[Overview of Pipeline Components](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#overview-of-pipeline-components)  
+
+[NGS Tools](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#the-tools-included-are-as-follows--)  
+
+[Dockerised NGSEASY set up](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#dockerised-ngseasy)  
+
+[Installing Docker](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#installing-docker)  
+
+[Getting the Dockerised NGSEASY Pipeline](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#getting-the-dockerised-ngseasy-pipeline)  
+
+[Running the Dockerised NGSEASY Pipeline](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#running-the-dockerised-ngseasy-pipeline)  
+
+[NGSEASY-VM : An NGS Tool Box](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngseasy-vm--an-ngs-tool-box)  
+
+[Installing Oracle VirtualBox](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#installing-oracle-virtualbox)  
+
+[Getting the ngseasy-vm](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#getting-the-ngseasy-vm)  
+
+[Installing the ngseasy-vm](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#installing-the-ngseasy-vm)  
+
+******
+
+## NOTICE TO USERS OF THE CONTAINER IMAGE OR VM
+
+While the software used to build the image is composed of free software versions
+some of the software has restrictions on use particularly for commercial 
+purposes. Therefore if you wish to use this for commercial purposes, then you 
+leagally have to approach the owners of the various components yourself!  
+
+This pipeline uses a number of pieces of software which require registration. 
+By using this you are agreeing to observe the Terms and Conditions of the 
+relevant pieces of software that compose this pipeline.  
+
+### Software composing the pipeline requiring registration
+
+If you want to build the image from the Dockerfile then you need to get your 
+own versions of (below) in the build directory:
+
+   * novoalign http://www.novocraft.com/
+   * Stampy http://www.well.ox.ac.uk/project-stampy
+   * GATK https://www.broadinstitute.org/gatk/
+   * ANNOVAR http://www.openbioinformatics.org/annovar/
+
+[Back to The Begining](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngs-easy-v10)
+
+******
+
+Overview of Pipeline Components
+================================
+The basic pipeline contains all the basic tools needed for manipulation and 
+quality control of raw fastq files (ILLUMINA focused), SAM/BAM manipulation,
+alignment, cleaning (based on GATK best practises [http://www.broadinstitute.org/gatk/guide/best-practices]) and first pass
+variant discovery. Separate containers are provided for indepth variant annotation,
+structural variant calling, basic reporting and visualisations.  
+
+![ngsEASY](figs/ngsEASY_component_visualisation.png "Dockerized NGS Pipeline")
+
+# The Tools included are as follows :- 
+
+### Fastq manipulation
+- FASTQC
+- SEQTK
+- TRIMMOMATIC
+- FASTX TOOLKIT
+
+### Alignmnet
+- BWA
+- BOWTIE2
+- STAMPY
+- NOVOALIGN [FULL VERSION NOT AVAILABLE FOR PUBLIC USE]
+
+### SAM/BAM Processing
+- GATK
+- PICARDTOOLS
+- SAMTOOLS
+
+### MISC
+- BEDTOOLS
+- VCFTOOLS
+- BCFTOOLS
+
+### VARIANT CALLING
+- GATK
+- SAMTOOLS/BCFTOOLS
+- FREEBAYES
+- PLATYPUS
+
+### VARIANT ANNOTATION
+- ANNOVAR
+- SNPEFF
+- VEP
+
+### CNV/Structural Variant CALLING
+- lumpy
+- delly
+- m-HMM
+- cn.MOPS
+- ExomeDepth  
+
+**Software Versions**
+
+- Trimmomatic-0.32
+- bwa-0.7.10
+- bowtie2-2.2.3
+- novocraftV3.02.07.Linux3.0
+- stampy-1.0.23
+- samtools-0.1.19
+- picard-tools-1.115
+- GenomeAnalysisTK-3.2-2
+- Platypus_0.7.4
+- fastqc_v0.11.2  
+
+[Back to The Begining](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngs-easy-v10)
+
+******
+
+Dockerised NGSeasy
 ==========================
+![docker](figs/Docker_container_engine_logo.png "Docker")  
 
-Authors: Stephen J Newhouse, Amos Folarin, Maximillian Kerz
+## Installing Docker
+
+Follow the simple instructions in the links provided below  
+
+- [Mac](https://docs.docker.com/installation/mac/)  
+- [Windows](https://docs.docker.com/installation/windows/)
+- [Ubuntu](https://docs.docker.com/installation/ubuntulinux/)
+
+A full set of instructions for multiple operating systems are available on the [Docker website](https://docs.docker.com/installation/).
+
+Getting the Dockerised NGSeasy Pipeline
+-------------------------------------------
+
+We have adapted the current best practices from the Genome Analysis Toolkit (GATK, http://www.broadinstitute.org/gatk/guide/best-practices)  for processing raw alignments in SAM/BAM format and variant calling. The current workflow, has been optimised for Illumina platforms, but can easily be adapted for other sequencing platforms, with minimal effort.  
+
+As the containers themselves can be run as executables with pre-specified cpu and RAM resources, the orchestration of the pipeline can be placed under the control of conventional load balancers if this mode is required.  
+
+*****************
+
+### Available NGSeasy Docker images
+Available to download at our [compbio Docker Hub](https://hub.docker.com/u/compbio)
+
+### The Main Power Tool!
+**ngseasy-alignment-public:v1.2**
+Docker Hub: [compbio/ngseasy-alignment-public:v1.2](https://registry.hub.docker.com/u/compbio/ngseasy-alignment-public/)
+
+This is a large image (4.989 GB) containing all the tools needed to go from raw ``.fastq`` files to aligned ``.BAM`` to SNP and small INDEL variant calls ``.vcf`` .
+
+```bash
+sudo docker pull compbio/ngseasy-alignment-public:v1.2
+```
+
+Getting All NGSeasy images, Reasources and Scripts
+------------------------------
+
+All Images can be pulled down from [Docker Hub](https://hub.docker.com/u/compbio/) using the script [get_NGSeasy.sh](https://github.com/KHP-Informatics/ngs/blob/master/containerized/get_NGSeasy.sh)
 
 
-....Under Construction...
+**NGSeasy Reasources**
+
+This is a 25GB ``ngseasy_resources.tar.gz`` file containing :-  
+
+- ``reference_genomes_b37.tgz`` b37 reference genomes indexed for use with all provided aligners (BWA, Bowtie2, Stampy, Novoalign) and annotation bed files for use with pipeline scripts
+- ``gatk_resources.tar.gz`` gatk resources bundle
+- ``fastq_example.tgz`` Example 75bp PE Illumina Whole Exome Sequence fastq data for **NA12878**
+- Annotation Databases Coming in the next update 
+ 
+**SFTP Login Details**
+
+```
+location: upload.brc.iop.kcl.ac.uk  
+Port: 51515  
+user: ngseasy  
+password: ngseasy  
+```
+
+Example:- 
+```bash
+$ sftp  ngseasy@upload.brc.iop.kcl.ac.uk
+ngseasy@upload.brc.iop.kcl.ac.uk's password: 
+Connected to upload.brc.iop.kcl.ac.uk.
+sftp> ls
+NGSeasy  
+sftp> cd NGSeasy
+sftp> ls
+ngseasy-vm-v1.0.vdi          ngseasy_resources.tar.gz     
+sftp> get -r *
+```
+I would recommend using a separate program like [FileZilla](https://filezilla-project.org/), which will make it much easier for you to set up and manage your file transfers
+
+**NGSeasy pipeline scripts**
+
+
+Clone latest NGSeasy scripts from out GitHub repository
+```sh
+git clone https://github.com/KHP-Informatics/ngs.git
+```
+
+[Back to The Begining](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngs-easy-v10)
+
+****************
 
 NGSeasy Project Set up
 --------------------------
