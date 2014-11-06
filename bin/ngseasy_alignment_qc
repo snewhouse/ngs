@@ -1,0 +1,176 @@
+
+
+
+
+ # FindCoveredIntervals: these are used in GATK Calling to help speed things up
+
+echo " NGSeasy: START FindCoveredIntervals " `date`  
+if [ ! -s ${SOUT}/reports/${BAM_PREFIX}.CoveredIntervals_x4.list ]
+then
+echo " NGSeasy: Finding Covered Intervals : minimum coverage of 4 " `date`
+  java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T FindCoveredIntervals -R ${REFGenomes}/human_g1k_v37.fasta \
+  -I ${SOUT}/alignments/${BAM_PREFIX}.dupemk.bam  \
+  -o ${SOUT}/reports/${BAM_PREFIX}.CoveredIntervals_x4.list \
+  --coverage_threshold 4;
+fi
+  
+  
+# BAM to BED
+echo " NGSeasy: START bamtobed " `date`  
+
+if [ ! -s ${SOUT}/reports/${BAM_PREFIX}.merged.bed ]
+then
+echo " NGSeasy: Converting Aligned BAM To BED File " `date`
+# pulls out paired only reads with min qual 10. Set low as donwstream tools filter these regions
+ /usr/local/pipeline/samtools/samtools view -b -h -q 20 -F 1796 ${SOUT}/alignments/${BAM_PREFIX}.recal.bam | /usr/local/pipeline/bedtools2/bin/bedtools bamtobed -i stdin > ${SOUT}/reports/${BAM_PREFIX}.bed;
+
+echo " NGSeasy: Converting Aligned BED To MERGED BED File " `date` 
+ /usr/local/pipeline/bedtools2/bin/bedtools merge -i ${SOUT}/reports/${BAM_PREFIX}.bed > ${SOUT}/reports/${BAM_PREFIX}.merged.bed;
+fi
+
+if [ ! -s ${SOUT}/reports/${BAM_PREFIX}.alignment_summary_metrics ]
+then 
+
+  echo " NGSeasy: Running Post Alignmnet QC " `date`
+# CollectMultipleMetrics
+  echo " NGSeasy: CollectMultipleMetrics " `date`
+ 
+ java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.115/CollectMultipleMetrics.jar \
+  TMP_DIR=${SOUT}/tmp \
+  VALIDATION_STRINGENCY=SILENT \
+  MAX_RECORDS_IN_RAM=100000 \
+  INPUT=${SOUT}/alignments/${BAM_PREFIX}.bam \
+  OUTPUT=${SOUT}/reports/${BAM_PREFIX} \
+  REFERENCE_SEQUENCE=${REFGenomes}/human_g1k_v37.fasta \
+  PROGRAM=CollectAlignmentSummaryMetrics \
+  PROGRAM=CollectInsertSizeMetrics \
+  PROGRAM=QualityScoreDistribution \
+  PROGRAM=MeanQualityByCycle;
+
+# CollectAlignmentSummaryMetrics
+  echo " NGSeasy: CollectAlignmentSummaryMetrics " `date`
+  
+  java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.115/CollectAlignmentSummaryMetrics.jar \
+  TMP_DIR=${SOUT}/tmp \
+  VALIDATION_STRINGENCY=SILENT \
+  MAX_RECORDS_IN_RAM=100000 \
+  INPUT=${SOUT}/alignments/${BAM_PREFIX}.bam \
+  OUTPUT=${SOUT}/reports/${BAM_PREFIX}.alignment_summary_metrics_alt \
+  REFERENCE_SEQUENCE=${REFGenomes}/human_g1k_v37.fasta \
+  ASSUME_SORTED=true \
+  METRIC_ACCUMULATION_LEVEL=SAMPLE;
+
+# CollectWgsMetrics
+  echo " NGSeasy: CollectWgsMetrics " `date`
+  
+  java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.115/CollectWgsMetrics.jar \
+  TMP_DIR=${SOUT}/tmp \
+  VALIDATION_STRINGENCY=SILENT \
+  MAX_RECORDS_IN_RAM=100000 \
+  INPUT=${SOUT}/alignments/${BAM_PREFIX}.bam \
+  OUTPUT=${SOUT}/reports/${BAM_PREFIX}.wgs_coverage \
+  REFERENCE_SEQUENCE=${REFGenomes}/human_g1k_v37.fasta \
+  MINIMUM_MAPPING_QUALITY=20 \
+  MINIMUM_BASE_QUALITY=20 \
+  COVERAGE_CAP=1000;
+
+  awk 'NR>9' ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage > ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage_hist
+  sed '8q' ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage > ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage_stats
+
+# FlagStat
+  echo " NGSeasy: FlagStat " `date`
+  
+    java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T FlagStat -R ${REFGenomes}/human_g1k_v37.fasta \
+    -I ${SOUT}/alignments/${BAM_PREFIX}.bam  \
+    -o ${SOUT}/reports/${BAM_PREFIX}.FlagStat;
+    
+else
+    echo " NGSeasy: Post Alignmnet QC Already Run " `date` 
+fi
+
+echo ""
+echo "................................................"
+echo " NGSeasy: END Post Alignmnet QC " `date`
+echo "................................................"
+echo ""
+
+## Depending in NGS type Run PicardTools CollectTargetedPcrMetrics
+## NB This is rough and ready quicl fix to get coverage ver genome bins, annotated exomes and targetd sequene files
+
+echo "................................................"
+echo " NGSeasy: START Post Alignmnet Coverage Calculations " `date`
+echo "................................................"
+echo ""
+
+if [ ! -s ${SOUT}/reports/${BAM_PREFIX}.genomecov.bed ]
+then
+echo " NGSeasy: Running bedtools genomecov [-bga] " `date`
+
+  /usr/local/pipeline/bedtools2/bin/bedtools genomecov -ibam ${SOUT}/alignments/${BAM_PREFIX}.bam -bga > ${SOUT}/reports/${BAM_PREFIX}.genomecov.bed;
+
+else
+  echo " NGSeasy: bedtools genomecov " `date`
+fi
+
+# Picardt tools CollectTargetedPcrMetric
+echo " NGSeasy: Run CollectTargetedPcrMetric " `date`
+echo " NGSeasy: This requires a Custom or Exome BED File provided by the user or manufacturer of your NGS Exome Library " 
+
+if [ "${NGS_TYPE}" == "TGS" ] && [ -s ${BED_ANNO} ] && [ ! -s ${SOUT}/reports/${BAM_PREFIX}.target_coverage ]
+then
+  echo " NGSeasy: Finding TGS coverage over target regions in ${BED_ANNO} " `date`
+  
+    java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.115/CollectTargetedPcrMetrics.jar \
+    TMP_DIR=${SOUT}/tmp \
+    VALIDATION_STRINGENCY=SILENT \
+    MAX_RECORDS_IN_RAM=100000 \
+    INPUT=${SOUT}/alignments/${BAM_PREFIX}.bam \
+    OUTPUT=${SOUT}/reports/${BAM_PREFIX}.target_coverage \
+    REFERENCE_SEQUENCE=${REFGenomes}/human_g1k_v37.fasta \
+    AMPLICON_INTERVALS=${BED_ANNO} \
+    TARGET_INTERVALS=${BED_ANNO} \
+    METRIC_ACCUMULATION_LEVEL=ALL_READS \
+    PER_TARGET_COVERAGE=${SOUT}/reports/${BAM_PREFIX}.per_target_coverage;
+    
+elif [ "${NGS_TYPE}" == "WEX" ]  && [ -s ${BED_ANNO} ] && [ ! -s ${SOUT}/reports/${BAM_PREFIX}.target_coverage ]
+then
+  echo " NGSeasy: Finding WEX Coverage over annotated exons/genes from ensembl " `date`
+    java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.115/CollectTargetedPcrMetrics.jar \
+    TMP_DIR=${SOUT}/tmp \
+    VALIDATION_STRINGENCY=SILENT \
+    MAX_RECORDS_IN_RAM=100000 \
+    INPUT=${SOUT}/alignments/${BAM_PREFIX}.bam \
+    OUTPUT=${SOUT}/reports/${BAM_PREFIX}.target_coverage \
+    REFERENCE_SEQUENCE=${REFGenomes}/human_g1k_v37.fasta \
+    AMPLICON_INTERVALS=${REFGenomes}/${BED_ANNO} \
+    TARGET_INTERVALS=${REFGenomes}/${BED_ANNO} \
+    METRIC_ACCUMULATION_LEVEL=ALL_READS \
+    PER_TARGET_COVERAGE=${SOUT}/reports/${BAM_PREFIX}.per_target_coverage;
+    
+elif [ "${NGS_TYPE}" == "WGS" ] && [ ! -s ${SOUT}/reports/${BAM_PREFIX}.target_coverage ]
+then
+  echo " NGSeasy: Finding WGS Coverage over 500bp windows " `date`
+    java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.115/CollectTargetedPcrMetrics.jar \
+    TMP_DIR=${SOUT}/tmp \
+    VALIDATION_STRINGENCY=SILENT \
+    MAX_RECORDS_IN_RAM=100000 \
+    INPUT=${SOUT}/alignments/${BAM_PREFIX}.bam \
+    OUTPUT=${SOUT}/reports/${BAM_PREFIX}.target_coverage \
+    REFERENCE_SEQUENCE=${REFGenomes}/human_g1k_v37.fasta \
+    AMPLICON_INTERVALS=${REFGenomes}/human_g1k_v37_0.5Kwindows.bed \
+    TARGET_INTERVALS=${REFGenomes}/human_g1k_v37_0.5Kwindows.bed \
+    METRIC_ACCUMULATION_LEVEL=ALL_READS \
+    PER_TARGET_COVERAGE=${SOUT}/reports/${BAM_PREFIX}.per_target_coverage;
+
+else
+
+  echo " NGSeasy: Whoops! Something Went wrong! NGS_TYPE and Annotation Files not found! Check your config file and data...or not..."
+  echo " NGSeasy: Skipping Collect Targeted Pcr Metrics...."
+  echo " NGSeasy: You may want to run this manually later....it is quite nice"
+  echo ""
+fi
+
+echo "................................................"
+echo " NGSeasy: END Post Alignmnet Coverage Calculations " `date`
+echo "................................................"
+echo ""

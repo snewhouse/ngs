@@ -67,17 +67,17 @@ tree ${PROJECT_DIR}/${POJECT_ID}
 
 
 
-############################## 
+##############################
 ## BEGING FULL NGS PIPELINE ##
 ##############################
 
 ## OUTPUT SAMPLE DIR
 SOUT=${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}
 
-## BAM PREFIX 
+## BAM PREFIX
 BAM_PREFIX=${SAMPLE_ID}.${NGS_TYPE}.${NGS_PLATFORM}.${ALIGNER}.${DATE}
 
-##---------------------- FASTQ-QC ----------------------## 
+##---------------------- FASTQ-QC ----------------------##
 
 ## copy orginal fastq file for sample x to sample x fastq directory
 cp -v ${FASTQDIR}/${FASTQ1} ${SOUT}/fastq/
@@ -107,7 +107,7 @@ ILLUMINACLIP:${adapter_fa}:2:30:10:5:true LEADING:3 TRAILING:3 MINLEN:50;
 # FASTQC on paired trimmed files
 /usr/local/pipeline/FastQC/fastqc --threads ${NCPU} --extract --quiet --dir ${SOUT}/tmp --outdir ${SOUT}/fastq ${qcdPeFASTQ1} ${qcdPeFASTQ2};
 
-##---------------------- ALIGNMENT ----------------------## 
+##---------------------- ALIGNMENT ----------------------##
 
 if [ "${ALIGNER}" == "bwa" ]; then
 # BWA alignment
@@ -141,13 +141,13 @@ if [ "${ALIGNER}" == "stampy" ]; then
 /usr/local/pipeline/samtools-0.1.19/samtools sort -f   ${SOUT}/alignments/${BAM_PREFIX}.raw.bam ${SOUT}/alignments/${BAM_PREFIX}.sort0.bam;
 /usr/local/pipeline/samtools-0.1.19/samtools index     ${SOUT}/alignments/${BAM_PREFIX}.sort0.bam;
 /usr/local/pipeline/samtools-0.1.19/samtools view -H ${SOUT}/alignments/${BAM_PREFIX}.sort0.bam > ${SOUT}/alignments/${BAM_PREFIX}.sort0.bam.header;
-/usr/local/pipeline/stampy-1.0.23/stampy.py -g human_g1k_v37 -h human_g1k_v37 -t${NCPU} --bamsortprefix ${SOUT}/tmp --bamkeepgoodreads -M ${SOUT}/alignments/${BAM_PREFIX}.sort0.bam -o ${SOUT}/alignments/${BAM_PREFIX}.sort0_unmapped.bam -f sam 
-/usr/local/pipeline/stampy-1.0.23/stampy.py -g human_g1k_v37 -h human_g1k_v37 -t${NCPU} --bamsortprefix ${SOUT}/tmp -M ${SOUT}/alignments/${BAM_PREFIX}.sort0.bam ${SOUT}/alignments/${BAM_PREFIX}.sort0_unmapped.bam -o ${SOUT}/alignments/${BAM_PREFIX}.raw.sam -f sam 
+/usr/local/pipeline/stampy-1.0.23/stampy.py -g human_g1k_v37 -h human_g1k_v37 -t${NCPU} --bamsortprefix ${SOUT}/tmp --bamkeepgoodreads -M ${SOUT}/alignments/${BAM_PREFIX}.sort0.bam -o ${SOUT}/alignments/${BAM_PREFIX}.sort0_unmapped.bam -f sam
+/usr/local/pipeline/stampy-1.0.23/stampy.py -g human_g1k_v37 -h human_g1k_v37 -t${NCPU} --bamsortprefix ${SOUT}/tmp -M ${SOUT}/alignments/${BAM_PREFIX}.sort0.bam ${SOUT}/alignments/${BAM_PREFIX}.sort0_unmapped.bam -o ${SOUT}/alignments/${BAM_PREFIX}.raw.sam -f sam
 /usr/local/pipeline/samtools-0.1.19/samtools view -bhS ${SOUT}/alignments/${BAM_PREFIX}.raw.sam ${SOUT}/alignments/${BAM_PREFIX}.raw.bam;
 /usr/local/pipeline/samtools-0.1.19/samtools sort -f   ${SOUT}/alignments/${BAM_PREFIX}.raw.bam ${SOUT}/alignments/${BAM_PREFIX}.sort.bam;
 /usr/local/pipeline/samtools-0.1.19/samtools index     ${SOUT}/alignments/${BAM_PREFIX}.sort.bam;
 fi
- 
+
 ##---------------------- RAW ALIGNMENT PROCESSING ----------------------##
 
 # AddOrReplaceReadGroups
@@ -202,7 +202,7 @@ java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysis
 -LOD 0.4;
 
 # index bam file
-/usr/local/pipeline/samtools-0.1.19/samtools index ${SOUT}/alignments/${BAM_PREFIX}.realn.bam; 
+/usr/local/pipeline/samtools-0.1.19/samtools index ${SOUT}/alignments/${BAM_PREFIX}.realn.bam;
 
 ##---------------------- GATK BASE RECALIBRATION ----------------------##
 
@@ -226,7 +226,7 @@ java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysis
 -I ${SOUT}/alignments/${BAM_PREFIX}.realn.bam \
 -o ${SOUT}/alignments/${BAM_PREFIX}.recal.bam;
 # index bam file
-/usr/local/pipeline/samtools-0.1.19/samtools index ${SOUT}/alignments/${BAM_PREFIX}.recal.bam; 
+/usr/local/pipeline/samtools-0.1.19/samtools index ${SOUT}/alignments/${BAM_PREFIX}.recal.bam;
 
 # RealignerTargetCreator post recal
 java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T BaseRecalibrator -R ${REFGenomes}/human_g1k_v37.fasta -nct ${NCPU} \
@@ -236,7 +236,7 @@ java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysis
 --knownSites ${KNOWN_SNPS_1000G} \
 --knownSites ${KNOWN_SNPS_b138};
 
-cp -v ${SOUT}/alignments/${BAM_PREFIX}.recal.bam ${SOUT}/alignments/${BAM_PREFIX}.bam 
+cp -v ${SOUT}/alignments/${BAM_PREFIX}.recal.bam ${SOUT}/alignments/${BAM_PREFIX}.bam
 # index bam file
 /usr/local/pipeline/samtools-0.1.19/samtools index ${SOUT}/alignments/${BAM_PREFIX}.bam;
 
@@ -356,8 +356,8 @@ java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysis
 --annotation VariantType;
 # copy vcf to cohort vcf directory
 cp -v ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.hc.g.vcf ${PROJECT_DIR}/cohort_vcfs/
-fi 
-## -minPruning 10 -dcov 250 
+fi
+## -minPruning 10 -dcov 250
 
 ##---------------------- ALIGNMENT QC ----------------------##
 
@@ -411,7 +411,7 @@ java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysis
 -I ${SOUT}/alignments/${BAM_PREFIX}.bam  \
 -o ${SOUT}/reports/${BAM_PREFIX}.FlagStat;
 
-# BAM to BED 
+# BAM to BED
 /usr/local/pipeline/samtools-0.1.19/samtools view -b -h -q 20 -F 1796  ${SOUT}/alignments/${BAM_PREFIX}.bam  | /usr/local/pipeline/bedtools2/bin/bedtools bamtobed  -i stdin > ${SOUT}/reports/${BAM_PREFIX}.bed;
 
 ## TO ADD ####################################################################################################
