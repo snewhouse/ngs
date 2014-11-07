@@ -8,7 +8,7 @@
 ##--------------------------------------------------##
 
 #usage printing func
-fucntion usage() {
+usage() {
 cat << EOF
   This script sets up the NGSeasy docker Variant Calling
   See NGSEasy containerized instructions.
@@ -139,7 +139,7 @@ logger_ngseasy " START Variant Calling using Freebayes " ${LOGFILE}
     --genotype-qualities > ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf;"
 
     #logs
-  sudo docker logs Freebayes_${SAMPLE_ID} >> ${LOGFILE}.log#
+  sudo docker logs Freebayes_${SAMPLE_ID} >> ${LOGFILE}.log
 
   sudo docker rm Freebayes_${SAMPLE_ID}
 
