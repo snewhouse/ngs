@@ -401,7 +401,14 @@ then
       --filterDuplicates=0 \
       --minReads=10 \
       --minMapQual=20 \
-      --minBaseQual=20;
+      --minBaseQual=20 \
+      --hapScoreThreshold 10 \
+      --scThreshold 0.99 \
+      --filteredReadsFrac 0.9 \
+      --rmsmqThreshold 20 \
+      --qdThreshold 0 \
+      --abThreshold 0.0001 \
+      --minVarFreq 0.0;
       
   # copy vcf to cohort vcf directory
   cp -v ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
@@ -419,9 +426,25 @@ else
         --filterDuplicates=1 \
         --minReads=10 \
         --minMapQual=20 \
-        --minBaseQual=20;
+        --minBaseQual=20 \
+        --hapScoreThreshold 10 \
+	--scThreshold 0.99 \
+	--filteredReadsFrac 0.9 \
+	--rmsmqThreshold 20 \
+	--qdThreshold 0 \
+	--abThreshold 0.0001 \
+	--minVarFreq 0.0;
         
 #logs
+
+--hapScoreThreshold 10 \
+--scThreshold 0.99 \
+--filteredReadsFrac 0.9 \
+--rmsmqThreshold 20 \
+--qdThreshold 0 \
+--abThreshold 0.0001 \
+--minVarFreq 0.0
+                    
   sudo docker logs platypus_${SAMPLE_ID} >> ${LOGFILE}.log
 
   sudo docker rm platypus_${SAMPLE_ID}
@@ -576,35 +599,6 @@ params_yaml="/home/pipeman/ngseasy_scripts/ensemble.calling.params.yaml"
 
   logger_ngseasy " END bcbio-variation in Ensembl Variant Calling using Freebayes + Platypus + HaplotypeCaller "  ${LOGFILE}
 
-#------------------------------------params.yaml----------------------------------------------#
-# Tweak ensemble parameters when combinining inputs from multiple calling methods.
-# These feeds into the `variant-ensemble` task which provides a simplified
-# interface for generating ensemble calls.
-#---
-#ensemble:
-  # Baseline filters to apply to combined calls.
-#  format-filters: [DP < 4, QUAL < 5]
-  # Variants present in this percentage of input samples automatically pass
-#  trusted-pct: 0.65
-  # Variables to use in classifying reads not in the trusted group.
-  # You can specify any number of classifier groups, each of which will be evaluated separately.
-#  classifiers:
-#    general: [AD, PL, DP]
-#  classifier-params:
-#    type: svm
-# Optional names to label the input variant calls
-# If not supplied, default to numbers matched with the VCF inputs (v0, v1)
-#names: ['gatk_ug','freebayes','platypus','gatk_hc']
-# Perform prep and pre-cleaning steps. Set to false if inputs are pre-sorted
-# and filtered to save analysis time.
-#prep-inputs: true
-# Optional path to BED file of regions to analyze
-# intervals: /path/to/intervals.bed
-
-#------------------------------------------------------------------------------------------#
- ## END ALL
-#------------------------------------------------------------------------------------------#
-  logger_ngseasy " END Ensembl Variant Calling using Freebayes + Platypus + UnifiedGenotyper + HaplotypeCaller "  ${LOGFILE}
 fi
 
 #-------------------------------------------------------------------------------------------#
