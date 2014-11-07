@@ -170,7 +170,14 @@ then
       --filterDuplicates=0 \
       --minReads=10 \
       --minMapQual=20 \
-      --minBaseQual=20;
+      --minBaseQual=20 \
+      --hapScoreThreshold 10 \
+      --scThreshold 0.99 \
+      --filteredReadsFrac 0.9 \
+      --rmsmqThreshold 20 \
+      --qdThreshold 0 \
+      --abThreshold 0.0001 \
+      --minVarFreq 0.0;
       
   # copy vcf to cohort vcf directory
   cp -v ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
@@ -189,7 +196,14 @@ then
         --filterDuplicates=1 \
         --minReads=10 \
         --minMapQual=20 \
-        --minBaseQual=20;
+        --minBaseQual=20 \
+        --hapScoreThreshold 10 \
+	--scThreshold 0.99 \
+	--filteredReadsFrac 0.9 \
+	--rmsmqThreshold 20 \
+	--qdThreshold 0 \
+	--abThreshold 0.0001 \
+	--minVarFreq 0.0;
         
 #logs
   sudo docker logs platypus_${SAMPLE_ID} >> ${LOGFILE}.log
@@ -401,7 +415,14 @@ then
       --filterDuplicates=0 \
       --minReads=10 \
       --minMapQual=20 \
-      --minBaseQual=20;
+      --minBaseQual=20 \
+      --hapScoreThreshold 10 \
+      --scThreshold 0.99 \
+      --filteredReadsFrac 0.9 \
+      --rmsmqThreshold 20 \
+      --qdThreshold 0 \
+      --abThreshold 0.0001 \
+      --minVarFreq 0.0;
       
   # copy vcf to cohort vcf directory
   cp -v ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
@@ -419,9 +440,25 @@ else
         --filterDuplicates=1 \
         --minReads=10 \
         --minMapQual=20 \
-        --minBaseQual=20;
+        --minBaseQual=20 \
+        --hapScoreThreshold 10 \
+	--scThreshold 0.99 \
+	--filteredReadsFrac 0.9 \
+	--rmsmqThreshold 20 \
+	--qdThreshold 0 \
+	--abThreshold 0.0001 \
+	--minVarFreq 0.0;
         
 #logs
+
+--hapScoreThreshold 10 \
+--scThreshold 0.99 \
+--filteredReadsFrac 0.9 \
+--rmsmqThreshold 20 \
+--qdThreshold 0 \
+--abThreshold 0.0001 \
+--minVarFreq 0.0
+                    
   sudo docker logs platypus_${SAMPLE_ID} >> ${LOGFILE}.log
 
   sudo docker rm platypus_${SAMPLE_ID}
@@ -556,57 +593,168 @@ VARCALLER="UnifiedGenotyper"
 ## https://github.com/chapmanb/bcbio.variation
 #------------------------------------------------------------------------------------------#
 
-  logger_ngseasy " START bcbio-variation in Ensembl Variant Calling using Freebayes + Platypus + UnifiedGenotyper + HaplotypeCaller "  ${LOGFILE}
+  logger_ngseasy " START bcbio-variation in Ensembl Variant Calling using Freebayes + Platypus + HaplotypeCaller "  ${LOGFILE}
 
 #Docker Output Dir: this is the mouned directory set by ngseasy_volumes_container
 
-params.yaml="/home/pipeman/ngseasy_scripts/ensemble.calling.params.yaml"
+params_yaml="/home/pipeman/ngseasy_scripts/ensemble.calling.params.yaml"
 
   sudo docker run \
   -P \
   --name bcbio-variation_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-bcbio-variation:v0.9.1 java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/bcbio/bcbio.variation-0.1.7-standalone.jar variant-ensemble \
-  ${params.yaml} \
+  ${params_yaml} \
   /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.ensemble.vcf \
-  ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.UnifiedGenotyper.vcf \
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.freebayes.vcf \
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.platypus.vcf \
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.HaplotypeCaller.vcf;
 
-  logger_ngseasy " END bcbio-variation in Ensembl Variant Calling using Freebayes + Platypus + UnifiedGenotyper + HaplotypeCaller "  ${LOGFILE}
+  logger_ngseasy " END bcbio-variation in Ensembl Variant Calling using Freebayes + Platypus + HaplotypeCaller "  ${LOGFILE}
 
-#------------------------------------params.yaml----------------------------------------------#
-# Tweak ensemble parameters when combinining inputs from multiple calling methods.
-# These feeds into the `variant-ensemble` task which provides a simplified
-# interface for generating ensemble calls.
-#---
-#ensemble:
-  # Baseline filters to apply to combined calls.
-#  format-filters: [DP < 4, QUAL < 5]
-  # Variants present in this percentage of input samples automatically pass
-#  trusted-pct: 0.65
-  # Variables to use in classifying reads not in the trusted group.
-  # You can specify any number of classifier groups, each of which will be evaluated separately.
-#  classifiers:
-#    general: [AD, PL, DP]
-#  classifier-params:
-#    type: svm
-# Optional names to label the input variant calls
-# If not supplied, default to numbers matched with the VCF inputs (v0, v1)
-#names: ['gatk_ug','freebayes','platypus','gatk_hc']
-# Perform prep and pre-cleaning steps. Set to false if inputs are pre-sorted
-# and filtered to save analysis time.
-#prep-inputs: true
-# Optional path to BED file of regions to analyze
-# intervals: /path/to/intervals.bed
-
-#------------------------------------------------------------------------------------------#
- ## END ALL
-#------------------------------------------------------------------------------------------#
-  logger_ngseasy " END Ensembl Variant Calling using Freebayes + Platypus + UnifiedGenotyper + HaplotypeCaller "  ${LOGFILE}
 fi
+
+#-------------------------------------------------------------------------------------------#
+# Ensemble: Freebayes + Platypus    #
+#-------------------------------------------------------------------------------------------#
+
+if [ "${VARCALLER}" == "fast_ensemble" ]
+then
+
+  logger_ngseasy " START Ensembl Variant Calling using Freebayes + Platypus "  ${LOGFILE}
+
+## freebayes
+  logger_ngseasy " START Variant Calling using Freebayes " ${LOGFILE}
+    
+  VARCALLER="freebayes"
+
+  sudo docker run \
+  -P \
+  --name Freebayes_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-freebayes:v0.9 /bin/bash -c \
+  "/usr/local/pipeline/freebayes/bin/freebayes \
+    -f /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
+    -b ${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam \
+    --min-coverage 10 \
+    --min-mapping-quality 20 \
+    --min-base-quality 20 \
+    --genotype-qualities > ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf;"
+
+#logs
+  sudo docker logs Freebayes_${SAMPLE_ID} >> ${LOGFILE}.log#
+
+  sudo docker rm Freebayes_${SAMPLE_ID}
+
+  # copy vcf to cohort vcf directory
+  cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
+
+  logger_ngseasy " copying [${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf] to [${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/] "  ${LOGFILE}
+
+  logger_ngseasy " END Variant Calling using Freebayes "  ${LOGFILE}
+
+## platypus
+VARCALLER="platypus"
+
+  logger_ngseasy " START Variant Calling using Platypus "  ${LOGFILE}
+  
+ if [ "${NGS_TYPE}" == "TGS" ] || [ "${NGS_TYPE}" == "WEX" ]
+  then
+    
+      logger_ngseasy " NGS_TYPE is Targeted/WEX so no duplicate filtering  "  ${LOGFILE}
+      # for exome/whole genome data no duplicate filtering
+      sudo docker run \
+      -P \
+      --name platypus_${SAMPLE_ID} \
+      --volumes-from volumes_container \
+      -t compbio/ngseasy-platypus:v0.9 python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
+          --nCPU ${NCPU} \
+          --bamFiles=${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam \
+          --refFile=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
+          --output=${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf \
+          --filterDuplicates=0 \
+          --minReads=10 \
+          --minMapQual=20 \
+          --minBaseQual=20 \
+          --hapScoreThreshold 10 \
+	  --scThreshold 0.99 \
+	  --filteredReadsFrac 0.9 \
+	  --rmsmqThreshold 20 \
+	  --qdThreshold 0 \
+	  --abThreshold 0.0001 \
+	  --minVarFreq 0.0;
+	    
+      # copy vcf to cohort vcf directory
+      cp -v ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
+
+    else
+          sudo docker run \
+          -P \
+          --name platypus_${SAMPLE_ID} \
+          --volumes-from volumes_container \
+          -t compbio/ngseasy-platypus:v0.9 python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
+            --nCPU ${NCPU} \
+            --bamFiles=${SOUTDocker}/alignments/${BAM_PREFIX}.bam \
+            --refFile=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
+            --output=${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf \
+            --filterDuplicates=1 \
+            --minReads=10 \
+            --minMapQual=30 \
+            --minBaseQual=20 \
+            --hapScoreThreshold 10 \
+	    --scThreshold 0.99 \
+	    --filteredReadsFrac 0.9 \
+	    --rmsmqThreshold 20 \
+	    --qdThreshold 0 \
+	    --abThreshold 0.0001 \
+	    --minVarFreq 0.0;
+	      
+            
+  #logs
+    sudo docker logs platypus_${SAMPLE_ID} >> ${LOGFILE}.log
+
+    sudo docker rm platypus_${SAMPLE_ID}
+
+    # copy vcf to cohort vcf directory
+    cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
+
+fi
+
+  logger_ngseasy " copying [${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf] to [${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/] "  ${LOGFILE}
+
+  logger_ngseasy " END Variant Calling using Platypus "  ${LOGFILE}
+
+#------------------------------------------------------------------------------------------#
+## bcbio.variation
+## https://github.com/chapmanb/bcbio.variation
+#------------------------------------------------------------------------------------------#
+
+  logger_ngseasy " START bcbio-variation in Ensembl Variant Calling using Freebayes + Platypus "  ${LOGFILE}
+
+#Docker Output Dir: this is the mouned directory set by ngseasy_volumes_container
+
+params_yaml="/home/pipeman/ngseasy_scripts/ensemble.fast.calling.params.yaml"
+
+  sudo docker run \
+  -P \
+  --name bcbio-variation_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-bcbio-variation:v0.9.1 java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/bcbio/bcbio.variation-0.1.7-standalone.jar variant-ensemble \
+  ${params_yaml} \
+  /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
+  ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.ensemble.vcf \
+  ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.freebayes.vcf \
+  ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.platypus.vcf;
+
+  logger_ngseasy " END bcbio-variation in Ensembl Variant Calling using Freebayes + Platypus "  ${LOGFILE}
+
+fi
+
+#------------------------------------------------------------------------------------------#
+# END ALL
+#------------------------------------------------------------------------------------------#
+  logger_ngseasy " END Ensembl Variant Calling using Freebayes + Platypus "  ${LOGFILE}
 
 #------permissions------------#
 chmod -R 777 ${SOUT}/*

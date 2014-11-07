@@ -114,7 +114,7 @@ KNOWN_SNPS_b138=/home/pipeman/gatk_resources/dbsnp_138.b37.vcf
 # Ensemble: Freebayes + Platypus    #
 #-------------------------------------------------------------------------------------------#
 
-if [ "${VARCALLER}" == "ensemble" ]
+if [ "${VARCALLER}" == "fast_ensemble" ]
 then
 
   logger_ngseasy " START Ensembl Variant Calling using Freebayes + Platypus + UnifiedGenotyper + HaplotypeCaller "  ${LOGFILE}
