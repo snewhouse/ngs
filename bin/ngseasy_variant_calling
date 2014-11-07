@@ -108,8 +108,6 @@ KNOWN_SNPS_OMNI=/home/pipeman/gatk_resources/1000G_omni2.5.b37.vcf
 KNOWN_SNPS_b138=/home/pipeman/gatk_resources/dbsnp_138.b37.vcf
 
 #-----------------------------------------------------------------------------#
-
-#-----------------------------------------------------------------------------#
 # Freebayes #
 #-----------------------------------------------------------------------------#
 
@@ -122,14 +120,16 @@ logger_ngseasy " START Variant Calling using Freebayes " ${LOGFILE}
   -P \
   --name Freebayes_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-freebayes:v0.9 /usr/local/pipeline/freebayes/bin/freebayes \
+  -t compbio/ngseasy-freebayes:v0.9 /bin/bash -c \
+  "/usr/local/pipeline/freebayes/bin/freebayes \
     -f /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
     -b ${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam \
     --min-coverage 10 \
     --min-mapping-quality 20 \
     --min-base-quality 20 \
-    --genotype-qualities > ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf;
-
+    --min-repeat-entropy 1 \
+    --experimental-gls \
+    --genotype-qualities > ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf;"
 #logs
   sudo docker logs Freebayes_${SAMPLE_ID} >> ${LOGFILE}.log#
 
@@ -373,13 +373,16 @@ VARCALLER="freebayes"
   -P \
   --name Freebayes_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-freebayes:v0.9 /usr/local/pipeline/freebayes/bin/freebayes \
+  -t compbio/ngseasy-freebayes:v0.9 /bin/bash -c \
+  "/usr/local/pipeline/freebayes/bin/freebayes \
     -f /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
     -b ${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam \
     --min-coverage 10 \
     --min-mapping-quality 20 \
     --min-base-quality 20 \
-    --genotype-qualities > ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf;
+    --min-repeat-entropy 1 \
+    --experimental-gls \
+    --genotype-qualities > ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf;"
 
 #logs
   sudo docker logs Freebayes_${SAMPLE_ID} >> ${LOGFILE}.log#
@@ -450,15 +453,7 @@ else
 	--minVarFreq 0.0;
         
 #logs
-
---hapScoreThreshold 10 \
---scThreshold 0.99 \
---filteredReadsFrac 0.9 \
---rmsmqThreshold 20 \
---qdThreshold 0 \
---abThreshold 0.0001 \
---minVarFreq 0.0
-                    
+                  
   sudo docker logs platypus_${SAMPLE_ID} >> ${LOGFILE}.log
 
   sudo docker rm platypus_${SAMPLE_ID}
@@ -640,6 +635,8 @@ then
     --min-coverage 10 \
     --min-mapping-quality 20 \
     --min-base-quality 20 \
+    --min-repeat-entropy 1 \
+    --experimental-gls \
     --genotype-qualities > ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf;"
 
 #logs
