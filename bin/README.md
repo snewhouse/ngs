@@ -565,14 +565,8 @@ if not novoalign then stampy (bwa with stampy)
 
 
 # Pipelines :  
-
-
-ngs_full_gatk  
-ngs_full_no_gatk  
-ngs_fq2bam # 
-
-
-
+ngs_full_gatk     [FastQC > Trimmomatic > BWA/Stampy > Addreadgroup > MarkDuplicates > IndelRealn > BaseRecalibration > Freebayes/Platypus/HaplotypeCaller > bcbio > Delly/Lumpy > Annovar > reports]  
+ngs_full_no_gatk  [FastQC > Trimmomatic > BWA/Stampy > Addreadgroup > MarkDuplicates > Freebayes/Platypus > bcbio > Delly/Lumpy > Annovar > reports]   
 
 
 ```
