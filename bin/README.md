@@ -223,34 +223,45 @@ All Images can be pulled down from [Docker Hub](https://hub.docker.com/u/compbio
 
 **NGSeasy Reasources**
 
-This is a 25GB ``ngseasy_resources.tar.gz`` file containing :-  
-
 - ``reference_genomes_b37.tgz`` b37 reference genomes indexed for use with all provided aligners (BWA, Bowtie2, Stampy, Novoalign) and annotation bed files for use with pipeline scripts
 - ``gatk_resources.tar.gz`` gatk resources bundle
 - ``fastq_example.tgz`` Example 75bp PE Illumina Whole Exome Sequence fastq data for **NA12878**
 - Annotation Databases Coming in the next update 
  
-**SFTP Login Details**
+**FTP Login Details**
 
 ```
-location: upload.brc.iop.kcl.ac.uk  
-Port: 51515  
-user: ngseasy  
-password: ngseasy  
+ftp:  159.92.120.21
+user: NGSeasy
+pwd:  NGSeasy1234
+port: 21
 ```
 
 Example:- 
+
 ```bash
-$ sftp  ngseasy@upload.brc.iop.kcl.ac.uk
-ngseasy@upload.brc.iop.kcl.ac.uk's password: 
-Connected to upload.brc.iop.kcl.ac.uk.
-sftp> ls
-NGSeasy  
-sftp> cd NGSeasy
-sftp> ls
-ngseasy-vm-v1.0.vdi          ngseasy_resources.tar.gz     
-sftp> get -r *
+ftp 159.92.120.21
+Connected to 159.92.120.21.
+220 NASFTPD Turbo station 1.3.2e Server (ProFTPD) [159.92.120.21]
+Name (159.92.120.21:sjnewhousebrc): NGSeasy
+331 Password required for NGSeasy
+Password:
+230 User NGSeasy logged in
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> cd /Public/NGSeasy_Public_Resources
+250 CWD command successful
+ftp> prompt off
+Interactive mode off.
+ftp> ls
+200 PORT command successful
+150 Opening ASCII mode data connection for file list
+-rw-rw----   1 500      everyone 4318681703 Nov 10 13:03 gatk_resources.tar.gz
+-rw-rw----   1 500      everyone 17498751262 Nov 10 12:04 reference_genomes_b37.tar.gz
+226 Transfer complete
+ftp> get -r *
 ```
+
 I would recommend using a separate program like [FileZilla](https://filezilla-project.org/), which will make it much easier for you to set up and manage your file transfers
 
 **NGSeasy pipeline scripts**
@@ -411,13 +422,47 @@ mkdir ngs_projects/config_files # config files
 mkdir ngs_projects/humandb # for annovar databses
 
 #get NGSeasy resources
-# sftp From ........copy data to and extract
+# ftp From 159.92.120.21 ........copy data and extract
+
+# FTP Details
+# ftp:  159.92.120.21
+# user: NGSeasy
+# pwd:  NGSeasy1234
+# port: 21
+
+
 cd ngs_projects
-sftp....
 
-tar xvf gatk_resources.tar.gz; gunzip *
-tar xvf reference_genomes_b37.tgz; gunzip *
+ftp 159.92.120.21
 
+Connected to 159.92.120.21.
+220 NASFTPD Turbo station 1.3.2e Server (ProFTPD) [159.92.120.21]
+Name (159.92.120.21:sjnewhousebrc): NGSeasy
+331 Password required for NGSeasy
+Password:
+230 User NGSeasy logged in
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> cd /Public/NGSeasy_Public_Resources
+250 CWD command successful
+ftp> prompt off
+Interactive mode off.
+ftp> ls
+200 PORT command successful
+150 Opening ASCII mode data connection for file list
+-rw-rw----   1 500      everyone 4318681703 Nov 10 13:03 gatk_resources.tar.gz
+-rw-rw----   1 500      everyone 17498751262 Nov 10 12:04 reference_genomes_b37.tar.gz
+226 Transfer complete
+ftp> get -r *
+ftp> exit
+
+# Extract resources
+tar xvf gatk_resources.tar.gz; 
+gunzip *
+
+# Extract Reference Genomes
+tar xvf reference_genomes_b37.tgz; 
+gunzip *
 
 #--------------------------------#
 # get and PATH nsgeasy scripts
