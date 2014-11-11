@@ -131,8 +131,8 @@ then
   
   logger_ngseasy "Using Recalibrated BAM File" ${LOGFILE}
   echo "Using Recalibrated BAM File" 
-
-elif [ -s "${SOUT}/alignments/${BAM_PREFIX}.dupemk.bam" ]
+  
+elif [ -s "${SOUT}/alignments/${BAM_PREFIX}.dupemk.bam" ] && [ ! -s "${SOUT}/alignments/${BAM_PREFIX}.recal.bam" ]
 
   bam_file='${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bam'
   qc_file='${SOUTDocker}/reports/${BAM_PREFIX}.dupemk.bam'

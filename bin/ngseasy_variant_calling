@@ -114,6 +114,42 @@ KNOWN_SNPS_1000G=/home/pipeman/gatk_resources/1000G_phase1.snps.high_confidence.
 KNOWN_SNPS_OMNI=/home/pipeman/gatk_resources/1000G_omni2.5.b37.vcf
 KNOWN_SNPS_b138=/home/pipeman/gatk_resources/dbsnp_138.b37.vcf
 
+
+#---------Does filtered bam exits, if not then generate it----------------------#
+
+if [ ! -s "${SOUT}/alignments/${BAM_PREFIX}.filtered.bam" ]
+then
+
+  logger_ngseasy " Filtered BAM [${SOUT}/alignments/${BAM_PREFIX}.filtered.bam] Does Not Exist "  ${LOGFILE}
+  logger_ngseasy " START samtools view -bh -q 20 -F 1796 [${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam]  "  ${LOGFILE}
+
+  sudo docker run \
+  -P \
+  --name samtools_filter_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c \
+  "/usr/local/pipeline/samtools/samtools \
+  view \
+  -b \
+  -h \
+  -q 20 \
+  -F 1796 \
+  ${bam_file} > ${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam; 
+  /usr/local/pipeline/samtools/samtools index ${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam"
+
+  sudo docker logs samtools_filter_${SAMPLE_ID} >> ${LOGFILE}.log
+  sudo docker rm samtools_filter_${SAMPLE_ID}
+
+  cp -v ${SOUT}/alignments/${BAM_PREFIX}.filtered.bai ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam.bai;
+
+  logger_ngseasy " END samtools view -b -h -q 20 -F 1796 [${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam]  "  ${LOGFILE}
+
+else
+
+  logger_ngseasy " Filtered BAM [${SOUT}/alignments/${BAM_PREFIX}.filtered.bam] Exists  "  ${LOGFILE}
+fi
+
+
 #-----------------------------------------------------------------------------#
 # Freebayes #
 #-----------------------------------------------------------------------------#
