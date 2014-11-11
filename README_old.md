@@ -1,11 +1,37 @@
-NGSeasy-v1.0 (beta/dev)
+NGSeasy
 ===================
 **A [Dockerized](https://www.docker.com/) and [Virtulaized](https://www.virtualbox.org/) ngs pipeline and tool-box.** 
 
 **With NGSeasy you can now have full suite of NGS tools up and running on any high end workstation in an afternoon**
 
-**Note:** NGSeasy is under continous development and the dev version evolves quickly. NGSeasy-v1.0 Full Production release will be available Dec 2014
+**Note:** NGSeasy is under **continous development** and the dev version evolves quickly. 
 
+Please contact us for help/guidance on using the beat release. Our public server is down, so please to email us for access to the NGS resources and VM(s).  
+
+- **NGSeasy-v1.0 Full Production release will be available Dec 2014**    
+
+## Latest Version
+*****************
+[NGSeasy-v0.9.4](https://github.com/KHP-Informatics/ngs/tree/release-0.9.4) - NGSeasy: Latest Release  
+
+- NB: so far full_no_gatk.sh is the most developed module. 
+
+### Releases
+[NGSeasy-v0.9.4](https://github.com/KHP-Informatics/ngs/tree/release-0.9.4) - NGSeasy: Latest Release  
+[NGSeasy-v0.9.3](https://github.com/KHP-Informatics/ngs/tree/release-0.9.3) - NGSeasy: Minor Bug Fixes [full_no_gatk.sh]  
+[NGSeasy-v0.9.2](https://github.com/KHP-Informatics/ngs/tree/release-0.9.2) - NGSeasy: Beta NovoIndex Fix  
+[NGSeasy-v0.9.1](https://github.com/KHP-Informatics/ngs/tree/release-0.9.1) - NGSeasy: Beta added gatk cleaning steps  
+[NGSeasy-v0.9](https://github.com/KHP-Informatics/ngs/tree/release-0.9)     - NGSeasy: Beta  
+
+### Coming Soon
+- Savant 
+- SLOPE (CNV fo targetted NSG)  
+- Cancer Pipelines
+- Annotation Pipelines and Databases
+- Visualisation Pipelines
+- New Aligners:- GSNAP, mr- and mrs-Fast,gem
+- Var Callers:- VarScan2
+- SGE scripts and basic BASH scrips for running outside of Docker
 
 ### Authors
 - Amos Folarin <amosfolarin@gmail.com>  
@@ -27,10 +53,6 @@ NGS pipelines typically utilize a large and varied range of software components 
 Deploying the pipeline is as simple as pulling the container images from the public repository into any host running Docker. NGSeasy can be deployed on any medium to high-end workstation, high performance computer cluster and compute clouds (public/private cloud computing) - enabling instant access to elastic scalability without investment overheads for additional compute hardware and makes open and reproducible research straight forward for the greater scientific community.
 
 - **NGSeasy updates every 6 months:**
-- Indexed Reference Genomes
-- Cancer Pipelines
-- Annotation Pipelines
-- Visualisation Pipelines
 
 **Lets us know if you want other tools added to NGSeasy**
 
@@ -96,7 +118,7 @@ alignment, cleaning (based on GATK best practises [http://www.broadinstitute.org
 variant discovery. Separate containers are provided for indepth variant annotation,
 structural variant calling, basic reporting and visualisations.  
 
-![ngsEASY](figs/ngsEASY_atomic_pipeline_visualisation.png "Dockerized NGS Pipeline")
+![ngsEASY](figs/ngsEASY_component_visualisation.png "Dockerized NGS Pipeline")
 
 # The Tools included are as follows :- 
 
