@@ -178,9 +178,13 @@ then
 
   logger_ngseasy " END samtools view -b -h -q 20 -F 1796 [${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam]  "  ${LOGFILE}
 
+  filtered_bam='${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam'
+  
 else
 
   logger_ngseasy " Filtered BAM [${SOUT}/alignments/${BAM_PREFIX}.filtered.bam] Exists  "  ${LOGFILE}
+    
+  filtered_bam='${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam'
 fi
 
 
