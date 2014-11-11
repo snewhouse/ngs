@@ -789,4 +789,8 @@ installed in ${HOME}/biobambam using
 		--prefix=${HOME}/biobambam
 	- make install
 
-	***
+***
+# 	qualimap
+	
+	http://qualimap.bioinfo.cipf.es/
+	
