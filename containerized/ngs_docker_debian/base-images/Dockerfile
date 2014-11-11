@@ -8,6 +8,7 @@ MAINTAINER Stephen Newhouse stephen.j.newhouse@gmail.com
 
 # Set correct environment variables.
 ENV HOME /root
+ENV DEBIAN_FRONTEND noninteractive
 
 # Remain current
 RUN apt-get update && \
@@ -59,10 +60,10 @@ RUN apt-get update \
 # Remain current and upgrade java
 RUN apt-get update -y && \
   apt-get upgrade -y && \
-  apt-get purge -y openjdk-7-jdk openjdk-6-doc openjdk-6-jre-lib && \
+  apt-get purge -y openjdk-6-jdk openjdk-6-doc openjdk-6-jre-lib && \
   apt-get install -y openjdk-7-jdk openjdk-7-doc openjdk-7-jre-lib && \
   apt-get update -y && \
-  apt-get upgrade -y  
+  apt-get upgrade -y
 
 #set java
 ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java
