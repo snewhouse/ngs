@@ -152,8 +152,13 @@ fi
 #---------Does filtered bam exits, if not then generate it----------------------#
 # Some QC may need filtered.bam
 # Filter -q 20 -F 1796
-#
-
+# http://broadinstitute.github.io/picard/explain-flags.html
+# 
+#Summary:-F 1796 removes the following
+#    read unmapped
+#    not primary alignment
+#    read fails platform/vendor quality checks
+#    read is PCR or optical duplicate
 
 if [ ! -s "${SOUT}/alignments/${BAM_PREFIX}.filtered.bam" ]
 then
@@ -183,12 +188,14 @@ then
   logger_ngseasy " END samtools view -b -h -q 20 -F 1796 [${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam]  "  ${LOGFILE}
 
   filtered_bam='${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam'
+  filtered_qc='${SOUTDocker}/reports/${BAM_PREFIX}.filtered.bam'
   
 else
 
   logger_ngseasy " Filtered BAM [${SOUT}/alignments/${BAM_PREFIX}.filtered.bam] Exists  "  ${LOGFILE}
     
   filtered_bam='${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam'
+  filtered_qc='${SOUTDocker}/reports/${BAM_PREFIX}.filtered.bam'
 fi
 
 
@@ -221,7 +228,7 @@ fi
   -P \
   --name bedtools_bamtobed_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-bedtools:v0.9 /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools bamtobed -i ${filtered_bam} > ${filtered_bam}.bed"
+  -t compbio/ngseasy-bedtools:v0.9 /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools bamtobed -i ${filtered_bam} > ${filtered_qc}.bed"
 
   sudo docker logs bedtools_bamtobed_${SAMPLE_ID} >> ${LOGFILE}.log
   sudo docker rm bedtools_bamtobed_${SAMPLE_ID}
@@ -239,7 +246,7 @@ fi
   -P \
   --name bedtools_merge_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-bedtools:v0.9 /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools merge -i ${filtered_bam}.bed > ${filtered_bam}.merged.bed"
+  -t compbio/ngseasy-bedtools:v0.9 /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools merge -i ${filtered_bam}.bed > ${filtered_qc}.merged.bed"
 
   sudo docker logs bedtools_merge_${SAMPLE_ID} >> ${LOGFILE}.log
   sudo docker rm bedtools_merge_${SAMPLE_ID}
@@ -256,20 +263,75 @@ fi
   -P \
   --name bedtools_genomecov_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-bedtools:v0.9 /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools genomecov -ibam ${filtered_bam} -bga > ${filtered_bam}.genomecov.bed"
+  -t compbio/ngseasy-bedtools:v0.9 /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools genomecov -ibam ${filtered_bam} -bga > ${filtered_qc}.genomecov.bed"
 
   sudo docker logs bedtools_genomecov_${SAMPLE_ID} >> ${LOGFILE}.log
   sudo docker rm bedtools_genomecov_${SAMPLE_ID}
   
   logger_ngseasy " END BEDTOOLS genomecov  "  ${LOGFILE}  
-
+  
+  # http://bedtools.readthedocs.org/en/latest/content/tools/genomecov.html
+  # -bg	Report depth in BedGraph format. For details, see: http://genome.ucsc.edu/goldenPath/help/bedgraph.html
+  # -bga	Report depth in BedGraph format, as above (i.e., -bg). 
+  # However with this option, regions with zero coverage are also reported. 
+  # This allows one to quickly extract all regions of a genome with 0 coverage by applying: “grep -w 0$” to the output.
+  
+  
 ############################  
 # 4 CollectMultipleMetrics #
 ############################
 
+  logger_ngseasy " START PICARDTOOLS CollectMultipleMetrics  "  ${LOGFILE}
+
+  sudo docker run \
+  -P \
+  --name CollectMultipleMetrics_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-picardtools:v0.9 \
+  java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.119/CollectMultipleMetrics.jar \
+  TMP_DIR=${SOUTDocker}/tmp \
+  VALIDATION_STRINGENCY=SILENT \
+  MAX_RECORDS_IN_RAM=100000 \
+  INPUT=${bam_file} \
+  OUTPUT=${qc_file} \
+  REFERENCE_SEQUENCE=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
+  PROGRAM=CollectAlignmentSummaryMetrics \
+  PROGRAM=CollectInsertSizeMetrics \
+  PROGRAM=QualityScoreDistribution \
+  PROGRAM=MeanQualityByCycle;
+
+  sudo docker logs CollectMultipleMetrics_${SAMPLE_ID} >> ${LOGFILE}.log
+  sudo docker rm CollectMultipleMetrics_${SAMPLE_ID}
+  
+ logger_ngseasy " END PICARDTOOLS CollectMultipleMetrics  "  ${LOGFILE}
+  
+
 ####################################
 # 5 CollectAlignmentSummaryMetrics #
 ####################################
+
+  logger_ngseasy " START PICARDTOOLS CollectAlignmentSummaryMetrics  "  ${LOGFILE}
+
+  sudo docker run \
+  -P \
+  --name CollectAlignmentSummaryMetrics_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-picardtools:v0.9 \
+  java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.119/CollectAlignmentSummaryMetrics.jar \
+  TMP_DIR=${SOUTDocker}/tmp \
+  VALIDATION_STRINGENCY=SILENT \
+  MAX_RECORDS_IN_RAM=100000 \
+  INPUT=${bam_file} \
+  OUTPUT=${qc_file} \
+  REFERENCE_SEQUENCE=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
+  ASSUME_SORTED=true \
+  METRIC_ACCUMULATION_LEVEL=SAMPLE;
+    
+  sudo docker logs CollectAlignmentSummaryMetrics_${SAMPLE_ID} >> ${LOGFILE}.log
+  sudo docker rm CollectAlignmentSummaryMetrics_${SAMPLE_ID}
+  
+ logger_ngseasy " END PICARDTOOLS CollectAlignmentSummaryMetrics  "  ${LOGFILE}
+  
 
 #######################
 # 6 CollectWgsMetrics #
@@ -294,20 +356,6 @@ chmod -R 777 ${SOUT}/*
 
 done < ${config_tsv}
 
-# CollectMultipleMetrics
-  echo " NGSeasy: CollectMultipleMetrics " `date`
- 
- java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.115/CollectMultipleMetrics.jar \
-  TMP_DIR=${SOUT}/tmp \
-  VALIDATION_STRINGENCY=SILENT \
-  MAX_RECORDS_IN_RAM=100000 \
-  INPUT=${SOUT}/alignments/${BAM_PREFIX}.bam \
-  OUTPUT=${SOUT}/reports/${BAM_PREFIX} \
-  REFERENCE_SEQUENCE=${REFGenomes}/human_g1k_v37.fasta \
-  PROGRAM=CollectAlignmentSummaryMetrics \
-  PROGRAM=CollectInsertSizeMetrics \
-  PROGRAM=QualityScoreDistribution \
-  PROGRAM=MeanQualityByCycle;
 
 # CollectAlignmentSummaryMetrics
   echo " NGSeasy: CollectAlignmentSummaryMetrics " `date`
