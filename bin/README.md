@@ -197,15 +197,6 @@ As the containers themselves can be run as executables with pre-specified cpu an
 ### Available NGSeasy Docker images
 Available to download at our [compbio Docker Hub](https://hub.docker.com/u/compbio)
 
-### The Main Power Tool!
-**ngseasy-alignment-public:v1.2**
-Docker Hub: [compbio/ngseasy-alignment-public:v1.2](https://registry.hub.docker.com/u/compbio/ngseasy-alignment-public/)
-
-This is a large image (4.989 GB) containing all the tools needed to go from raw ``.fastq`` files to aligned ``.BAM`` to SNP and small INDEL variant calls ``.vcf`` .
-
-```bash
-sudo docker pull compbio/ngseasy-alignment-public:v1.2
-```
 
 Getting All NGSeasy images, Reasources and Scripts
 ------------------------------
