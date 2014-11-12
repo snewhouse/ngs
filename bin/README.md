@@ -4,11 +4,25 @@ NGSeasy
 
 **With NGSeasy you can now have full suite of NGS tools up and running on any high end workstation in an afternoon**
 
+- **NGSeasy-v1.0 Full Production release will be available Dec 2014**    
+
 **Note:** NGSeasy is under **continous development** and the dev version evolves quickly. 
 
-Please contact us for help/guidance on using the beat release. Our public server is down, so please to email us for access to the NGS resources and VM(s).  
+Please contact us for help/guidance on using the beta release. 
 
-- **NGSeasy-v1.0 Full Production release will be available Dec 2014**    
+****************
+
+We present **NGSeasy (Easy Analysis of Next Generation Sequencing)**, a flexible and easy-to-use NGS pipeline for automated alignment, quality control, variant calling and annotation. The pipeline allows users with minimal computational/bioinformatic skills to set up and run an NGS analysis on their own samples, in less than an afternoon, on any operating system (Windows, iOS or Linux) or infrastructure (workstation, cluster or cloud).
+
+NGS pipelines typically utilize a large and varied range of software components and incur a substantial configuration burden during deployment which limits their portability to different computational environments. NGSeasy simplifies this by providing the pipeline components encapsulated in Docker™ containers and bundles in a wide choice of tools for each module. Each module of the pipeline represents one functional grouping of tools (e.g. sequence alignment, variant calling etc.).
+
+Deploying the pipeline is as simple as pulling the container images from the public repository into any host running Docker. NGSeasy can be deployed on any medium to high-end workstation, high performance computer cluster and compute clouds (public/private cloud computing) - enabling instant access to elastic scalability without investment overheads for additional compute hardware and makes open and reproducible research straight forward for the greater scientific community.
+
+- **NGSeasy updates every 12 months:**
+
+**Lets us know if you want other tools added to NGSeasy**
+
+Easy to use for non-informaticians. All run from a single config file that can be made in Excel. No scary python, .yaml or .json files...just one simple Excel workbook saved as a textfile. Just follow our simple set of instructions and NGS away!
 
 ## Latest Version
 *****************
@@ -44,17 +58,6 @@ Please contact us for help/guidance on using the beat release. Our public server
 <img src="http://www.linkedin.com/img/webpromo/btn_viewmy_160x33.png" width="160" height="33" alt="View Steve's profile on LinkedIn">
 </a>
 
-****************
-
-We present **NGSeasy (Easy Analysis of Next Generation Sequencing)**, a flexible and easy-to-use NGS pipeline for automated alignment, quality control, variant calling and annotation. The pipeline allows users with minimal computational/bioinformatic skills to set up and run an NGS analysis on their own samples, in less than an afternoon, on any operating system (Windows, iOS or Linux) or infrastructure (workstation, cluster or cloud).
-
-NGS pipelines typically utilize a large and varied range of software components and incur a substantial configuration burden during deployment which limits their portability to different computational environments. NGSeasy simplifies this by providing the pipeline components encapsulated in Docker™ containers and bundles in a wide choice of tools for each module. Each module of the pipeline represents one functional grouping of tools (e.g. sequence alignment, variant calling etc.).
-
-Deploying the pipeline is as simple as pulling the container images from the public repository into any host running Docker. NGSeasy can be deployed on any medium to high-end workstation, high performance computer cluster and compute clouds (public/private cloud computing) - enabling instant access to elastic scalability without investment overheads for additional compute hardware and makes open and reproducible research straight forward for the greater scientific community.
-
-- **NGSeasy updates every 6 months:**
-
-**Lets us know if you want other tools added to NGSeasy**
 
 ***********
 
