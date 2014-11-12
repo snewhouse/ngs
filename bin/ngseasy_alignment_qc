@@ -351,7 +351,6 @@ fi
   INPUT=${bam_file} \
   OUTPUT=${qc_file}_CollectWgsMetrics \
   REFERENCE_SEQUENCE=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
-  ASSUME_SORTED=true \
   MINIMUM_MAPPING_QUALITY=20 \
   MINIMUM_BASE_QUALITY=20 \
   COVERAGE_CAP=250;
@@ -365,6 +364,34 @@ fi
 ##############################
 # 7 CollectTargetedPcrMetrics #
 ###############################
+
+## coming soon.....need to collate full set of commercially available NGS targetted panels
+## Bespoke files for clinical genomics
+## General Exome from public data on its way....
+
+#  logger_ngseasy " START PICARDTOOLS CollectTargetedPcrMetrics  "  ${LOGFILE}
+
+#  sudo docker run \
+#  -P \
+#  --name CollectTargetedPcrMetrics_${SAMPLE_ID} \
+#  --volumes-from volumes_container \
+#  -t compbio/ngseasy-picardtools:v0.9 \
+#    java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.119/CollectTargetedPcrMetrics.jar \
+#    TMP_DIR=${SOUTDocker}/tmp \
+#    VALIDATION_STRINGENCY=SILENT \
+#    MAX_RECORDS_IN_RAM=100000 \
+#    INPUT=${bam_file} \
+#    OUTPUT=${qc_file}_CollectTargetedPcrMetrics \
+#    REFERENCE_SEQUENCE=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
+#    AMPLICON_INTERVALS=${BED_ANNO} \
+#    TARGET_INTERVALS=${BED_ANNO} \
+#    METRIC_ACCUMULATION_LEVEL=ALL_READS \
+#    PER_TARGET_COVERAGE=${qc_file}_per_target_coverage;
+#    
+#  sudo docker logs CollectTargetedPcrMetrics_${SAMPLE_ID} >> ${LOGFILE}.log
+#  sudo docker rm CollectTargetedPcrMetrics_${SAMPLE_ID}
+#  
+# logger_ngseasy " END PICARDTOOLS CollectTargetedPcrMetrics  "  ${LOGFILE}    
 
 ##########################
 # 8 FindCoveredIntervals #
