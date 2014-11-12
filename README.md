@@ -213,7 +213,7 @@ All Images can be pulled down from [Docker Hub](https://hub.docker.com/u/compbio
  
 **FTP Login Details**
 
-```{bash}
+```bash
 ftp:  159.92.120.21
 user: NGSeasy
 pwd:  NGSeasy1234
@@ -222,7 +222,7 @@ port: 21
 
 Example:- 
 
-```{bash}
+```bash
 ftp 159.92.120.21
 Connected to 159.92.120.21.
 220 NASFTPD Turbo station 1.3.2e Server (ProFTPD) [159.92.120.21]
@@ -267,7 +267,7 @@ NGSeasy Project Set up
 Fastq files must have suffix and be gzipped: **_1.fq.gz** or **_2.fq.gz**  
 furture version will allow any format  
 
-```{bash}
+```bash
 #--------------------------------#
 # make top level dirs 
 #--------------------------------#
@@ -313,7 +313,7 @@ On our sysetm we typically set up a top-level driectory called `ngs_projects` wi
 Running `ngseasy_initiate_project` with the relevent configuration file, will set up the following directory structure for every project and sample within a project:-  
 
 ### NGS Project Directory 
-```{bash}
+```bash
 .
 ngs_projects  
 |  
@@ -343,14 +343,14 @@ ngs_projects
 ```
 ### Running **ngseasy_initiate_project**
 
-```{bash}
+```bash
 ngseasy_initiate_project -c config.file.tsv -d /media/ngs_projects
 ```
 ****
 
 ## Step 3. Copy Project Fastq files to relevent Project/Sample Directories
 
-```{bash}
+```bash
 ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
 ```
 
@@ -360,13 +360,13 @@ ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
 
 In the Docker container the project directory is mounted in `/home/pipeman/ngs_projects`
 
-```{bash}
+```bash
 ngseasy_volumes_container -d /media/ngs_projects
 ```
 
 ## Summary
 
-```{bash}
+```bash
 #make top level dirs 
 
 mkdir ngs_projects
@@ -377,7 +377,7 @@ mkdir ngs_projects/config_files
 
 - set up project specific configuration file [config.file.tsv] 
 
-```{bash}
+```bash
 # Set up NGSeasy
 ngseasy_initiate_project -c config.file.tsv -d /media/ngs_projects
 ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
@@ -394,7 +394,7 @@ See https://github.com/KHP-Informatics/ngs/tree/dev2/bin for dev functions (Stil
 
 A full pipeline is set out below :-  
 
-```{bash}
+```bash
 
 #--------------------------------#
 # make top level dirs 
@@ -408,7 +408,7 @@ mkdir ngs_projects/humandb # for annovar databses
 
 #get NGSeasy resources
 
-```{bash}
+```bash
 # ftp From 159.92.120.21 ........copy data and extract
 
 # FTP Details
@@ -418,11 +418,11 @@ mkdir ngs_projects/humandb # for annovar databses
 # port: 21
 ```
 
-```{bash}
+```bash
 cd ngs_projects
 ```
 
-```{bash}
+```bash
 ftp 159.92.120.21
 
 Connected to 159.92.120.21.
@@ -447,7 +447,7 @@ ftp> get -r *
 ftp> exit
 ```
 
-```{bash}
+```bash
 # Extract resources
 tar xvf gatk_resources.tar.gz; 
 gunzip *
@@ -457,7 +457,7 @@ tar xvf reference_genomes_b37.tgz;
 gunzip *
 ```
 
-```{bash}
+```bash
 #--------------------------------#
 # get and PATH nsgeasy scripts
 #--------------------------------#
@@ -478,12 +478,12 @@ source ~/.bashrc
 
 - to do [get_annovar_humandb]  
 
-```{bash}
+```bash
 #get images
 bash get_containers.sh
 ```
 
-```{bash}
+```bash
 #------------------------------------------------#
 # to be run outside of docker and before ngseasy #
 #------------------------------------------------#
@@ -495,7 +495,7 @@ ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
 ngseasy_get_annovar_db -d /media/ngs_projects/humandb
 ```
 
-```{bash}
+```bash
 #--------------------#
 # NGSEASY Dockerised #
 #--------------------#
