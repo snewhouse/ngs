@@ -213,7 +213,7 @@ All Images can be pulled down from [Docker Hub](https://hub.docker.com/u/compbio
  
 **FTP Login Details**
 
-```
+```{bash}
 ftp:  159.92.120.21
 user: NGSeasy
 pwd:  NGSeasy1234
@@ -222,7 +222,7 @@ port: 21
 
 Example:- 
 
-```bash
+```{bash}
 ftp 159.92.120.21
 Connected to 159.92.120.21.
 220 NASFTPD Turbo station 1.3.2e Server (ProFTPD) [159.92.120.21]
@@ -313,7 +313,7 @@ On our sysetm we typically set up a top-level driectory called `ngs_projects` wi
 Running `ngseasy_initiate_project` with the relevent configuration file, will set up the following directory structure for every project and sample within a project:-  
 
 ### NGS Project Directory 
-```
+```{bash}
 .
 ngs_projects  
 |  
@@ -372,11 +372,12 @@ ngseasy_volumes_container -d /media/ngs_projects
 mkdir ngs_projects
 mkdir ngs_projects/fastq_raw
 mkdir ngs_projects/config_files
+```
+- copy/download raw fastq file to [ngs_projects/fastq_raw] 
 
-#copy/download raw fastq file to [ngs_projects/fastq_raw]
+- set up project specific configuration file [config.file.tsv] 
 
-#set up project specific configuration file [config.file.tsv]
-
+```{bash}
 # Set up NGSeasy
 ngseasy_initiate_project -c config.file.tsv -d /media/ngs_projects
 ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
@@ -403,8 +404,11 @@ mkdir ngs_projects
 mkdir ngs_projects/fastq_raw # fastq staging area
 mkdir ngs_projects/config_files # config files
 mkdir ngs_projects/humandb # for annovar databses
+```
 
 #get NGSeasy resources
+
+```{bash}
 # ftp From 159.92.120.21 ........copy data and extract
 
 # FTP Details
@@ -412,10 +416,13 @@ mkdir ngs_projects/humandb # for annovar databses
 # user: NGSeasy
 # pwd:  NGSeasy1234
 # port: 21
+```
 
-
+```{bash}
 cd ngs_projects
+```
 
+```{bash}
 ftp 159.92.120.21
 
 Connected to 159.92.120.21.
@@ -438,7 +445,9 @@ ftp> ls
 226 Transfer complete
 ftp> get -r *
 ftp> exit
+```
 
+```{bash}
 # Extract resources
 tar xvf gatk_resources.tar.gz; 
 gunzip *
@@ -446,7 +455,9 @@ gunzip *
 # Extract Reference Genomes
 tar xvf reference_genomes_b37.tgz; 
 gunzip *
+```
 
+```{bash}
 #--------------------------------#
 # get and PATH nsgeasy scripts
 #--------------------------------#
@@ -463,13 +474,16 @@ export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/bin
 
 echo "export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/bin" ~/.bashrc
 source ~/.bashrc
+```
 
+- to do [get_annovar_humandb]  
 
-#to do [get_annovar_humandb]
-
+```{bash}
 #get images
 bash get_containers.sh
+```
 
+```{bash}
 #------------------------------------------------#
 # to be run outside of docker and before ngseasy #
 #------------------------------------------------#
@@ -479,7 +493,9 @@ ngseasy_initiate_project -c config.file.tsv -d /media/ngs_projects
 ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
 
 ngseasy_get_annovar_db -d /media/ngs_projects/humandb
+```
 
+```{bash}
 #--------------------#
 # NGSEASY Dockerised #
 #--------------------#
@@ -492,7 +508,6 @@ ngseasy_get_annovar_db -d /media/ngs_projects/humandb
 # here [ngs_full_gatk] is a wrapper/fucntion for calling the pipeline
 
 Each function is a bash wrapper for an image/container(s)
-
 
 
 ngs_full_gatk() { 
@@ -545,7 +560,6 @@ nsgeasy_variant_annotation -c ${config_tsv} -d ${project_directory};
 
 recommend full : trimmed aln gatk filtered and ensemble calls (multi SNP/INDELS/SV callers) base recalibration
 if not novoalign then stampy (bwa with stampy)
-
 
 # Pipelines :  
 ngs_full_gatk     [FastQC > Trimmomatic > BWA/Stampy > Addreadgroup > MarkDuplicates > IndelRealn > BaseRecalibration > Freebayes/Platypus/HaplotypeCaller > bcbio > Delly/Lumpy > Annovar > reports]  
