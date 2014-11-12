@@ -1,46 +1,42 @@
-#!/bin/bash
-
-ngs_full_gatk() { 
+#!/bin/bash -x
 
 #usage printing func
 usage()
 {
 cat << EOF
-  This script sets up the NGSeasy docker fastqc container:
-  See NGSEasy containerized instructions.
+  This script calls the NGSeasy pipeline ngs_full_gatk
 
   ARGUMENTS:
   -h      Flag: Show this help message
   -c      NGSeasy project and run configureation file
-  -d      Base directory
+  -d      NGSeasy project directory
 
   EXAMPLE USAGE:
     
-    ngseasy -c ${config_tsv} -d /media/nsg_projects/project_id
+    ngseasy -c config.file.tsv -d project_directory
 
 EOF
 }
 
 #get options for command line args
-while  getopts "h:c:d:" opt
-do
+  while  getopts "hc:d:" opt
+  do
 
-    case ${opt} in
-        h)
-        usage #print help
-        exit 0
-        ;;
-        
-        c)
-        config_tsv=${OPTARG}
-        ;;
-        
-        d)
-        project_directory=${OPTARG}
-        ;;
+      case ${opt} in
+	  h)
+	  usage #print help
+	  exit 0
+	  ;;
+	  
+	  c)
+	  config_tsv=${OPTARG}
+	  ;;
 
-    esac
-done
+	  d)
+	  project_directory=${OPTARG}
+	  ;; 
+      esac
+  done
 
 #check config file exists.
 if [ ! -e "${config_tsv}" ] 
@@ -53,52 +49,41 @@ fi
 #check exists.
   if [ ! -d "${project_directory}" ] 
   then
-	  echo " ERROR : ${host_vol_dir} does not exist "
+	  echo " ERROR : ${project_directory} does not exist "
 	  usage;
 	  exit 1;
   fi
 
-#step through a full pipeline
+##################  
+# start pipeline #
+##################
 
-#1 FastQC raw data
-ngseasy_fastqc -c ${config_tsv} -d ${project_directory} -t 1;
+ngseasy_fastqc  -c ${config_tsv} -d ${project_directory}
 
-#2 Trimm Fastq files
-ngseasy_fastq_trimm -c ${config_tsv} -d ${project_directory};
+ngseasy_trimmomatic -c ${config_tsv} -d ${project_directory}
 
-#3 FastQC trimmed file
-ngseasy_fastqqc -c ${config_tsv} -d ${project_directory} -t 0;
+ngseasy_alignment -c ${config_tsv} -d ${project_directory}
 
-#4 Run Alignment
-ngseasy_alignment -c ${config_tsv} -d ${project_directory};
+ngseasy_addreadgroup -c ${config_tsv} -d ${project_directory}
 
-#5 Add read groups ie sample info to BAM file
-nsgeasy_add_readgroups -c ${config_tsv} -d ${project_directory};
+ngseasy_markduplicates -c ${config_tsv} -d ${project_directory}
 
-#5 Mark Duplicates
-ngseasy_mark_dupes -c ${config_tsv} -d ${project_directory};
+ngseasy_indel_realn -c ${config_tsv} -d ${project_directory}
 
-#6 Indel Realignment
-nsgeasy_indel_realignment -c ${config_tsv} -d ${project_directory};
+ngseasy_base_recal -c ${config_tsv} -d ${project_directory}
 
-#7 Base Recalibration
-nsgeasy_base_recalibration -c ${config_tsv} -d ${project_directory};
+ngseasy_filter_recalbam -c ${config_tsv} -d ${project_directory}
 
-#8 Alignment QC reports
-ngseasy_alignment_qc -c ${config_tsv} -d ${project_directory};
+ngseasy_alignment_qc -c ${config_tsv} -d ${project_directory}
+ 
+ngseasy_variant_calling -c ${config_tsv} -d ${project_directory}
 
-#9 Call Vairants : SNPS and small Indels
-nsgeasy_var_callers -c ${config_tsv} -d ${project_directory};
+# coming soon...
+# ngseasy_filter_bam -c ${config_tsv} -d ${project_directory}
+# ngseasy_cnv_calling -c ${config_tsv} -d ${project_directory}
+# ngseasy_variant_filtering -c ${config_tsv} -d ${project_directory}
+# ngseasy_variant_annotation -c ${config_tsv} -d ${project_directory}
+# ngseasy_report -c ${config_tsv} -d ${project_directory}
 
-#10 CNV Calling
-nsgeasy_cnv_callers -c ${config_tsv} -d ${project_directory};
 
-#11 Variant Annotation: Annovar
-nsgeasy_variant_annotation -c ${config_tsv} -d ${project_directory};
 
-#TODO
-#variant filter
-#nsgeasy_variant_combine -c ${config_tsv} -d ${project_directory}
-#nsgeasy_variant_report -c ${config_tsv} -d ${project_directory}
-
-}

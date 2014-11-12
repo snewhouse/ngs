@@ -1,0 +1,45 @@
+#!/bin/bash -x
+
+config_tsv=${1}
+project_directory=${2}
+
+#check config file exists.
+if [ ! -e "${config_tsv}" ] 
+then
+	    echo "ERROR :  ${config_tsv} does not exist "
+	    usage;
+	    exit 1;
+fi
+
+#check exists.
+  if [ ! -d "${project_directory}" ] 
+  then
+	  echo " ERROR : ${host_vol_dir} does not exist "
+	  usage;
+	  exit 1;
+  fi
+
+#start pipeline
+
+ngseasy_fastqc  -c ${config_tsv} -d ${project_directory}
+
+ngseasy_trimmomatic -c ${config_tsv} -d ${project_directory}
+
+ngseasy_alignment -c ${config_tsv} -d ${project_directory}
+
+ngseasy_addreadgroup -c ${config_tsv} -d ${project_directory}
+
+ngseasy_markduplicates -c ${config_tsv} -d ${project_directory}
+
+ngseasy_indel_realn -c ${config_tsv} -d ${project_directory}
+
+ngseasy_base_recal -c ${config_tsv} -d ${project_directory}
+
+ngseasy_filter_recalbam -c ${config_tsv} -d ${project_directory}
+
+ngseasy_alignment_qc -c ${config_tsv} -d ${project_directory}
+
+ngseasy_qcfiler_bam -c ${config_tsv} -d ${project_directory}
+ 
+ngseasy_variant_calling -c ${config_tsv} -d ${project_directory}
+
