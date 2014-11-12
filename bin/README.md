@@ -38,6 +38,15 @@ Deploying the pipeline is as simple as pulling the container images from the pub
 - No scary python, .yaml or .json files...just one simple Excel workbook saved as a textfile.  
 - Just follow our simple set of instructions and NGS away!  
 
+### Pipelines ###
+
+| Pipeline             | Short Description    |
+|----------------------|----------------------|
+| ngs_full_gatk        | fastq to recalibrated bam to vcf  |
+| ngs_full_no_gatk     | fastq to bam to vcf  |
+
+gatk = indel realignment and base recalibration  
+
 ### Coming Soon
 - Savant 
 - SLOPE (CNV fo targetted NSG)  
