@@ -38,19 +38,6 @@ Deploying the pipeline is as simple as pulling the container images from the pub
 - No scary python, .yaml or .json files...just one simple Excel workbook saved as a textfile.  
 - Just follow our simple set of instructions and NGS away!  
 
-## Latest Version
-*****************
-[NGSeasy-v0.9.4](https://github.com/KHP-Informatics/ngs/tree/release-0.9.4) - NGSeasy: Latest Release  
-
-- NB: so far full_no_gatk.sh is the most developed module. 
-
-### Releases
-[NGSeasy-v0.9.4](https://github.com/KHP-Informatics/ngs/tree/release-0.9.4) - NGSeasy: Latest Release  
-[NGSeasy-v0.9.3](https://github.com/KHP-Informatics/ngs/tree/release-0.9.3) - NGSeasy: Minor Bug Fixes [full_no_gatk.sh]  
-[NGSeasy-v0.9.2](https://github.com/KHP-Informatics/ngs/tree/release-0.9.2) - NGSeasy: Beta NovoIndex Fix  
-[NGSeasy-v0.9.1](https://github.com/KHP-Informatics/ngs/tree/release-0.9.1) - NGSeasy: Beta added gatk cleaning steps  
-[NGSeasy-v0.9](https://github.com/KHP-Informatics/ngs/tree/release-0.9)     - NGSeasy: Beta  
-
 ### Coming Soon
 - Savant 
 - SLOPE (CNV fo targetted NSG)  
