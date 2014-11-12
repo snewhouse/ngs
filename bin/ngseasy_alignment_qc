@@ -293,7 +293,7 @@ fi
   VALIDATION_STRINGENCY=SILENT \
   MAX_RECORDS_IN_RAM=100000 \
   INPUT=${bam_file} \
-  OUTPUT=${qc_file} \
+  OUTPUT=${qc_file}_CollectMultipleMetrics \
   REFERENCE_SEQUENCE=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
   PROGRAM=CollectAlignmentSummaryMetrics \
   PROGRAM=CollectInsertSizeMetrics \
@@ -322,7 +322,7 @@ fi
   VALIDATION_STRINGENCY=SILENT \
   MAX_RECORDS_IN_RAM=100000 \
   INPUT=${bam_file} \
-  OUTPUT=${qc_file} \
+  OUTPUT=${qc_file}_CollectAlignmentSummaryMetrics \
   REFERENCE_SEQUENCE=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
   ASSUME_SORTED=true \
   METRIC_ACCUMULATION_LEVEL=SAMPLE;
@@ -336,8 +336,33 @@ fi
 #######################
 # 6 CollectWgsMetrics #
 #######################
+  
+  logger_ngseasy " START PICARDTOOLS CollectWgsMetrics  "  ${LOGFILE}
 
-###############################
+  sudo docker run \
+  -P \
+  --name CollectWgsMetrics_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-picardtools:v0.9 \
+  java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.119/CollectWgsMetrics.jar \
+  TMP_DIR=${SOUTDocker}/tmp \
+  VALIDATION_STRINGENCY=SILENT \
+  MAX_RECORDS_IN_RAM=100000 \
+  INPUT=${bam_file} \
+  OUTPUT=${qc_file}_CollectWgsMetrics \
+  REFERENCE_SEQUENCE=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
+  ASSUME_SORTED=true \
+  MINIMUM_MAPPING_QUALITY=20 \
+  MINIMUM_BASE_QUALITY=20 \
+  COVERAGE_CAP=250;
+  
+  sudo docker logs CollectWgsMetrics_${SAMPLE_ID} >> ${LOGFILE}.log
+  sudo docker rm CollectWgsMetrics_${SAMPLE_ID}
+  
+ logger_ngseasy " END PICARDTOOLS CollectWgsMetrics  "  ${LOGFILE}
+  
+
+##############################
 # 7 CollectTargetedPcrMetrics #
 ###############################
 
@@ -355,38 +380,6 @@ fi
 chmod -R 777 ${SOUT}/*
 
 done < ${config_tsv}
-
-
-# CollectAlignmentSummaryMetrics
-  echo " NGSeasy: CollectAlignmentSummaryMetrics " `date`
-  
-  java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.115/CollectAlignmentSummaryMetrics.jar \
-  TMP_DIR=${SOUT}/tmp \
-  VALIDATION_STRINGENCY=SILENT \
-  MAX_RECORDS_IN_RAM=100000 \
-  INPUT=${SOUT}/alignments/${BAM_PREFIX}.bam \
-  OUTPUT=${SOUT}/reports/${BAM_PREFIX}.alignment_summary_metrics_alt \
-  REFERENCE_SEQUENCE=${REFGenomes}/human_g1k_v37.fasta \
-  ASSUME_SORTED=true \
-  METRIC_ACCUMULATION_LEVEL=SAMPLE;
-
-# CollectWgsMetrics
-  echo " NGSeasy: CollectWgsMetrics " `date`
-  
-  java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.115/CollectWgsMetrics.jar \
-  TMP_DIR=${SOUT}/tmp \
-  VALIDATION_STRINGENCY=SILENT \
-  MAX_RECORDS_IN_RAM=100000 \
-  INPUT=${SOUT}/alignments/${BAM_PREFIX}.bam \
-  OUTPUT=${SOUT}/reports/${BAM_PREFIX}.wgs_coverage \
-  REFERENCE_SEQUENCE=${REFGenomes}/human_g1k_v37.fasta \
-  MINIMUM_MAPPING_QUALITY=20 \
-  MINIMUM_BASE_QUALITY=20 \
-  COVERAGE_CAP=1000;
-
-  awk 'NR>9' ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage > ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage_hist
-  sed '8q' ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage > ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage_stats
-
 
 ## Depending in NGS type Run PicardTools CollectTargetedPcrMetrics
 ## NB This is rough and ready quicl fix to get coverage ver genome bins, annotated exomes and targetd sequene files
