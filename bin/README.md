@@ -10,6 +10,17 @@ NGSeasy
 
 Please contact us for help/guidance on using the beta release. 
 
+### Authors
+- Amos Folarin <amosfolarin@gmail.com>  
+<a href="http://www.linkedin.com/pub/amos-folarin/34/b06/978">
+<img src="http://www.linkedin.com/img/webpromo/btn_viewmy_160x33.png" width="160" height="33" alt="View Amos's profile on LinkedIn">
+</a>
+
+- Stephen J Newhouse <stephen.j.newhouse@gmail.com>  
+<a href="http://uk.linkedin.com/pub/dr-stephen-newhouse/29/89a/11a">
+<img src="http://www.linkedin.com/img/webpromo/btn_viewmy_160x33.png" width="160" height="33" alt="View Steve's profile on LinkedIn">
+</a>
+
 ****************
 
 We present **NGSeasy (Easy Analysis of Next Generation Sequencing)**, a flexible and easy-to-use NGS pipeline for automated alignment, quality control, variant calling and annotation. The pipeline allows users with minimal computational/bioinformatic skills to set up and run an NGS analysis on their own samples, in less than an afternoon, on any operating system (Windows, iOS or Linux) or infrastructure (workstation, cluster or cloud).
@@ -46,18 +57,6 @@ Easy to use for non-informaticians. All run from a single config file that can b
 - New Aligners:- GSNAP, mr- and mrs-Fast,gem
 - Var Callers:- VarScan2
 - SGE scripts and basic BASH scrips for running outside of Docker
-
-### Authors
-- Amos Folarin <amosfolarin@gmail.com>  
-<a href="http://www.linkedin.com/pub/amos-folarin/34/b06/978">
-<img src="http://www.linkedin.com/img/webpromo/btn_viewmy_160x33.png" width="160" height="33" alt="View Amos's profile on LinkedIn">
-</a>
-
-- Stephen J Newhouse <stephen.j.newhouse@gmail.com>  
-<a href="http://uk.linkedin.com/pub/dr-stephen-newhouse/29/89a/11a">
-<img src="http://www.linkedin.com/img/webpromo/btn_viewmy_160x33.png" width="160" height="33" alt="View Steve's profile on LinkedIn">
-</a>
-
 
 ***********
 
