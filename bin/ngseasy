@@ -7,7 +7,7 @@
 usage()
 {
 cat << EOF
-  This script calls the NGSeasy pipeline : <full/full_no_gatk/fastqc/fastq_trimm/alignment/var_call/cnv_call/var_annotate/alignment_qc>
+  This script calls the NGSeasy pipeline : <full_gatk/full_no_gatk/fastqc/fastq_trimm/alignment/var_call/cnv_call/var_annotate/alignment_qc>
   
   See NGSEasy containerized instructions.
 

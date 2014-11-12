@@ -4,7 +4,7 @@
 # Version 0.9.0
 
 ##--------------------------------------------------##
-## NGS Variant Calling
+## NGS filter bam
 ##--------------------------------------------------##
 
 #usage printing func
@@ -21,7 +21,7 @@ cat << EOF
 
   EXAMPLE USAGE:
     
-    ngseasy_variant_calling -c config.file.tsv -d project_directory
+    ngseasy_filter_recalbam -c config.file.tsv -d project_directory
 
 EOF
 }
