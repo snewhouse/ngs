@@ -21,6 +21,10 @@ Please contact us for help/guidance on using the beta release.
 <img src="http://www.linkedin.com/img/webpromo/btn_viewmy_160x33.png" width="160" height="33" alt="View Steve's profile on LinkedIn">
 </a>
 
+- **NGSeasy updates every 12 months:**
+
+**Lets us know if you want other tools added to NGSeasy**
+
 ****************
 
 We present **NGSeasy (Easy Analysis of Next Generation Sequencing)**, a flexible and easy-to-use NGS pipeline for automated alignment, quality control, variant calling and annotation. The pipeline allows users with minimal computational/bioinformatic skills to set up and run an NGS analysis on their own samples, in less than an afternoon, on any operating system (Windows, iOS or Linux) or infrastructure (workstation, cluster or cloud).
@@ -29,11 +33,10 @@ NGS pipelines typically utilize a large and varied range of software components 
 
 Deploying the pipeline is as simple as pulling the container images from the public repository into any host running Docker. NGSeasy can be deployed on any medium to high-end workstation, high performance computer cluster and compute clouds (public/private cloud computing) - enabling instant access to elastic scalability without investment overheads for additional compute hardware and makes open and reproducible research straight forward for the greater scientific community.
 
-- **NGSeasy updates every 12 months:**
-
-**Lets us know if you want other tools added to NGSeasy**
-
-Easy to use for non-informaticians. All run from a single config file that can be made in Excel. No scary python, .yaml or .json files...just one simple Excel workbook saved as a textfile. Just follow our simple set of instructions and NGS away!
+- Easy to use for non-informaticians.  
+- All run from a single config file that can be made in Excel.  
+- No scary python, .yaml or .json files...just one simple Excel workbook saved as a textfile.  
+- Just follow our simple set of instructions and NGS away!  
 
 ## Latest Version
 *****************
