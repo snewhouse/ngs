@@ -1,176 +1,429 @@
+#!/bin/bash -x
+# Collection of NGSeasy Functions
+# Stephen Newhouse <stephen.j.newhouse@gmail.com>
+# Version 0.9.0
 
+##--------------------------------------------------##
+## NGS alignment_summary_metrics
+##--------------------------------------------------##
 
+#usage printing func
+usage() {
+cat << EOF
+  This script sets up the NGSeasy docker Alignmnet Summary Metrics
+  See NGSEasy containerized instructions.
 
+  ARGUMENTS:
+  -h      Flag: Show this help message
+  -c      NGSeasy project and run configureation file
+  -d      NGSeasy project directory
 
- # FindCoveredIntervals: these are used in GATK Calling to help speed things up
+  EXAMPLE USAGE:
+    
+    ngseasy_alignment_qc -c config.file.tsv -d project_directory
 
-echo " NGSeasy: START FindCoveredIntervals " `date`  
-if [ ! -s ${SOUT}/reports/${BAM_PREFIX}.CoveredIntervals_x4.list ]
+EOF
+}
+
+# to be run on recal and filtered data if available
+# if no gatl cleaning then dupemk and filtered is the final data set 
+
+#get options for command line args
+  while  getopts "hc:d:" opt
+  do
+
+      case ${opt} in
+	  h)
+	  usage #print help
+	  exit 0
+	  ;;
+	  
+	  c)
+	  config_tsv=${OPTARG}
+	  ;;
+
+	  d)
+	  project_directory=${OPTARG}
+	  ;; 
+      esac
+  done
+
+# Check options passed in.
+    if test -z "$2"
+    then
+	usage
+	exit 1
+    fi  
+  
+#check config file exists.
+  if [ ! -e "${config_tsv}" ] 
+  then
+	      echo "ERROR :  ${config_tsv} does not exist....exiting "
+	      usage;
+	      exit 1;
+  fi
+
+#check directory exists.
+  if [ ! -d "${project_directory}" ]
+    then
+      echo "ERROR : project_directory ${project_directory} does not exist "
+      usage;
+      exit 1;
+  fi
+
+#---------------------------------------------------------------------------------#
+
+#Read config file 
+while read -r f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12 f13 f14 f15
+do
+# set varibales  
+  DATE=`date +"%d%m%y"`
+  POJECT_ID=$f1
+  SAMPLE_ID=$f2
+  FASTQ1=$f3
+  FASTQ2=$f4
+  PROJECT_DIR=$f5 
+  DNA_PREP_LIBRARY_ID=$f6
+  NGS_PLATFORM=$f7
+  NGS_TYPE=$f8
+  BED_ANNO=$f9
+  PIPELINE=$f10
+  ALIGNER=$f11
+  VARCALLER=$f12
+  GTMODEGATK=$f13
+  CLEANUP=$f14
+  NCPU=$f15
+
+#Logfile 
+LOGFILE=${PROJECT_DIR}/${POJECT_ID}/run_logs/${SAMPLE_ID}.${DATE}
+
+#OUTPUT SAMPLE DIR 
+SOUT=${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}
+
+#------------------------Container I/O--------------------------------#
+#run compbio/ngseasy-fastq
+#Docker Output Dir: this is the mouned directory set by ngseasy_volumes_container
+DOCKERHOME="/home/pipeman/ngs_projects"
+
+#Docker OUTPUT SAMPLE DIR 
+SOUTDocker=${DOCKERHOME}/${POJECT_ID}/${SAMPLE_ID}
+
+#bamprefix
+BAM_PREFIX=${SAMPLE_ID}.${NGS_TYPE}.${NGS_PLATFORM}.${ALIGNER}
+
+#known indels and SNPs
+KNOWN_INDELS=/home/pipeman/gatk_resources/Mills_and_1000G_gold_standard.indels.b37.vcf
+KNOWN_SNPS_1000G=/home/pipeman/gatk_resources/1000G_phase1.snps.high_confidence.b37.vcf
+KNOWN_SNPS_OMNI=/home/pipeman/gatk_resources/1000G_omni2.5.b37.vcf
+KNOWN_SNPS_b138=/home/pipeman/gatk_resources/dbsnp_138.b37.vcf
+
+#--------Check BAM Files Exists and Exit if Not----------------------------#
+
+# test for recal or dupemk
+# some flexibility needed here - if GATK not run then use dupemk.bam file
+# files contain ALL reads. Some QC may need filtered.bam
+
+if [ -s "${SOUT}/alignments/${BAM_PREFIX}.recal.bam" ]
 then
-echo " NGSeasy: Finding Covered Intervals : minimum coverage of 4 " `date`
-  java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T FindCoveredIntervals -R ${REFGenomes}/human_g1k_v37.fasta \
-  -I ${SOUT}/alignments/${BAM_PREFIX}.dupemk.bam  \
-  -o ${SOUT}/reports/${BAM_PREFIX}.CoveredIntervals_x4.list \
-  --coverage_threshold 4;
+
+  bam_file='${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam'
+  qc_file='${SOUTDocker}/reports/${BAM_PREFIX}.recal.bam'
+  
+  logger_ngseasy "Using Recalibrated BAM File" ${LOGFILE}
+  echo "Using Recalibrated BAM File" 
+  
+elif [ -s "${SOUT}/alignments/${BAM_PREFIX}.dupemk.bam" ] && [ ! -s "${SOUT}/alignments/${BAM_PREFIX}.recal.bam" ]
+
+  bam_file='${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bam'
+  qc_file='${SOUTDocker}/reports/${BAM_PREFIX}.dupemk.bam'
+  
+  logger_ngseasy "Using Duplicate Marked BAM File" ${LOGFILE}
+  echo "Using Duplicate Marked BAM File" 
+  
+else
+  
+  logger_ngseasy "ERROR : Cant Find recal.bam or dupemk.bam files. Exiting...."  ${LOGFILE}
+  echo "ERROR : Cant Find recal.bam or dupemk.bam files. Exiting...."
+  usage()
+  exit 1
 fi
+
+
+#---------Does filtered bam exits, if not then generate it----------------------#
+# Some QC may need filtered.bam
+# Filter -q 20 -F 1796
+# http://broadinstitute.github.io/picard/explain-flags.html
+# 
+#Summary:-F 1796 removes the following
+#    read unmapped
+#    not primary alignment
+#    read fails platform/vendor quality checks
+#    read is PCR or optical duplicate
+
+if [ ! -s "${SOUT}/alignments/${BAM_PREFIX}.filtered.bam" ]
+then
+
+  logger_ngseasy " Filtered BAM [${SOUT}/alignments/${BAM_PREFIX}.filtered.bam] Does Not Exist "  ${LOGFILE}
+  logger_ngseasy " START samtools view -bh -q 20 -F 1796 [${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam]  "  ${LOGFILE}
+
+  sudo docker run \
+  -P \
+  --name samtools_filter_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c \
+  "/usr/local/pipeline/samtools/samtools \
+  view \
+  -b \
+  -h \
+  -q 20 \
+  -F 1796 \
+  ${bam_file} > ${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam; 
+  /usr/local/pipeline/samtools/samtools index ${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam"
+
+  sudo docker logs samtools_filter_${SAMPLE_ID} >> ${LOGFILE}.log
+  sudo docker rm samtools_filter_${SAMPLE_ID}
+
+  cp -v ${SOUT}/alignments/${BAM_PREFIX}.filtered.bai ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam.bai;
+
+  logger_ngseasy " END samtools view -b -h -q 20 -F 1796 [${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam]  "  ${LOGFILE}
+
+  filtered_bam='${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam'
+  filtered_qc='${SOUTDocker}/reports/${BAM_PREFIX}.filtered.bam'
+  
+else
+
+  logger_ngseasy " Filtered BAM [${SOUT}/alignments/${BAM_PREFIX}.filtered.bam] Exists  "  ${LOGFILE}
+    
+  filtered_bam='${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam'
+  filtered_qc='${SOUTDocker}/reports/${BAM_PREFIX}.filtered.bam'
+fi
+
+
+#--------Begin generating summary metrics----------------------------#
+
+#####################
+# 0 Basic FlatStats #
+#####################
+
+  logger_ngseasy " START SAMTOOLS FLAGSTATS  "  ${LOGFILE}
+
+  sudo docker run \
+  -P \
+  --name samtools_flagstats_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c "usr/local/pipeline/samtools/samtools flagstats ${bam_file} > ${qc_file}.flagstats"
+  
+  sudo docker logs samtools_flagstats_${SAMPLE_ID} >> ${LOGFILE}.log
+  sudo docker rm samtools_flagstats_${SAMPLE_ID}
+  
+  logger_ngseasy " END SAMTOOLS FLAGSTATS  "  ${LOGFILE}
+
+########################  
+# 1 Convert BAM to BED #
+########################
+
+  logger_ngseasy " START BEDTOOLS bamtobed  "  ${LOGFILE}
+
+  sudo docker run \
+  -P \
+  --name bedtools_bamtobed_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-bedtools:v0.9 /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools bamtobed -i ${filtered_bam} > ${filtered_qc}.bed"
+
+  sudo docker logs bedtools_bamtobed_${SAMPLE_ID} >> ${LOGFILE}.log
+  sudo docker rm bedtools_bamtobed_${SAMPLE_ID}
+  
+  logger_ngseasy " END BEDTOOLS bamtobed  "  ${LOGFILE}
+
+  
+###############################
+# 2 Convert BAM to Merged BED #
+###############################
+
+  logger_ngseasy " START BEDTOOLS merge  "  ${LOGFILE}
+
+  sudo docker run \
+  -P \
+  --name bedtools_merge_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-bedtools:v0.9 /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools merge -i ${filtered_bam}.bed > ${filtered_qc}.merged.bed"
+
+  sudo docker logs bedtools_merge_${SAMPLE_ID} >> ${LOGFILE}.log
+  sudo docker rm bedtools_merge_${SAMPLE_ID}
+  
+  logger_ngseasy " END BEDTOOLS merge  "  ${LOGFILE}
+
+########################  
+# 3 bedtools genomecov # 
+########################
+
+  logger_ngseasy " START BEDTOOLS genomecov  "  ${LOGFILE}
+
+  sudo docker run \
+  -P \
+  --name bedtools_genomecov_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-bedtools:v0.9 /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools genomecov -ibam ${filtered_bam} -bga > ${filtered_qc}.genomecov.bed"
+
+  sudo docker logs bedtools_genomecov_${SAMPLE_ID} >> ${LOGFILE}.log
+  sudo docker rm bedtools_genomecov_${SAMPLE_ID}
+  
+  logger_ngseasy " END BEDTOOLS genomecov  "  ${LOGFILE}  
+  
+  # http://bedtools.readthedocs.org/en/latest/content/tools/genomecov.html
+  # -bg	Report depth in BedGraph format. For details, see: http://genome.ucsc.edu/goldenPath/help/bedgraph.html
+  # -bga	Report depth in BedGraph format, as above (i.e., -bg). 
+  # However with this option, regions with zero coverage are also reported. 
+  # This allows one to quickly extract all regions of a genome with 0 coverage by applying: “grep -w 0$” to the output.
   
   
-# BAM to BED
-echo " NGSeasy: START bamtobed " `date`  
+############################  
+# 4 CollectMultipleMetrics #
+############################
 
-if [ ! -s ${SOUT}/reports/${BAM_PREFIX}.merged.bed ]
-then
-echo " NGSeasy: Converting Aligned BAM To BED File " `date`
-# pulls out paired only reads with min qual 10. Set low as donwstream tools filter these regions
- /usr/local/pipeline/samtools/samtools view -b -h -q 20 -F 1796 ${SOUT}/alignments/${BAM_PREFIX}.recal.bam | /usr/local/pipeline/bedtools2/bin/bedtools bamtobed -i stdin > ${SOUT}/reports/${BAM_PREFIX}.bed;
+  logger_ngseasy " START PICARDTOOLS CollectMultipleMetrics  "  ${LOGFILE}
 
-echo " NGSeasy: Converting Aligned BED To MERGED BED File " `date` 
- /usr/local/pipeline/bedtools2/bin/bedtools merge -i ${SOUT}/reports/${BAM_PREFIX}.bed > ${SOUT}/reports/${BAM_PREFIX}.merged.bed;
-fi
-
-if [ ! -s ${SOUT}/reports/${BAM_PREFIX}.alignment_summary_metrics ]
-then 
-
-  echo " NGSeasy: Running Post Alignmnet QC " `date`
-# CollectMultipleMetrics
-  echo " NGSeasy: CollectMultipleMetrics " `date`
- 
- java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.115/CollectMultipleMetrics.jar \
-  TMP_DIR=${SOUT}/tmp \
+  sudo docker run \
+  -P \
+  --name CollectMultipleMetrics_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-picardtools:v0.9 \
+  java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.119/CollectMultipleMetrics.jar \
+  TMP_DIR=${SOUTDocker}/tmp \
   VALIDATION_STRINGENCY=SILENT \
   MAX_RECORDS_IN_RAM=100000 \
-  INPUT=${SOUT}/alignments/${BAM_PREFIX}.bam \
-  OUTPUT=${SOUT}/reports/${BAM_PREFIX} \
-  REFERENCE_SEQUENCE=${REFGenomes}/human_g1k_v37.fasta \
+  INPUT=${bam_file} \
+  OUTPUT=${qc_file}_CollectMultipleMetrics \
+  REFERENCE_SEQUENCE=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
   PROGRAM=CollectAlignmentSummaryMetrics \
   PROGRAM=CollectInsertSizeMetrics \
   PROGRAM=QualityScoreDistribution \
   PROGRAM=MeanQualityByCycle;
 
-# CollectAlignmentSummaryMetrics
-  echo " NGSeasy: CollectAlignmentSummaryMetrics " `date`
+  sudo docker logs CollectMultipleMetrics_${SAMPLE_ID} >> ${LOGFILE}.log
+  sudo docker rm CollectMultipleMetrics_${SAMPLE_ID}
   
-  java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.115/CollectAlignmentSummaryMetrics.jar \
-  TMP_DIR=${SOUT}/tmp \
+ logger_ngseasy " END PICARDTOOLS CollectMultipleMetrics  "  ${LOGFILE}
+  
+
+####################################
+# 5 CollectAlignmentSummaryMetrics #
+####################################
+
+  logger_ngseasy " START PICARDTOOLS CollectAlignmentSummaryMetrics  "  ${LOGFILE}
+
+  sudo docker run \
+  -P \
+  --name CollectAlignmentSummaryMetrics_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-picardtools:v0.9 \
+  java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.119/CollectAlignmentSummaryMetrics.jar \
+  TMP_DIR=${SOUTDocker}/tmp \
   VALIDATION_STRINGENCY=SILENT \
   MAX_RECORDS_IN_RAM=100000 \
-  INPUT=${SOUT}/alignments/${BAM_PREFIX}.bam \
-  OUTPUT=${SOUT}/reports/${BAM_PREFIX}.alignment_summary_metrics_alt \
-  REFERENCE_SEQUENCE=${REFGenomes}/human_g1k_v37.fasta \
+  INPUT=${bam_file} \
+  OUTPUT=${qc_file}_CollectAlignmentSummaryMetrics \
+  REFERENCE_SEQUENCE=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
   ASSUME_SORTED=true \
   METRIC_ACCUMULATION_LEVEL=SAMPLE;
-
-# CollectWgsMetrics
-  echo " NGSeasy: CollectWgsMetrics " `date`
+    
+  sudo docker logs CollectAlignmentSummaryMetrics_${SAMPLE_ID} >> ${LOGFILE}.log
+  sudo docker rm CollectAlignmentSummaryMetrics_${SAMPLE_ID}
   
-  java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.115/CollectWgsMetrics.jar \
-  TMP_DIR=${SOUT}/tmp \
+ logger_ngseasy " END PICARDTOOLS CollectAlignmentSummaryMetrics  "  ${LOGFILE}
+  
+
+#######################
+# 6 CollectWgsMetrics #
+#######################
+  
+  logger_ngseasy " START PICARDTOOLS CollectWgsMetrics  "  ${LOGFILE}
+
+  sudo docker run \
+  -P \
+  --name CollectWgsMetrics_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-picardtools:v0.9 \
+  java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.119/CollectWgsMetrics.jar \
+  TMP_DIR=${SOUTDocker}/tmp \
   VALIDATION_STRINGENCY=SILENT \
   MAX_RECORDS_IN_RAM=100000 \
-  INPUT=${SOUT}/alignments/${BAM_PREFIX}.bam \
-  OUTPUT=${SOUT}/reports/${BAM_PREFIX}.wgs_coverage \
-  REFERENCE_SEQUENCE=${REFGenomes}/human_g1k_v37.fasta \
+  INPUT=${bam_file} \
+  OUTPUT=${qc_file}_CollectWgsMetrics \
+  REFERENCE_SEQUENCE=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
   MINIMUM_MAPPING_QUALITY=20 \
   MINIMUM_BASE_QUALITY=20 \
-  COVERAGE_CAP=1000;
-
-  awk 'NR>9' ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage > ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage_hist
-  sed '8q' ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage > ${SOUT}/reports/${BAM_PREFIX}.wgs_coverage_stats
-
-# FlagStat
-  echo " NGSeasy: FlagStat " `date`
+  COVERAGE_CAP=250;
   
-    java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T FlagStat -R ${REFGenomes}/human_g1k_v37.fasta \
-    -I ${SOUT}/alignments/${BAM_PREFIX}.bam  \
-    -o ${SOUT}/reports/${BAM_PREFIX}.FlagStat;
-    
-else
-    echo " NGSeasy: Post Alignmnet QC Already Run " `date` 
-fi
-
-echo ""
-echo "................................................"
-echo " NGSeasy: END Post Alignmnet QC " `date`
-echo "................................................"
-echo ""
-
-## Depending in NGS type Run PicardTools CollectTargetedPcrMetrics
-## NB This is rough and ready quicl fix to get coverage ver genome bins, annotated exomes and targetd sequene files
-
-echo "................................................"
-echo " NGSeasy: START Post Alignmnet Coverage Calculations " `date`
-echo "................................................"
-echo ""
-
-if [ ! -s ${SOUT}/reports/${BAM_PREFIX}.genomecov.bed ]
-then
-echo " NGSeasy: Running bedtools genomecov [-bga] " `date`
-
-  /usr/local/pipeline/bedtools2/bin/bedtools genomecov -ibam ${SOUT}/alignments/${BAM_PREFIX}.bam -bga > ${SOUT}/reports/${BAM_PREFIX}.genomecov.bed;
-
-else
-  echo " NGSeasy: bedtools genomecov " `date`
-fi
-
-# Picardt tools CollectTargetedPcrMetric
-echo " NGSeasy: Run CollectTargetedPcrMetric " `date`
-echo " NGSeasy: This requires a Custom or Exome BED File provided by the user or manufacturer of your NGS Exome Library " 
-
-if [ "${NGS_TYPE}" == "TGS" ] && [ -s ${BED_ANNO} ] && [ ! -s ${SOUT}/reports/${BAM_PREFIX}.target_coverage ]
-then
-  echo " NGSeasy: Finding TGS coverage over target regions in ${BED_ANNO} " `date`
+  sudo docker logs CollectWgsMetrics_${SAMPLE_ID} >> ${LOGFILE}.log
+  sudo docker rm CollectWgsMetrics_${SAMPLE_ID}
   
-    java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.115/CollectTargetedPcrMetrics.jar \
-    TMP_DIR=${SOUT}/tmp \
-    VALIDATION_STRINGENCY=SILENT \
-    MAX_RECORDS_IN_RAM=100000 \
-    INPUT=${SOUT}/alignments/${BAM_PREFIX}.bam \
-    OUTPUT=${SOUT}/reports/${BAM_PREFIX}.target_coverage \
-    REFERENCE_SEQUENCE=${REFGenomes}/human_g1k_v37.fasta \
-    AMPLICON_INTERVALS=${BED_ANNO} \
-    TARGET_INTERVALS=${BED_ANNO} \
-    METRIC_ACCUMULATION_LEVEL=ALL_READS \
-    PER_TARGET_COVERAGE=${SOUT}/reports/${BAM_PREFIX}.per_target_coverage;
-    
-elif [ "${NGS_TYPE}" == "WEX" ]  && [ -s ${BED_ANNO} ] && [ ! -s ${SOUT}/reports/${BAM_PREFIX}.target_coverage ]
-then
-  echo " NGSeasy: Finding WEX Coverage over annotated exons/genes from ensembl " `date`
-    java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.115/CollectTargetedPcrMetrics.jar \
-    TMP_DIR=${SOUT}/tmp \
-    VALIDATION_STRINGENCY=SILENT \
-    MAX_RECORDS_IN_RAM=100000 \
-    INPUT=${SOUT}/alignments/${BAM_PREFIX}.bam \
-    OUTPUT=${SOUT}/reports/${BAM_PREFIX}.target_coverage \
-    REFERENCE_SEQUENCE=${REFGenomes}/human_g1k_v37.fasta \
-    AMPLICON_INTERVALS=${REFGenomes}/${BED_ANNO} \
-    TARGET_INTERVALS=${REFGenomes}/${BED_ANNO} \
-    METRIC_ACCUMULATION_LEVEL=ALL_READS \
-    PER_TARGET_COVERAGE=${SOUT}/reports/${BAM_PREFIX}.per_target_coverage;
-    
-elif [ "${NGS_TYPE}" == "WGS" ] && [ ! -s ${SOUT}/reports/${BAM_PREFIX}.target_coverage ]
-then
-  echo " NGSeasy: Finding WGS Coverage over 500bp windows " `date`
-    java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.115/CollectTargetedPcrMetrics.jar \
-    TMP_DIR=${SOUT}/tmp \
-    VALIDATION_STRINGENCY=SILENT \
-    MAX_RECORDS_IN_RAM=100000 \
-    INPUT=${SOUT}/alignments/${BAM_PREFIX}.bam \
-    OUTPUT=${SOUT}/reports/${BAM_PREFIX}.target_coverage \
-    REFERENCE_SEQUENCE=${REFGenomes}/human_g1k_v37.fasta \
-    AMPLICON_INTERVALS=${REFGenomes}/human_g1k_v37_0.5Kwindows.bed \
-    TARGET_INTERVALS=${REFGenomes}/human_g1k_v37_0.5Kwindows.bed \
-    METRIC_ACCUMULATION_LEVEL=ALL_READS \
-    PER_TARGET_COVERAGE=${SOUT}/reports/${BAM_PREFIX}.per_target_coverage;
+ logger_ngseasy " END PICARDTOOLS CollectWgsMetrics  "  ${LOGFILE}
+  
 
-else
+###############################
+# 7 CollectTargetedPcrMetrics #
+###############################
 
-  echo " NGSeasy: Whoops! Something Went wrong! NGS_TYPE and Annotation Files not found! Check your config file and data...or not..."
-  echo " NGSeasy: Skipping Collect Targeted Pcr Metrics...."
-  echo " NGSeasy: You may want to run this manually later....it is quite nice"
-  echo ""
-fi
+## coming soon.....need to collate full set of commercially available NGS targetted panels
+## Bespoke files for clinical genomics to be added
+## General Exome.bed from public data on its way....
 
-echo "................................................"
-echo " NGSeasy: END Post Alignmnet Coverage Calculations " `date`
-echo "................................................"
-echo ""
+#  logger_ngseasy " START PICARDTOOLS CollectTargetedPcrMetrics  "  ${LOGFILE}
+#
+#  sudo docker run \
+#  -P \
+#  --name CollectTargetedPcrMetrics_${SAMPLE_ID} \
+#  --volumes-from volumes_container \
+#  -t compbio/ngseasy-picardtools:v0.9 \
+#    java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.119/CollectTargetedPcrMetrics.jar \
+#    TMP_DIR=${SOUTDocker}/tmp \
+#    VALIDATION_STRINGENCY=SILENT \
+#    MAX_RECORDS_IN_RAM=100000 \
+#    INPUT=${bam_file} \
+#    OUTPUT=${qc_file}_CollectTargetedPcrMetrics \
+#    REFERENCE_SEQUENCE=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
+#    AMPLICON_INTERVALS=${BED_ANNO} \
+#    TARGET_INTERVALS=${BED_ANNO} \
+#    METRIC_ACCUMULATION_LEVEL=ALL_READS \
+#    PER_TARGET_COVERAGE=${qc_file}_per_target_coverage;
+#    
+#  sudo docker logs CollectTargetedPcrMetrics_${SAMPLE_ID} >> ${LOGFILE}.log
+#  sudo docker rm CollectTargetedPcrMetrics_${SAMPLE_ID}
+#  
+# logger_ngseasy " END PICARDTOOLS CollectTargetedPcrMetrics  "  ${LOGFILE}    
+
+##########################
+# 8 FindCoveredIntervals #
+##########################
+
+## Not sure about this one....remove # if ya want it in 
+
+#  logger_ngseasy " START GATK FindCoveredIntervals  "  ${LOGFILE}
+#
+#  sudo docker run \
+#  -P \
+#  --name FindCoveredIntervals_${SAMPLE_ID} \
+#  --volumes-from volumes_container \
+#  -t compbio/ngseasy-gatk:v0.9.3 \
+#  java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T FindCoveredIntervals -R ${REFGenomes}/human_g1k_v37.fasta \
+#  -I ${bam_file}  \
+#  -o ${qc_file}_CoveredIntervals_x4.list \
+#  --coverage_threshold 4;
+#
+#  sudo docker logs FindCoveredIntervals_${SAMPLE_ID} >> ${LOGFILE}.log
+#  sudo docker rm FindCoveredIntervals_${SAMPLE_ID}
+#  
+# logger_ngseasy " END GATK FindCoveredIntervals  "  ${LOGFILE}
+ 
+#--------END generating summary metrics----------------------------#
+
+# To DO - R scripts to process and make pretty reports and add to database. Will come as a sep ngseasy module - use rocker and littler http://dirk.eddelbuettel.com/blog/2014/10/23/
+
+#------permissions------------#
+chmod -R 777 ${SOUT}/*
+
+done < ${config_tsv}
+
+
+
