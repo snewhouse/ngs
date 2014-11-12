@@ -150,6 +150,10 @@ fi
 
 
 #---------Does filtered bam exits, if not then generate it----------------------#
+# Some QC may need filtered.bam
+# Filter -q 20 -F 1796
+#
+
 
 if [ ! -s "${SOUT}/alignments/${BAM_PREFIX}.filtered.bam" ]
 then
@@ -190,7 +194,10 @@ fi
 
 #--------Begin generating summary metric----------------------------#
 
-# 0 Basic FlatStats
+#####################
+# 0 Basic FlatStats #
+#####################
+
   logger_ngseasy " START SAMTOOLS FLAGSTATS  "  ${LOGFILE}
 
   sudo docker run \
@@ -203,20 +210,80 @@ fi
   sudo docker rm samtools_flagstats_${SAMPLE_ID}
   
   logger_ngseasy " END SAMTOOLS FLAGSTATS  "  ${LOGFILE}
+
+########################  
+# 1 Convert BAM to BED #
+########################
+
+  logger_ngseasy " START BEDTOOLS bamtobed  "  ${LOGFILE}
+
+  sudo docker run \
+  -P \
+  --name bedtools_bamtobed_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-bedtools:v0.9 /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools bamtobed -i ${filtered_bam} > ${filtered_bam}.bed"
+
+  sudo docker logs bedtools_bamtobed_${SAMPLE_ID} >> ${LOGFILE}.log
+  sudo docker rm bedtools_bamtobed_${SAMPLE_ID}
   
-# 1 Convert BAM to BED
+  logger_ngseasy " END BEDTOOLS bamtobed  "  ${LOGFILE}
 
-# 2 Convert BAM to Merged BED 
+  
+###############################
+# 2 Convert BAM to Merged BED #
+###############################
 
-# 3 bedtools genomecov 
+  logger_ngseasy " START BEDTOOLS merge  "  ${LOGFILE}
 
-# 4 CollectMultipleMetrics
+  sudo docker run \
+  -P \
+  --name bedtools_merge_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-bedtools:v0.9 /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools merge -i ${filtered_bam}.bed > ${filtered_bam}.merged.bed"
 
-# 5 CollectAlignmentSummaryMetrics
+  sudo docker logs bedtools_merge_${SAMPLE_ID} >> ${LOGFILE}.log
+  sudo docker rm bedtools_merge_${SAMPLE_ID}
+  
+  logger_ngseasy " END BEDTOOLS merge  "  ${LOGFILE}
 
-# 6 CollectWgsMetrics
+########################  
+# 3 bedtools genomecov # 
+########################
 
-# 7 CollectTargetedPcrMetrics
+  logger_ngseasy " START BEDTOOLS genomecov  "  ${LOGFILE}
+
+  sudo docker run \
+  -P \
+  --name bedtools_genomecov_${SAMPLE_ID} \
+  --volumes-from volumes_container \
+  -t compbio/ngseasy-bedtools:v0.9 /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools genomecov -ibam ${filtered_bam} -bga > ${filtered_bam}.genomecov.bed"
+
+  sudo docker logs bedtools_genomecov_${SAMPLE_ID} >> ${LOGFILE}.log
+  sudo docker rm bedtools_genomecov_${SAMPLE_ID}
+  
+  logger_ngseasy " END BEDTOOLS genomecov  "  ${LOGFILE}  
+
+############################  
+# 4 CollectMultipleMetrics #
+############################
+
+####################################
+# 5 CollectAlignmentSummaryMetrics #
+####################################
+
+#######################
+# 6 CollectWgsMetrics #
+#######################
+
+###############################
+# 7 CollectTargetedPcrMetrics #
+###############################
+
+##########################
+# 8 FindCoveredIntervals #
+##########################
+
+
 
 #--------END generating summary metric----------------------------#
 
@@ -227,25 +294,6 @@ chmod -R 777 ${SOUT}/*
 
 done < ${config_tsv}
 
-
- 
-# BAM to BED
-echo " NGSeasy: START bamtobed " `date`  
-
-if [ ! -s ${SOUT}/reports/${BAM_PREFIX}.merged.bed ]
-then
-echo " NGSeasy: Converting Aligned BAM To BED File " `date`
-# pulls out paired only reads with min qual 10. Set low as donwstream tools filter these regions
- /usr/local/pipeline/samtools/samtools view -b -h -q 20 -F 1796 ${SOUT}/alignments/${BAM_PREFIX}.recal.bam | /usr/local/pipeline/bedtools2/bin/bedtools bamtobed -i stdin > ${SOUT}/reports/${BAM_PREFIX}.bed;
-
-echo " NGSeasy: Converting Aligned BED To MERGED BED File " `date` 
- /usr/local/pipeline/bedtools2/bin/bedtools merge -i ${SOUT}/reports/${BAM_PREFIX}.bed > ${SOUT}/reports/${BAM_PREFIX}.merged.bed;
-fi
-
-if [ ! -s ${SOUT}/reports/${BAM_PREFIX}.alignment_summary_metrics ]
-then 
-
-  echo " NGSeasy: Running Post Alignmnet QC " `date`
 # CollectMultipleMetrics
   echo " NGSeasy: CollectMultipleMetrics " `date`
  
@@ -295,20 +343,6 @@ then
 ## Depending in NGS type Run PicardTools CollectTargetedPcrMetrics
 ## NB This is rough and ready quicl fix to get coverage ver genome bins, annotated exomes and targetd sequene files
 
-echo "................................................"
-echo " NGSeasy: START Post Alignmnet Coverage Calculations " `date`
-echo "................................................"
-echo ""
-
-if [ ! -s ${SOUT}/reports/${BAM_PREFIX}.genomecov.bed ]
-then
-echo " NGSeasy: Running bedtools genomecov [-bga] " `date`
-
-  /usr/local/pipeline/bedtools2/bin/bedtools genomecov -ibam ${SOUT}/alignments/${BAM_PREFIX}.bam -bga > ${SOUT}/reports/${BAM_PREFIX}.genomecov.bed;
-
-else
-  echo " NGSeasy: bedtools genomecov " `date`
-fi
 
 # Picardt tools CollectTargetedPcrMetric
 echo " NGSeasy: Run CollectTargetedPcrMetric " `date`
