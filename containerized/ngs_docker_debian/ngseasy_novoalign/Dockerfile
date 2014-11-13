@@ -1,14 +1,15 @@
 # Base image
-FROM compbio/ngseasy-base:wheezy
+FROM compbio/ngseasy-base:latest
 
 # Maintainer 
 MAINTAINER Stephen Newhouse stephen.j.newhouse@gmail.com
 
 # Set correct environment variables.
 ENV HOME /root
+ENV DEBIAN_FRONTEND noninteractive
 
 # Update
-RUN apt-get update -y
+RUN apt-get update -y && apt-get upgrade -y
 
 # + novoalign (registration required,  get compressed file and put in context dir for the build)
 # + get novoalign.lic from novoalign ~ $1000 and put in context dir for the build

@@ -57,6 +57,22 @@ gatk = indel realignment and base recalibration
 - Var Callers:- VarScan2
 - SGE scripts and basic BASH scrips for running outside of Docker
 
+## Dockerised and Automated Builds ##
+
+[compbio docker hub](https://registry.hub.docker.com/u/compbio)
+
+docker pull **compbio/{TOOL}**
+
+| Tools | Build |
+|-------------|----------------------|
+|ngseasy-base | automated build |
+|bcbiovar | automated build |
+|bedtools | automated build |
+|fastqc | automated build |
+|bwa | automated build |
+|bowtie2 | automated build |
+|novoalign | manual build |
+
 ***********
 
 ## Table of Contents
