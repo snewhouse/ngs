@@ -37,6 +37,7 @@ Deploying the pipeline is as simple as pulling the container images from the pub
 
 - Easy to use for non-informaticians.  
 - All run from a single config file that can be made in Excel.  
+- User can select from mutiple aligners, variant callers and variant annotators
 - No scary python, .yaml or .json files...just one simple Excel workbook saved as a textfile.  
 - Just follow our simple set of instructions and NGS away!  
 
@@ -62,9 +63,11 @@ gatk = indel realignment and base recalibration
 *** 
 ## Dockerised and Automated Builds ##
 
-[compbio docker hub](https://registry.hub.docker.com/u/compbio)
+Get it all at [compbio docker hub](https://registry.hub.docker.com/u/compbio)
 
-docker pull **compbio/${TOOL}**
+```{bash}
+docker pull compbio/${TOOL}
+```
 
 | Tools | Build |
 |-------------|----------------------|
@@ -81,11 +84,13 @@ docker pull **compbio/${TOOL}**
 samtools includes bcftools and htslib  
 
 ## Dockerised and Manual Builds ##
+Tools require registration and/or payment
 
 | Tools | Build |
 |-------------|----------------------|
 |novoalign | manual build |
 |annovar | manual build |
+|stampy | manual build |
 
 ```{bash}
 docker build -t compbio/${TOOL} /

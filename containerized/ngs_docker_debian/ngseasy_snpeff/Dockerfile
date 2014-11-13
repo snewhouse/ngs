@@ -22,10 +22,19 @@ RUN cd /usr/local/pipeline && \
   echo "alias ngsSNPeff='/usr/local/pipeline/snpEff'" >>  /home/pipeman/.bashrc && \
   sed -i '$aPATH=${PATH}:/usr/local/pipeline/snpEff' /root/.bashrc
 
+#-------------------------------PERMISSIONS--------------------------
+RUN chmod -R 766 /usr/local/pipeline/***
+RUN chown -R pipeman:ngsgroup /usr/local/pipeline
+
+# Cleanup the temp dir
+RUN rm -rf /tmp/*
+
+# open ports private only
+EXPOSE 80
+
 # Use baseimage-docker's bash.
 CMD ["/bin/bash"]
 
 #Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN apt-get autoclean && apt-get autoremove -y && rm -rf /var/lib/{apt,dpkg,cache,log}/
-
