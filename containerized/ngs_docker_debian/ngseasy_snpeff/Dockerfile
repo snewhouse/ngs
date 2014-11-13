@@ -17,7 +17,7 @@ RUN cd /usr/local/pipeline && \
   wget http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip && \
   unzip snpEff_latest_core.zip && \
   chown -R pipeman:ngsgroup /usr/local/pipeline/snpEff && \
-  chmod -R 766 pipeman:ngsgroup /usr/local/pipeline/snpEff/* && \
+  chmod -R 766 /usr/local/pipeline/snpEff/* && \
   sed -i '$aPATH=${PATH}:/usr/local/pipeline/snpEff' /home/pipeman/.bashrc && \
   echo "alias ngsSNPeff='/usr/local/pipeline/snpEff'" >>  /home/pipeman/.bashrc && \
   sed -i '$aPATH=${PATH}:/usr/local/pipeline/snpEff' /root/.bashrc

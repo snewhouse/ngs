@@ -18,10 +18,7 @@ RUN cd /usr/local/pipeline && \
   unzip 77.zip && \
   chmod -R 766 /usr/local/pipeline/* && \
   cd /usr/local/pipeline/ensembl-tools-release-77/scripts/variant_effect_predictor/ && \
-  perl INSTALL.pl \
-  --AUTO acf \
-  --ASSEMBLY GRCh37 \
-  --SPECIES homo_sapiens_merged;
+  perl INSTALL.pl --AUTO acf --ASSEMBLY GRCh37 --SPECIES homo_sapiens_merged
   
 # Use baseimage-docker's bash.
 CMD ["/bin/bash"]
