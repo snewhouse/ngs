@@ -27,6 +27,8 @@ Please contact us for help/guidance on using the beta release.
 
 ****************
 
+## NGSeasy (Easy Analysis of Next Generation Sequencing)
+
 We present **NGSeasy (Easy Analysis of Next Generation Sequencing)**, a flexible and easy-to-use NGS pipeline for automated alignment, quality control, variant calling and annotation. The pipeline allows users with minimal computational/bioinformatic skills to set up and run an NGS analysis on their own samples, in less than an afternoon, on any operating system (Windows, iOS or Linux) or infrastructure (workstation, cluster or cloud).
 
 NGS pipelines typically utilize a large and varied range of software components and incur a substantial configuration burden during deployment which limits their portability to different computational environments. NGSeasy simplifies this by providing the pipeline components encapsulated in Docker™ containers and bundles in a wide choice of tools for each module. Each module of the pipeline represents one functional grouping of tools (e.g. sequence alignment, variant calling etc.).
@@ -35,6 +37,7 @@ Deploying the pipeline is as simple as pulling the container images from the pub
 
 - Easy to use for non-informaticians.  
 - All run from a single config file that can be made in Excel.  
+- User can select from mutiple aligners, variant callers and variant annotators
 - No scary python, .yaml or .json files...just one simple Excel workbook saved as a textfile.  
 - Just follow our simple set of instructions and NGS away!  
 
@@ -57,11 +60,14 @@ gatk = indel realignment and base recalibration
 - Var Callers:- VarScan2
 - SGE scripts and basic BASH scrips for running outside of Docker
 
+*** 
 ## Dockerised and Automated Builds ##
 
-[compbio docker hub](https://registry.hub.docker.com/u/compbio)
+Get it all at [compbio docker hub](https://registry.hub.docker.com/u/compbio)
 
-docker pull **compbio/{TOOL}**
+```{bash}
+docker pull compbio/${TOOL}
+```
 
 | Tools | Build |
 |-------------|----------------------|
@@ -71,7 +77,24 @@ docker pull **compbio/{TOOL}**
 |fastqc | automated build |
 |bwa | automated build |
 |bowtie2 | automated build |
+|picardtools | automated build |
+|samtools | automated build |
+|snpeff | automated build |
+
+samtools includes bcftools and htslib  
+
+## Dockerised and Manual Builds ##
+Tools require registration and/or payment
+
+| Tools | Build |
+|-------------|----------------------|
 |novoalign | manual build |
+|annovar | manual build |
+|stampy | manual build |
+
+```{bash}
+docker build -t compbio/${TOOL} /
+```
 
 ***********
 
