@@ -1,5 +1,5 @@
 # Base image
-FROM compbio/ngseasy-base:wheezy
+FROM compbio/ngseasy-base:latest
 
 # Maintainer 
 MAINTAINER Stephen Newhouse stephen.j.newhouse@gmail.com

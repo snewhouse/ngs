@@ -25,6 +25,7 @@ RUN cd /usr/local/pipeline && \
 # Use baseimage-docker's bash.
 CMD ["/bin/bash"]
 
-# Clean up APT when done.
+#Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get autoclean && apt-get autoremove -y && rm -rf /var/lib/{apt,dpkg,cache,log}/
 
