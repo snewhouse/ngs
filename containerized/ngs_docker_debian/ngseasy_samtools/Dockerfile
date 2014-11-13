@@ -27,10 +27,13 @@ RUN cd /usr/local/pipeline \
 	&& chown -R pipeman:ngsgroup /usr/local/pipeline/bcftools \
 	&& chown -R pipeman:ngsgroup /usr/local/pipeline/htslib \
 	&& sed  -i '$aPATH=${PATH}:/usr/local/pipeline/samtools' /home/pipeman/.bashrc \
+	&& sed  -i '$aPATH=${PATH}:/usr/local/pipeline/samtools' ~/.bashrc \
 	&& echo "alias ngsSAMtools='/usr/local/pipeline/samtools'" >>  /home/pipeman/.bashrc \
         && sed  -i '$aPATH=${PATH}:/usr/local/pipeline/bcftools' /home/pipeman/.bashrc \
+        && sed  -i '$aPATH=${PATH}:/usr/local/pipeline/bcftools' ~/.bashrc \        
         && echo "alias ngsBCFtools='/usr/local/pipeline/bcftools'" >>  /home/pipeman/.bashrc \
         && sed  -i '$aPATH=${PATH}:/usr/local/pipeline/htslib' /home/pipeman/.bashrc \
+        && sed  -i '$aPATH=${PATH}:/usr/local/pipeline/htslib' ~/.bashrc \        
         && echo "alias ngsHTSlib='/usr/local/pipeline/htslib'" >>  /home/pipeman/.bashrc 
 
 
