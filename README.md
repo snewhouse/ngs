@@ -6,10 +6,10 @@ NGSeasy
 
 - **NGSeasy-v1.0 Full Production release will be available Dec 2014**    
 
-**Note:** NGSeasy is under **continous development** and the dev version evolves quickly. 
+**Note:** NGSeasy is under **heavy development** and evolves quickly. 
 
 Please contact us for help/guidance on using the beta release. 
-
+****
 ### Authors
 - Amos Folarin <amosfolarin@gmail.com>  
 <a href="http://www.linkedin.com/pub/amos-folarin/34/b06/978">
@@ -27,6 +27,8 @@ Please contact us for help/guidance on using the beta release.
 
 ****************
 
+## NGSeasy (Easy Analysis of Next Generation Sequencing)
+
 We present **NGSeasy (Easy Analysis of Next Generation Sequencing)**, a flexible and easy-to-use NGS pipeline for automated alignment, quality control, variant calling and annotation. The pipeline allows users with minimal computational/bioinformatic skills to set up and run an NGS analysis on their own samples, in less than an afternoon, on any operating system (Windows, iOS or Linux) or infrastructure (workstation, cluster or cloud).
 
 NGS pipelines typically utilize a large and varied range of software components and incur a substantial configuration burden during deployment which limits their portability to different computational environments. NGSeasy simplifies this by providing the pipeline components encapsulated in Docker™ containers and bundles in a wide choice of tools for each module. Each module of the pipeline represents one functional grouping of tools (e.g. sequence alignment, variant calling etc.).
@@ -35,6 +37,7 @@ Deploying the pipeline is as simple as pulling the container images from the pub
 
 - Easy to use for non-informaticians.  
 - All run from a single config file that can be made in Excel.  
+- User can select from mutiple aligners, variant callers and variant annotators
 - No scary python, .yaml or .json files...just one simple Excel workbook saved as a textfile.  
 - Just follow our simple set of instructions and NGS away!  
 
@@ -57,6 +60,42 @@ gatk = indel realignment and base recalibration
 - Var Callers:- VarScan2
 - SGE scripts and basic BASH scrips for running outside of Docker
 
+*** 
+## Dockerised and Automated Builds ##
+
+Get it all at [compbio docker hub](https://registry.hub.docker.com/u/compbio)
+
+```{bash}
+docker pull compbio/${TOOL}
+```
+
+| Tools | Build |
+|-------------|----------------------|
+|ngseasy-base | automated build |
+|bcbiovar | automated build |
+|bedtools | automated build |
+|fastqc | automated build |
+|bwa | automated build |
+|bowtie2 | automated build |
+|picardtools | automated build |
+|samtools | automated build |
+|snpeff | automated build |
+
+samtools includes bcftools and htslib  
+
+## Dockerised and Manual Builds ##
+Tools require registration and/or payment
+
+| Tools | Build |
+|-------------|----------------------|
+|novoalign | manual build |
+|annovar | manual build |
+|stampy | manual build |
+
+```{bash}
+docker build -t compbio/${TOOL} /
+```
+
 ***********
 
 ## Table of Contents
@@ -75,14 +114,6 @@ gatk = indel realignment and base recalibration
 [Getting the Dockerised NGSEASY Pipeline](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#getting-the-dockerised-ngseasy-pipeline)  
 
 [Running the Dockerised NGSEASY Pipeline](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#running-the-dockerised-ngseasy-pipeline)  
-
-[NGSEASY-VM : An NGS Tool Box](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngseasy-vm--an-ngs-tool-box)  
-
-[Installing Oracle VirtualBox](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#installing-oracle-virtualbox)  
-
-[Getting the ngseasy-vm](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#getting-the-ngseasy-vm)  
-
-[Installing the ngseasy-vm](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#installing-the-ngseasy-vm)  
 
 ******
 
