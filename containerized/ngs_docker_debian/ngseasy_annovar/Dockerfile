@@ -1,21 +1,23 @@
 # Base image
-FROM compbio/ngseasy-base:wheezy
+FROM compbio/ngseasy-base:latest
 
 # Maintainer 
 MAINTAINER Stephen Newhouse stephen.j.newhouse@gmail.com
 
 # Set correct environment variables.
 ENV HOME /root
+ENV DEBIAN_FRONTEND noninteractive
 
-# Update
-RUN apt-get update -y
+# Remain current
+RUN apt-get update && \
+  apt-get upgrade -y
 
 #---------------------------------------------annotation-------------------------------------------------
 
 # + ANNOVAR (see licence, and registration)
 # Available on reg:  http://www.openbioinformatics.org/annovar/download/Ht8qRwQSTi/annovar.latest.tar.gz
 
-RUN wget -O /tmp/annovar.latest.tar.gz http://www.openbioinformatics.org/annovar/download/mP628pfL21/annovar.latest.tar.gz \
+RUN wget -O /tmp/annovar.latest.tar.gz http://www.openbioinformatics.org/annovar/download/g4EUwyphi9/annovar.latest.tar.gz \
   && tar xzvf /tmp/annovar.latest.tar.gz -C /usr/local/pipeline/ \
   && sed -i '$aPATH=${PATH}:/usr/local/pipeline/annovar' /home/pipeman/.bashrc \
   && echo "alias ngsSNPeff='/usr/local/pipeline/annovar'" >> /home/pipeman/.bashrc
@@ -37,6 +39,9 @@ RUN rm -rf /tmp/*
 
 # open ports private only
 EXPOSE 80
+
+# Use baseimage-docker's bash.
+CMD ["/bin/bash"]
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
