@@ -1,17 +1,15 @@
 # Base image
-FROM compbio/ngseasy-base:wheezy
+FROM compbio/ngseasy-base:latest
 
 # Maintainer 
 MAINTAINER Stephen Newhouse stephen.j.newhouse@gmail.com
 
 # Set correct environment variables.
 ENV HOME /root
-
-# Use baseimage-docker's init system.
-CMD ["bash"]
+ENV DEBIAN_FRONTEND noninteractive
 
 # Update
-RUN apt-get update -y
+RUN apt-get update -y && apt-get upgrade -y
 
 # + Picard
 RUN wget -O /tmp/picard-tools-1.119.zip http://sourceforge.net/projects/picard/files/picard-tools/1.119/picard-tools-1.119.zip \
