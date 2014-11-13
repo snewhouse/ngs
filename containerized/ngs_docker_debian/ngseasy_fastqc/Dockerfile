@@ -3,16 +3,17 @@
 #------------------------------------------------#
 
 # Base image
-FROM compbio/base-image:0.5
+FROM compbio/ngseasy-base:latest
 
 # Maintainer 
 MAINTAINER Stephen Newhouse stephen.j.newhouse@gmail.com
 
 # Set correct environment variables.
 ENV HOME /root
+ENV DEBIAN_FRONTEND noninteractive
 
 # Update
-RUN apt-get update -y
+RUN apt-get update -y && apt-get upgrade -y
 
 #-------------------------NGS-TOOL---------------------------------------
 # + FastQC
@@ -24,7 +25,7 @@ RUN apt-get update -y
         && echo "alias ngsFastqc='/usr/local/pipeline/FastQC'" >>  /home/pipeman/.bashrc    
 
 #-------------------------------PERMISSIONS--------------------------
-RUN chmod -R 766 /usr/local/pipeline/***
+RUN chmod -R 777 /usr/local/pipeline
 RUN chown -R pipeman:ngsgroup /usr/local/pipeline
 
 #---------------------------------------------------------------------
@@ -34,7 +35,7 @@ RUN rm -rf /tmp/*
 #open ports private only
 EXPOSE 80
 
-# CMD
+# Use baseimage-docker's bash.
 CMD ["/bin/bash"]
 
 #Clean up APT when done.
