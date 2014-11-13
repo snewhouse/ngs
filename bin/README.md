@@ -80,6 +80,7 @@ docker pull compbio/${TOOL}
 |picardtools | automated build |
 |samtools | automated build |
 |snpeff | automated build |
+|trimmomatic | automated build |
 
 samtools includes bcftools and htslib  
 
