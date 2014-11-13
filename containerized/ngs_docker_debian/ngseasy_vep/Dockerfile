@@ -13,13 +13,13 @@ RUN apt-get update && \
   apt-get upgrade -y
 
 # VEP GRCh37
-RUN cd /usr/local/pipeman && \ 
+RUN cd /usr/local/pipeline && \ 
   wget https://github.com/Ensembl/ensembl-tools/archive/release/77.zip && \
   unzip 77.zip && \
-  chmod -R 766 /usr/local/pipeman/* && \
-  cd /usr/local/pipeman/ensembl-tools-release-77/scripts/variant_effect_predictor/ && \
+  chmod -R 766 /usr/local/pipeline/* && \
+  cd /usr/local/pipeline/ensembl-tools-release-77/scripts/variant_effect_predictor/ && \
   perl INSTALL.pl \
-  --AUTO \
+  --AUTO acf \
   --ASSEMBLY GRCh37 \
   --SPECIES homo_sapiens_merged;
   
@@ -29,6 +29,7 @@ CMD ["/bin/bash"]
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+ERROR: Failed to parse AUTO string - must contain any of a (API), c (cache), f (FASTA)
 
 ############################################################################################
 # Notes: 
