@@ -26,8 +26,6 @@ CMD ["/bin/bash"]
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ERROR: Failed to parse AUTO string - must contain any of a (API), c (cache), f (FASTA)
-
 ############################################################################################
 # Notes: 
 #
