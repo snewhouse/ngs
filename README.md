@@ -6,10 +6,10 @@ NGSeasy
 
 - **NGSeasy-v1.0 Full Production release will be available Dec 2014**    
 
-**Note:** NGSeasy is under **continous development** and the dev version evolves quickly. 
+**Note:** NGSeasy is under **heavy development** and evolves quickly. 
 
 Please contact us for help/guidance on using the beta release. 
-
+****
 ### Authors
 - Amos Folarin <amosfolarin@gmail.com>  
 <a href="http://www.linkedin.com/pub/amos-folarin/34/b06/978">
