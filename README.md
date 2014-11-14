@@ -62,7 +62,9 @@ The full pipelines implement:
 - **SAM/BAM sorting and indexing** with **samtools**.  
 - **Read Group information added** using **Picardtools:AddOrReplaceReadGroups** 
 - **Duplicate marking** with **Picardtools:MarkDuplicates**.  
+
 >For academic users or commercial groups whom have paid for GATK, the next steps are to perform   
+
 - **Indel indel realignment and base recalibration** using GATKs built in tools **GATK:RealignerTargetCreator**, **GATK:IndelRealigner**, **GATK:BaseRecalibrator**. 
 - **Post alignment quality control and reporting** is performed usng a number of tools and custom scripts: **bedtools:genomecov**, .
 - **SNP/INDEL** calling using one of **freebayes**, **platypus**, **GATK:UnifiedGenotyper**, **GATK:HaplotypeCaller** 
