@@ -79,7 +79,7 @@ The full pipelines implement:
 or a combibation of these tools, if the `ensemble` method is called using 
 **[bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation)**.
 - **Structural Variant (CNV)** calling using one of the following,
-**[DELLY](https://github.com/tobiasrausch/delly), 
+**[DELLY](https://github.com/tobiasrausch/delly)**, 
 **[LUMPY](https://github.com/arq5x/lumpy-sv/)**,
 **[cn.MOPS](http://www.bioinf.jku.at/software/cnmops/)**,
 **[m-HMM](https://www.stt.msu.edu/users/hengwang/mHMM.html)**,
