@@ -1,6 +1,6 @@
 NGSeasy (beta)
 ===================
-Authors: Stephen J Newhouse <stephen.j.newhouse@gmail.com>, Amos Folarin <amosfolarin@gmail.com>  
+Authors: [Stephen J Newhouse]<stephen.j.newhouse@gmail.com>, [Amos Folarin]<amosfolarin@gmail.com>  
 Release Version: 0.9.0  
 
 **A [Dockerized](https://www.docker.com/) and [Virtulaized](https://www.virtualbox.org/) ngs pipeline and tool-box.** 
