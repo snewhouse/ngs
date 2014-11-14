@@ -79,9 +79,12 @@ The full pipelines implement:
     - **[GATK:BaseRecalibrator](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_bqsr_BaseRecalibrator.php)** 
 - **Post alignment quality control and reporting** is performed usng a number of tools and custom scripts: 
     - **[bedtools:genomecov](https://github.com/arq5x/bedtools2)**
-    - **[]()**
-    - **[]()**
-    - **[]()**    
+    - **[samtools flagstats]()**
+    - **[bedtools bamtobed]()**
+    - **[PICARDTOOLS CollectMultipleMetrics]()**    
+    - **[PICARDTOOLS CollectAlignmentSummaryMetrics]()**    
+    - **[PICARDTOOLS CollectWgsMetrics]()**    
+    - **[PICARDTOOLS CollectTargetedPcrMetrics]()** (coming soon)    
 - **SNP and small INDEL** calling using one of 
     - **[freebayes](https://github.com/ekg/freebayes)** 
     - **[platypus](http://www.well.ox.ac.uk/platypus)** 
