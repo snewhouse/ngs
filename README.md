@@ -29,6 +29,8 @@ Deploying the pipeline is as simple as pulling the container images from the pub
 - Version controlled for auditing  
 - Customisable  
 - Easy to add new tools  
+- If it's broke...we will fix it..
+- Enforced naming convention and directory structures  
 
 ****
 ### Authors
