@@ -76,11 +76,11 @@ The full pipelines implement:
 - **Indel indel realignment and base recalibration** using **[GATK](https://www.broadinstitute.org/gatk/)** built in tools **GATK:RealignerTargetCreator**, **GATK:IndelRealigner**, **GATK:BaseRecalibrator**. 
 - **Post alignment quality control and reporting** is performed usng a number of tools and custom scripts: **bedtools:genomecov**, .
 - **SNP and small INDEL** calling using one of 
-    - **[freebayes](https://github.com/ekg/freebayes)**, 
-    - **[platypus](http://www.well.ox.ac.uk/platypus)**, 
-    - **[GATK:UnifiedGenotyper](https://www.broadinstitute.org/gatk/guide/tooldocs/org_broadinstitute_gatk_tools_walkers_genotyper_UnifiedGenotyper.php)**, 
+    - **[freebayes](https://github.com/ekg/freebayes)** 
+    - **[platypus](http://www.well.ox.ac.uk/platypus)** 
+    - **[GATK:UnifiedGenotyper](https://www.broadinstitute.org/gatk/guide/tooldocs/org_broadinstitute_gatk_tools_walkers_genotyper_UnifiedGenotyper.php)** 
     - **[GATK:HaplotypeCaller](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php)** 
-    - or a combibation of these tools, if the `ensemble` method is called using **[bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation)**.
+    - or a combibation of these tools, if the `ensemble` method is called using **[bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation)**
 - **Structural Variant (CNV)** calling using one of the following,
     - **[DELLY](https://github.com/tobiasrausch/delly)**, 
     - **[LUMPY](https://github.com/arq5x/lumpy-sv/)**,
@@ -89,10 +89,10 @@ The full pipelines implement:
     - **[ExomeDepth](http://cran.r-project.org/web/packages/ExomeDepth/index.html)**,
     - or a combibation of if the `ensemble` methods are called.
 - **Variant annotation** using using one 
-**[SnpEff](http://snpeff.sourceforge.net/)**, 
-**[ANNOVAR](http://www.openbioinformatics.org/annovar/)**, 
-**[VEP](http://www.ensembl.org/info/docs/tools/vep/index.html)**
-or a combibation of if the `ensemble` methods are called.  
+    - **[SnpEff](http://snpeff.sourceforge.net/)** 
+    - **[ANNOVAR](http://www.openbioinformatics.org/annovar/)** 
+    - **[VEP](http://www.ensembl.org/info/docs/tools/vep/index.html)**
+    - or a combibation of if the `ensemble` methods are called.  
 - **Variant reporting** using custom scripts
 
 **Note** Some of the later functions i.e. variant annotation and qc reporting are still in dev.  
