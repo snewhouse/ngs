@@ -25,6 +25,7 @@ Deploying the pipeline is as simple as pulling the container images from the pub
 - User can select from mutiple aligners, variant callers and variant annotators
 - No scary python, .yaml or .json files...just one simple Excel workbook saved as a textfile.  
 - Just follow our simple set of instructions and NGS away!  
+- Choice of aligners and variant callers and anntators  
 - Allows reproducible research  
 - Version controlled for auditing  
 - Customisable  
@@ -63,14 +64,19 @@ gatk = indel realignment and base recalibration. Non-academics/commercial groups
 The full pipelines implement:   
 
 - **Quality control of raw fastq** files using **[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)**  
+
 - **Read trimming** using **[trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic)**.   
+
 - **Alignment** using one of 
     - **[bwa](http://bio-bwa.sourceforge.net/)**  
     - **[stampy](http://www.well.ox.ac.uk/project-stampy)**   
     - **[novoalign](http://www.novocraft.com)**  
     - **[bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)**  
+
 - **SAM/BAM sorting and indexing** with **[samtools](https://github.com/samtools/samtools)**.  
+
 - **Read Group information added** using **[Picardtools](http://broadinstitute.github.io/picard/):AddOrReplaceReadGroups** 
+
 - **Duplicate marking** with **[Picardtools](http://broadinstitute.github.io/picard/):MarkDuplicates**.  
 
 >For academic users or commercial groups whom have paid for GATK, the next steps are to perform   
@@ -79,20 +85,23 @@ The full pipelines implement:
     - **[GATK:RealignerTargetCreator](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_indels_RealignerTargetCreator.php)** 
     - **[GATK:IndelRealigner](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_indels_IndelRealigner.php)** 
     - **[GATK:BaseRecalibrator](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_bqsr_BaseRecalibrator.php)** 
+    
 - **Post alignment quality control and reporting** is performed usng a number of tools and custom scripts: 
     - **[bedtools:genomecov](https://github.com/arq5x/bedtools2)**
-    - **[samtools flagstats]()**
+    - **[samtools flagstats](https://github.com/samtools/samtools)**
     - **[bedtools bamtobed]()**
     - **[PICARDTOOLS CollectMultipleMetrics]()**    
     - **[PICARDTOOLS CollectAlignmentSummaryMetrics]()**    
     - **[PICARDTOOLS CollectWgsMetrics]()**    
     - **[PICARDTOOLS CollectTargetedPcrMetrics]()** (coming soon)    
+
 - **SNP and small INDEL** calling using one of 
     - **[freebayes](https://github.com/ekg/freebayes)** 
     - **[platypus](http://www.well.ox.ac.uk/platypus)** 
     - **[GATK:UnifiedGenotyper](https://www.broadinstitute.org/gatk/guide/tooldocs/org_broadinstitute_gatk_tools_walkers_genotyper_UnifiedGenotyper.php)** 
     - **[GATK:HaplotypeCaller](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php)** 
     - or a combibation of these tools, if the `ensemble` method is called using **[bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation)**
+
 - **Structural Variant (CNV)** calling using one of the following,
     - **[DELLY](https://github.com/tobiasrausch/delly)** 
     - **[LUMPY](https://github.com/arq5x/lumpy-sv/)**
@@ -100,11 +109,13 @@ The full pipelines implement:
     - **[m-HMM](https://www.stt.msu.edu/users/hengwang/mHMM.html)**
     - **[ExomeDepth](http://cran.r-project.org/web/packages/ExomeDepth/index.html)**
     - or a combibation of if the `ensemble` methods are called.
+
 - **Variant annotation** using using one 
     - **[SnpEff](http://snpeff.sourceforge.net/)** 
     - **[ANNOVAR](http://www.openbioinformatics.org/annovar/)** 
     - **[VEP](http://www.ensembl.org/info/docs/tools/vep/index.html)**
     - or a combibation of if the `ensemble` methods are called.  
+
 - **Variant reporting** using custom scripts
 
 **Note** Some of the later functions i.e. variant annotation and qc reporting are still in dev.  
@@ -149,6 +160,7 @@ docker pull compbio/ngseasy-${TOOL}
 |samtools | automated build |
 |snpeff | automated build |
 |trimmomatic | automated build |
+|vep | automated build |
 
 samtools includes bcftools and htslib  
 
@@ -174,17 +186,19 @@ Currently we are not able to automatically build some of the tools in pre-built 
 These tools require manual download and registration with the proivder. For non-academics/commercial groups, you will need to pay for some of these tools.
 Once you have paid/registered and downloaded the tool, we provide scripts and guidance for building these tools on your system. 
 
+Its as easy as:-  
 ```{bash}
 docker build -t compbio/ngseasy-${TOOL} .
 ```
 ****
 
 ### Coming Soon
+- New Aligners:- [SNAP](http://snap.cs.berkeley.edu/), GSNAP, mr- and mrs-Fast,gem
+- https://github.com/amplab/snap
 - SLOPE (CNV fo targetted NSG)  
 - Cancer Pipelines
 - Annotation Pipelines and Databases
 - Visualisation Pipelines
-- New Aligners:- GSNAP, mr- and mrs-Fast,gem
 - Var Callers:- VarScan2
 - SGE scripts and basic BASH scrips for running outside of Docker
 
