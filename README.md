@@ -54,7 +54,9 @@ Please contact us for help/guidance on using the beta release.
 
 gatk = indel realignment and base recalibration. Non-academics/commercial groups need to pay for GATK.  
 
-The *full* pipelines go from raw `fastq` to qc'd `fastq` using `timmomatic`  
+The **full** pipelines implement quality control of raw `fastq` files using `FastQC`, followed by read trimming using `timmomatic`. 
+Alignment using one of `bwa`, `stampy`,`novoalin` or `bowtie2`. `SAM/BAM` sorting and indexing with `samtools`. 
+Read Group information is added using `Picardtools` followed by `duplicate marking`
 
 *** 
 
