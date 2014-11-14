@@ -9,7 +9,7 @@ NGSeasy (beta)
 - **NGSeasy-v1.0 Full Production release will be available Dec 2014**    
 - **NGSeasy updates every 12 months:**
 
-NGSeasy is completely open source and we encourage interested folks to jump in and get involved in the dev with us.
+>NGSeasy is completely open source and we encourage interested folks to jump in and get involved in the dev with us.
 
 NGSeasy (Easy Analysis of Next Generation Sequencing)
 -------------------------------------------------------
@@ -31,12 +31,12 @@ Deploying the pipeline is as simple as pulling the container images from the pub
 
 Please contact us for help/guidance on using the beta release. 
 
-- Amos Folarin <amosfolarin@gmail.com>  (@amosfolarin)[https://twitter.com/amosfolarin?lang=en] 
+- Amos Folarin <amosfolarin@gmail.com>  ([amosfolarin](https://twitter.com/amosfolarin?lang=en)   
 <a href="http://www.linkedin.com/pub/amos-folarin/34/b06/978">
 <img src="http://www.linkedin.com/img/webpromo/btn_viewmy_160x33.png" width="160" height="33" alt="View Amos's profile on LinkedIn">
 </a>
 
-- Stephen J Newhouse <stephen.j.newhouse@gmail.com>  (@s_j_newhouse)[https://twitter.com/s_j_newhouse?lang=en]
+- Stephen J Newhouse <stephen.j.newhouse@gmail.com> [@s_j_newhouse][https://twitter.com/s_j_newhouse?lang=en]  
 <a href="http://uk.linkedin.com/pub/dr-stephen-newhouse/29/89a/11a">
 <img src="http://www.linkedin.com/img/webpromo/btn_viewmy_160x33.png" width="160" height="33" alt="View Steve's profile on LinkedIn">
 </a>
