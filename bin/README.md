@@ -107,7 +107,7 @@ The full pipelines implement:
 We highly recommed read trimming prior to alignment. 
 We have noticed considerable speed-ups in alignmnet time and increased quality of SNP/INDEL calls using trimmed vs raw fastq.
 For non-GATK users, use of variant callers that perform local re-aligmnet around candidate sites
-e.g. freebayes, platypus,GATK:HaplotypeCaller, mitigate the need for the indel realignment stages.  
+e.g. [freebayes](https://github.com/ekg/freebayes), [platypus](http://www.well.ox.ac.uk/platypus), mitigate the need for the indel realignment stages.  
 
 Base quality score recalibration is also recommended. 
 Non-GATK users are encouraged to use aligners such as **[stampy](http://www.well.ox.ac.uk/project-stampy)** and **[novoalign](http://www.novocraft.com)** that perform base quality score recal on the fly.
