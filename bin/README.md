@@ -79,15 +79,14 @@ The full pipelines implement:
     - **[platypus](http://www.well.ox.ac.uk/platypus)**, 
     - **[GATK:UnifiedGenotyper](https://www.broadinstitute.org/gatk/guide/tooldocs/org_broadinstitute_gatk_tools_walkers_genotyper_UnifiedGenotyper.php)**, 
     - **[GATK:HaplotypeCaller](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php)** 
-or a combibation of these tools, if the `ensemble` method is called using 
-**[bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation)**.
+    - or a combibation of these tools, if the `ensemble` method is called using **[bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation)**.
 - **Structural Variant (CNV)** calling using one of the following,
-**[DELLY](https://github.com/tobiasrausch/delly)**, 
-**[LUMPY](https://github.com/arq5x/lumpy-sv/)**,
-**[cn.MOPS](http://www.bioinf.jku.at/software/cnmops/)**,
-**[m-HMM](https://www.stt.msu.edu/users/hengwang/mHMM.html)**,
-**[ExomeDepth](http://cran.r-project.org/web/packages/ExomeDepth/index.html)**,
-or a combibation of if the `ensemble` methods are called.
+    - **[DELLY](https://github.com/tobiasrausch/delly)**, 
+    - **[LUMPY](https://github.com/arq5x/lumpy-sv/)**,
+    - **[cn.MOPS](http://www.bioinf.jku.at/software/cnmops/)**,
+    - **[m-HMM](https://www.stt.msu.edu/users/hengwang/mHMM.html)**,
+    - **[ExomeDepth](http://cran.r-project.org/web/packages/ExomeDepth/index.html)**,
+    - or a combibation of if the `ensemble` methods are called.
 - **Variant annotation** using using one 
 **[SnpEff](http://snpeff.sourceforge.net/)**, 
 **[ANNOVAR](http://www.openbioinformatics.org/annovar/)**, 
