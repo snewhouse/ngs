@@ -1,5 +1,8 @@
 NGSeasy (beta)
 ===================
+Authors: Stephen J Newhouse, Amos Folarin   
+Release Version: 0.9.0  
+
 **A [Dockerized](https://www.docker.com/) and [Virtulaized](https://www.virtualbox.org/) ngs pipeline and tool-box.** 
 
 **With NGSeasy you can now have full suite of NGS tools up and running on any high end workstation in an afternoon**
@@ -35,7 +38,7 @@ Deploying the pipeline is as simple as pulling the container images from the pub
 - Enforced naming convention and directory structures  
 
 ****
-### Authors
+### Author Contact Details
 
 Please contact us for help/guidance on using the beta release. 
 
@@ -50,6 +53,9 @@ Please contact us for help/guidance on using the beta release.
 </a>
 
 **Lets us know if you want other tools added to NGSeasy**
+
+*Institution: NIHR Maudsley Biomedical Research Centre For Mental Health and Dementia Unit (Denmark Hill), at The Institute of Psychiatry, Psychology & Neuroscience (IoPPN), Kings College London* 
+
 ****************
 
 Dockerised NGSeasy
@@ -104,11 +110,11 @@ The full pipelines implement:
     - **[BOWTIE2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)**  
     - *[SNAP](http://snap.cs.berkeley.edu/): COMING SOON!*
     
-- **SAM/BAM sorting and indexing** with **[samtools](https://github.com/samtools/samtools)**.  
+- **SAM/BAM sorting and indexing** with **[SAMTOOLS](https://github.com/samtools/samtools)**.  
 
-- **Read Group information added** using **[Picardtools](http://broadinstitute.github.io/picard/):[AddOrReplaceReadGroups](http://broadinstitute.github.io/picard/command-line-overview.html#AddOrReplaceReadGroups)** 
+- **Read Group information added** using **[PICARDTOOLS](http://broadinstitute.github.io/picard/):[AddOrReplaceReadGroups](http://broadinstitute.github.io/picard/command-line-overview.html#AddOrReplaceReadGroups)** 
 
-- **Duplicate marking** with **[Picardtools](http://broadinstitute.github.io/picard/):[MarkDuplicates](http://broadinstitute.github.io/picard/command-line-overview.html#MarkDuplicates)**.  
+- **Duplicate marking** with **[PICARDTOOLS](http://broadinstitute.github.io/picard/):[MarkDuplicates](http://broadinstitute.github.io/picard/command-line-overview.html#MarkDuplicates)**.  
 
 >For academic users or commercial groups whom have paid for GATK, the next steps are to perform   
 
@@ -171,13 +177,14 @@ for base quality score recalibration in the near future
 
 *** 
 
-## Dockerised and Automated Builds ##
+# Available NGSeasy Docker images
+Available to download at our **[compbio Docker Hub](https://hub.docker.com/u/compbio)**
 
-Get it all at [compbio docker hub](https://registry.hub.docker.com/u/compbio)
-
-```{bash}
+```bash
 docker pull compbio/ngseasy-${TOOL}
 ```
+
+## Dockerised and Automated Builds ##
 
 | Tool | Build |
 |-------------|----------------------|
@@ -197,6 +204,8 @@ samtools includes bcftools and htslib
 
 
 ## Dockerised and Manual Builds ##
+Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. 
+
 **These Tools require registration and/or payment and manual building**
 
 | Tool | Build |
@@ -205,15 +214,29 @@ samtools includes bcftools and htslib
 |[annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar) | manual build |
 |[stampy](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_stampy) | manual build |
 |[platypus](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/nsgeasy_platypus) | manual build |
-|[gatk](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/nsgeasy_gatk) | manual build |
+|[gatk](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_gatk) | manual build |
 
-Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. These include the following:- 
+### NOTICE TO USERS OF THE CONTAINER IMAGES ###
 
-* GATK  
-* Novoalign  
-* Annovar  
-* Stampy  
-* Platypus  
+While the software used to build the image is composed of free software versions
+some of the software has restrictions on use particularly for commercial 
+purposes. Therefore if you wish to use this for commercial purposes, then you 
+leagally have to approach the owners of the various components yourself!  
+
+This pipeline uses a number of pieces of software which require registration. 
+By using this you are agreeing to observe the Terms and Conditions of the 
+relevant pieces of software that compose this pipeline.  
+
+### Software composing the pipeline requiring registration
+
+If you want to build the image from the Dockerfile then you need to get your 
+own versions of (below) in the build directory:
+
+   * novoalign http://www.novocraft.com/  
+   * Stampy http://www.well.ox.ac.uk/project-stampy  
+   * Platypus http://www.well.ox.ac.uk/platypus  
+   * GATK https://www.broadinstitute.org/gatk/  
+   * ANNOVAR http://www.openbioinformatics.org/annovar/  
 
 These tools require manual download and registration with the proivder. For non-academics/commercial groups, you will need to pay for some of these tools.
 Once you have paid/registered and downloaded the tool, we provide scripts and guidance for building these tools on your system. 
@@ -236,30 +259,6 @@ docker build -t compbio/ngseasy-${TOOL} .
 
 ***********
 
-## NOTICE TO USERS OF THE CONTAINER IMAGEs
-
-While the software used to build the image is composed of free software versions
-some of the software has restrictions on use particularly for commercial 
-purposes. Therefore if you wish to use this for commercial purposes, then you 
-leagally have to approach the owners of the various components yourself!  
-
-This pipeline uses a number of pieces of software which require registration. 
-By using this you are agreeing to observe the Terms and Conditions of the 
-relevant pieces of software that compose this pipeline.  
-
-### Software composing the pipeline requiring registration
-
-If you want to build the image from the Dockerfile then you need to get your 
-own versions of (below) in the build directory:
-
-   * novoalign http://www.novocraft.com/
-   * Stampy http://www.well.ox.ac.uk/project-stampy
-   * GATK https://www.broadinstitute.org/gatk/
-   * ANNOVAR http://www.openbioinformatics.org/annovar/
-
-[Back to The Begining](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngs-easy-v10)
-
-******
 Getting the Dockerised NGSeasy Pipeline
 -------------------------------------------
 
@@ -269,23 +268,20 @@ As the containers themselves can be run as executables with pre-specified cpu an
 
 *****************
 
-### Available NGSeasy Docker images
-Available to download at our [compbio Docker Hub](https://hub.docker.com/u/compbio)
-
 Getting All NGSeasy images, Reasources and Scripts
 ------------------------------
 
 All Images can be pulled down from [Docker Hub](https://hub.docker.com/u/compbio/) using the script [get_NGSeasy.sh](https://github.com/KHP-Informatics/ngs/blob/master/containerized/get_NGSeasy.sh)
 
 
-**NGSeasy Reasources**
+### NGSeasy Reasources
 
-- ``reference_genomes_b37.tgz`` b37 reference genomes indexed for use with all provided aligners (BWA, Bowtie2, Stampy, Novoalign) and annotation bed files for use with pipeline scripts
-- ``gatk_resources.tar.gz`` gatk resources bundle
-- ``fastq_example.tgz`` Example 75bp PE Illumina Whole Exome Sequence fastq data for **NA12878**
+- **reference_genomes_b37.tgz** b37 reference genomes indexed for use with all provided aligners (BWA, Bowtie2, Stampy, Novoalign) and annotation bed files for use with pipeline scripts
+- **gatk_resources.tar.gz** gatk resources bundle
+- **fastq_example.tgz** Example 75bp PE Illumina Whole Exome Sequence fastq data for **NA12878**
 - Annotation Databases Coming in the next update 
  
-**FTP Login Details**
+### FTP Login Details
 
 ```bash
 ftp:  159.92.120.21
@@ -549,8 +545,7 @@ ngseasy_get_annovar_db -d /media/ngs_projects/humandb
 # here [ngs_full_gatk] is a wrapper/fucntion for calling the pipeline
 ```
 
-Each function is a bash wrapper for an image/container(s)
-
+Each function is a bash wrapper for an image/container(s) e.g. **ngs_full_gatk**:-  
 ```
 ngs_full_gatk() { 
 
@@ -591,30 +586,9 @@ nsgeasy_cnv_callers -c ${config_tsv} -d ${project_directory};
 
 #11 Variant Annotation: Annovar
 nsgeasy_variant_annotation -c ${config_tsv} -d ${project_directory};
-
-#TODO
-#variant filter
-#nsgeasy_variant_combine -c ${config_tsv} -d ${project_directory}
-#nsgeasy_variant_report -c ${config_tsv} -d ${project_directory}
-
 }
-```
-
-recommend full : trimmed aln gatk filtered and ensemble calls (multi SNP/INDELS/SV callers) base recalibration
-if not novoalign then stampy (bwa with stampy)
-
-# Pipelines :  
-ngs_full_gatk     [FastQC > Trimmomatic > BWA/Stampy > Addreadgroup > MarkDuplicates > IndelRealn > BaseRecalibration > Freebayes/Platypus/HaplotypeCaller > bcbio > Delly/Lumpy > Annovar > reports]  
-ngs_full_no_gatk  [FastQC > Trimmomatic > BWA/Stampy > Addreadgroup > MarkDuplicates > Freebayes/Platypus > bcbio > Delly/Lumpy > Annovar > reports]   
-
 
 ```
-****
-
-To add :
-- getting the pipeline and setting up resources data
-- not all steps need config?
-- pipeline option need to be set how? list of steps, specified full, full_no_gatk, var_call_only, cnv_call_only, qc_reports??
 
 ****
 
@@ -709,127 +683,6 @@ INFO  11:05:31,699 RMDTrackBuilder - Writing Tribble index to disk for file /hom
 ## CNV tools to think about
 EXCAVATOR: detecting copy number variants from whole-exome sequencing data @ http://genomebiology.com/2013/14/10/R120
 
-
 >We developed a novel software tool, EXCAVATOR, for the detection of copy number variants (CNVs) from whole-exome sequencing data. EXCAVATOR combines a three-step normalization procedure with a novel heterogeneous hidden Markov model algorithm and a calling method that classifies genomic regions into five copy number states. We validate EXCAVATOR on three datasets and compare the results with three other methods. These analyses show that EXCAVATOR outperforms the other methods and is therefore a valuable tool for the investigation of CNVs in largescale projects, as well as in clinical research and diagnostics. EXCAVATOR is freely available at http://sourceforge.net/projects/excavatortool/ webcite.
 
-## AnalyzeCovariates post recal plots ~ needs R rehsape and gplots
-
-AnalyzeCovariates keeps failing - due to R. GATK dont document R requirements for these scripts to work!  
-
-```
-library("ggplot2")
-library(gplots)
-library("reshape")
-library("grid")
-library("tools") #For compactPDF in R 2.13+
-library(gsalib)
-```
-
-URL: https://github.com/broadgsa/gatk-protected/blob/323f22f852c90a6cf53ece5e72c165b1166ad8c7/public/gatk-tools-public/src/main/resources/org/broadinstitute/gatk/utils/recalibration/BQSR.R
-
-```
-install.packages(c("ggplot2","gplots","reshape","grid","tools","gsalib"),dependencies=TRUE)
-
-Warning message:
-packages 'grid', 'tools' are not available (for R version 3.1.1) 
-```
-Drop plots of recal data
-
-****
-
-## bcbio.variation
-https://github.com/chapmanb/bcbio.variation
-
-# bcbio.variation
-
-A toolkit to analyze genome variation data, built on top of the
-[Genome Analysis Toolkit (GATK)][1] with Clojure. It supports scoring for the
-[Archon Genomics X PRIZE competition][5] and is also a general framework for
-variant file comparison. It enables validation of variants and exploration of
-algorithm differences between calling methods by automating the process involved
-with comparing two sets of variants. For users, this integrates with the
-[bcbio-nextgen][8] framework to automate variant calling and validation. For
-developers, bcbio.variation provides command line tools and an API to clean and
-normalize variant data in [VCF format][2] avoiding comparison artifacts
-associated with different variant representations.
-
-* [Description of the comparison framework and variant calling algorithm comparisons][7]
-* [Presentation from Bioinformatics Open Source Conference 2012][p1]
-* [Presentation overview of the project][4]
-* [Howto description of interfacing with GATK][6]
-* [Code documentation][3]
-
-[![Build Status](https://secure.travis-ci.org/chapmanb/bcbio.variation.png)](http://travis-ci.org/chapmanb/bcbio.variation)
-
-[1]: http://www.broadinstitute.org/gsa/wiki/index.php/The_Genome_Analysis_Toolkit
-[2]: http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-40
-[3]: http://chapmanb.github.com/bcbio.variation
-[4]: http://chapmanb.github.com/bcbio.variation/presentations/gatk_clojure.pdf
-[5]: http://genomics.xprize.org/
-[6]: http://bcbio.wordpress.com/2012/03/04/extending-the-gatk-for-custom-variant-comparisons-using-clojure/
-[p1]: http://chapmanb.github.com/bcbio.variation/presentations/variation_bosc_2012/variation_chapman.pdf
-[7]: http://bcbio.wordpress.com/2013/05/06/framework-for-evaluating-variant-detection-methods-comparison-of-aligners-and-callers/
-[8]: https://github.com/chapmanb/bcbio-nextgen
-
-******
-
-## Java issues in docker 
-All java set as 1.6. Updated and commit in docker images interactively
-
-```
-sudo update-alternatives --config java
-```
-
-****
-
-
-#biobambam
-https://github.com/gt1/biobambam
-
-biobambam
-======
-
-This package contains some tools for processing BAM files including
-
- - bamcollate2: reads BAM and writes BAM reordered such that alignment
-   or collated by query name
- - bammarkduplicates: reads BAM and writes BAM with duplicate alignments
-   marked using the BAM flags field
- - bammaskflags: reads BAM and writes BAM while masking (removing)
-   bits from the flags column
- - bamrecompress: reads BAM and writes BAM with a defined compression
-   setting. This tool is capable of multi-threading.
- - bamsort: reads BAM and writes BAM resorted by coordinates or query
-   name
- - bamtofastq: reads BAM and writes FastQ; output can be collated or
-   uncollated by query name
-
-A short list of options is available for each program by calling it
-with the -h parameter, e.g.
-
-	bamsort -h
-
-Source
-------
-
-The biobambam source code is hosted on github:
-
-	git@github.com:gt1/biobambam.git
-
-Compilation of biobambam
-------------------------
-
-biobambam needs libmaus [https://github.com/gt1/libmaus] . When libmaus
-is installed in ${LIBMAUSPREFIX} then biobambam can be compiled and
-installed in ${HOME}/biobambam using
-
-	- autoreconf -i -f
-	- ./configure --with-libmaus=${LIBMAUSPREFIX} \
-		--prefix=${HOME}/biobambam
-	- make install
-
-***
-# 	qualimap
-	
-	http://qualimap.bioinfo.cipf.es/
 	
