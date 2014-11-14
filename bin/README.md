@@ -100,7 +100,7 @@ structural variant calling, basic reporting and visualisations.
 gatk = indel realignment and base recalibration. Non-academics/commercial groups need to pay for GATK.  
 Currently **ngs_full_gatk** is the most developed module.
 
-### The full pipelines implement:   
+### The "full" pipelines implement:   
 
 - **Quality control of raw fastq** files using **[FASTQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)**  
 
