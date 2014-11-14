@@ -58,18 +58,20 @@ The full pipelines implement:
 
 - **Quality control of raw fastq** files using **[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)**  
 - **Read trimming** using **[trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic)**.   
-- **Alignment** using one of **[bwa](http://bio-bwa.sourceforge.net/)**,
-**[stampy](http://www.well.ox.ac.uk/project-stampy)**,
-**[novoalign](http://www.novocraft.com)**,**(bowtie2)[http://bowtie-bio.sourceforge.net/bowtie2/index.shtml]**. 
-- **SAM/BAM sorting and indexing** with **samtools**.  
-- **Read Group information added** using **Picardtools:AddOrReplaceReadGroups** 
-- **Duplicate marking** with **Picardtools:MarkDuplicates**.  
+- **Alignment** using one of 
+**[bwa](http://bio-bwa.sourceforge.net/)**, 
+**[stampy](http://www.well.ox.ac.uk/project-stampy)**, 
+**[novoalign](http://www.novocraft.com)**, 
+**[bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)**. 
+- **SAM/BAM sorting and indexing** with **[samtools](https://github.com/samtools/samtools)**.  
+- **Read Group information added** using **(Picardtools](http://broadinstitute.github.io/picard/):AddOrReplaceReadGroups** 
+- **Duplicate marking** with **(Picardtools](http://broadinstitute.github.io/picard/):MarkDuplicates**.  
 
 >For academic users or commercial groups whom have paid for GATK, the next steps are to perform   
 
-- **Indel indel realignment and base recalibration** using GATKs built in tools **GATK:RealignerTargetCreator**, **GATK:IndelRealigner**, **GATK:BaseRecalibrator**. 
+- **Indel indel realignment and base recalibration** using (GATK)(https://www.broadinstitute.org/gatk/) built in tools **GATK:RealignerTargetCreator**, **GATK:IndelRealigner**, **GATK:BaseRecalibrator**. 
 - **Post alignment quality control and reporting** is performed usng a number of tools and custom scripts: **bedtools:genomecov**, .
-- **SNP/INDEL** calling using one of **freebayes**, **platypus**, **GATK:UnifiedGenotyper**, **GATK:HaplotypeCaller** 
+- **SNP/INDEL** calling using one of **[freebayes](https://github.com/ekg/freebayes)**, **[platypus](http://www.well.ox.ac.uk/platypus)**, **GATK:UnifiedGenotyper**, **GATK:HaplotypeCaller** 
 or a combibation of these tools, if the `ensemble` method is called using [bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation).
 - **CNV** calling using one of or a combibation of if the `ensemble` methods are called.
 - **Variant annotation** using using one of or a combibation of if the `ensemble` methods are called.  
