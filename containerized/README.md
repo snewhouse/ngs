@@ -13,10 +13,14 @@ Release Version: 0.9.0
 - **NGSeasy updates every 12 months**
 - **GUI in dev**
 
+****************
+
 >NGSeasy is completely open source and we encourage interested folks to jump in and get involved in the dev with us.
 
+****************
+
 NGSeasy (Easy Analysis of Next Generation Sequencing)
--------------------------------------------------------
+=======================================================
 We present **NGSeasy (Easy Analysis of Next Generation Sequencing)**, a flexible and easy-to-use NGS pipeline for automated alignment, quality control, variant calling and annotation. The pipeline allows users with minimal computational/bioinformatic skills to set up and run an NGS analysis on their own samples, in less than an afternoon, on any operating system (Windows, iOS or Linux) or infrastructure (workstation, cluster or cloud).
 
 NGS pipelines typically utilize a large and varied range of software components and incur a substantial configuration burden during deployment which limits their portability to different computational environments. NGSeasy simplifies this by providing the pipeline components encapsulated in Docker™ containers and bundles in a wide choice of tools for each module. Each module of the pipeline represents one functional grouping of tools (e.g. sequence alignment, variant calling etc.).
@@ -95,13 +99,11 @@ structural variant calling, basic reporting and visualisations.
 
 gatk = indel realignment and base recalibration. Non-academics/commercial groups need to pay for GATK.  
 
-****************
+### The full pipelines implement:   
 
-The full pipelines implement:   
+- **Quality control of raw fastq** files using **[FASTQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)**  
 
-- **Quality control of raw fastq** files using **[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)**  
-
-- **Read trimming** using **[trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic)**.   
+- **Read trimming** using **[TRIMMOMATIC](http://www.usadellab.org/cms/?page=trimmomatic)**.   
 
 - **Alignment** using one of 
     - **[BWA](http://bio-bwa.sourceforge.net/)**  
