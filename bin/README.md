@@ -11,6 +11,21 @@ NGSeasy (beta)
 
 NGSeasy is completely open source and we encourage interested folks to jump in and get involved in the dev with us.
 
+## NGSeasy (Easy Analysis of Next Generation Sequencing)
+
+We present **NGSeasy (Easy Analysis of Next Generation Sequencing)**, a flexible and easy-to-use NGS pipeline for automated alignment, quality control, variant calling and annotation. The pipeline allows users with minimal computational/bioinformatic skills to set up and run an NGS analysis on their own samples, in less than an afternoon, on any operating system (Windows, iOS or Linux) or infrastructure (workstation, cluster or cloud).
+
+NGS pipelines typically utilize a large and varied range of software components and incur a substantial configuration burden during deployment which limits their portability to different computational environments. NGSeasy simplifies this by providing the pipeline components encapsulated in Docker™ containers and bundles in a wide choice of tools for each module. Each module of the pipeline represents one functional grouping of tools (e.g. sequence alignment, variant calling etc.).
+
+Deploying the pipeline is as simple as pulling the container images from the public repository into any host running Docker. NGSeasy can be deployed on any medium to high-end workstation, high performance computer cluster and compute clouds (public/private cloud computing) - enabling instant access to elastic scalability without investment overheads for additional compute hardware and makes open and reproducible research straight forward for the greater scientific community.
+
+### Advantages ###
+- Easy to use for non-informaticians.  
+- All run from a single config file that can be made in Excel.  
+- User can select from mutiple aligners, variant callers and variant annotators
+- No scary python, .yaml or .json files...just one simple Excel workbook saved as a textfile.  
+- Just follow our simple set of instructions and NGS away!  
+
 ****
 ### Authors
 
@@ -28,31 +43,7 @@ Please contact us for help/guidance on using the beta release.
 
 **Lets us know if you want other tools added to NGSeasy**
 
-### Coming Soon
-- SLOPE (CNV fo targetted NSG)  
-- Cancer Pipelines
-- Annotation Pipelines and Databases
-- Visualisation Pipelines
-- New Aligners:- GSNAP, mr- and mrs-Fast,gem
-- Var Callers:- VarScan2
-- SGE scripts and basic BASH scrips for running outside of Docker
-
 ****************
-
-## NGSeasy (Easy Analysis of Next Generation Sequencing)
-
-We present **NGSeasy (Easy Analysis of Next Generation Sequencing)**, a flexible and easy-to-use NGS pipeline for automated alignment, quality control, variant calling and annotation. The pipeline allows users with minimal computational/bioinformatic skills to set up and run an NGS analysis on their own samples, in less than an afternoon, on any operating system (Windows, iOS or Linux) or infrastructure (workstation, cluster or cloud).
-
-NGS pipelines typically utilize a large and varied range of software components and incur a substantial configuration burden during deployment which limits their portability to different computational environments. NGSeasy simplifies this by providing the pipeline components encapsulated in Docker™ containers and bundles in a wide choice of tools for each module. Each module of the pipeline represents one functional grouping of tools (e.g. sequence alignment, variant calling etc.).
-
-Deploying the pipeline is as simple as pulling the container images from the public repository into any host running Docker. NGSeasy can be deployed on any medium to high-end workstation, high performance computer cluster and compute clouds (public/private cloud computing) - enabling instant access to elastic scalability without investment overheads for additional compute hardware and makes open and reproducible research straight forward for the greater scientific community.
-
-### Advantages ###
-- Easy to use for non-informaticians.  
-- All run from a single config file that can be made in Excel.  
-- User can select from mutiple aligners, variant callers and variant annotators
-- No scary python, .yaml or .json files...just one simple Excel workbook saved as a textfile.  
-- Just follow our simple set of instructions and NGS away!  
 
 ### Pipelines ###
 
@@ -113,6 +104,16 @@ Once you have paid/registered and downloaded the tool, we provide scripts and gu
 ```{bash}
 docker build -t compbio/ngseasy-${TOOL} .
 ```
+****
+
+### Coming Soon
+- SLOPE (CNV fo targetted NSG)  
+- Cancer Pipelines
+- Annotation Pipelines and Databases
+- Visualisation Pipelines
+- New Aligners:- GSNAP, mr- and mrs-Fast,gem
+- Var Callers:- VarScan2
+- SGE scripts and basic BASH scrips for running outside of Docker
 
 ***********
 
