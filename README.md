@@ -590,22 +590,6 @@ nsgeasy_variant_annotation -c ${config_tsv} -d ${project_directory};
 
 ```
 
-recommend full : trimmed aln gatk filtered and ensemble calls (multi SNP/INDELS/SV callers) base recalibration
-if not novoalign then stampy (bwa with stampy)
-
-# Pipelines :  
-ngs_full_gatk     [FastQC > Trimmomatic > BWA/Stampy > Addreadgroup > MarkDuplicates > IndelRealn > BaseRecalibration > Freebayes/Platypus/HaplotypeCaller > bcbio > Delly/Lumpy > Annovar > reports]  
-ngs_full_no_gatk  [FastQC > Trimmomatic > BWA/Stampy > Addreadgroup > MarkDuplicates > Freebayes/Platypus > bcbio > Delly/Lumpy > Annovar > reports]   
-
-
-```
-****
-
-To add :
-- getting the pipeline and setting up resources data
-- not all steps need config?
-- pipeline option need to be set how? list of steps, specified full, full_no_gatk, var_call_only, cnv_call_only, qc_reports??
-
 ****
 
 Output suffixes 
