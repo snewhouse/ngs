@@ -259,10 +259,6 @@ docker build -t compbio/ngseasy-${TOOL} .
 
 ***********
 
-
-[Back to The Begining](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngs-easy-v10)
-
-******
 Getting the Dockerised NGSeasy Pipeline
 -------------------------------------------
 
@@ -278,14 +274,14 @@ Getting All NGSeasy images, Reasources and Scripts
 All Images can be pulled down from [Docker Hub](https://hub.docker.com/u/compbio/) using the script [get_NGSeasy.sh](https://github.com/KHP-Informatics/ngs/blob/master/containerized/get_NGSeasy.sh)
 
 
-**NGSeasy Reasources**
+### NGSeasy Reasources
 
-- ``reference_genomes_b37.tgz`` b37 reference genomes indexed for use with all provided aligners (BWA, Bowtie2, Stampy, Novoalign) and annotation bed files for use with pipeline scripts
-- ``gatk_resources.tar.gz`` gatk resources bundle
-- ``fastq_example.tgz`` Example 75bp PE Illumina Whole Exome Sequence fastq data for **NA12878**
+- **reference_genomes_b37.tgz** b37 reference genomes indexed for use with all provided aligners (BWA, Bowtie2, Stampy, Novoalign) and annotation bed files for use with pipeline scripts
+- **gatk_resources.tar.gz** gatk resources bundle
+- **fastq_example.tgz** Example 75bp PE Illumina Whole Exome Sequence fastq data for **NA12878**
 - Annotation Databases Coming in the next update 
  
-**FTP Login Details**
+### FTP Login Details
 
 ```bash
 ftp:  159.92.120.21
