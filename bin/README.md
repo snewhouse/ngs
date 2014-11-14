@@ -63,9 +63,10 @@ The full pipelines implement:
 - **Read Group information added** using **Picardtools:AddOrReplaceReadGroups** 
 - **Duplicate marking** with **Picardtools:MarkDuplicates**.  
 For academic users or commercial groups whom have paid for GATK, the next steps are to perform   
-- **Indel indel realignment and base recalibration** using GATKs built in tools **GATK:** and **GATK:**. 
+- **Indel indel realignment and base recalibration** using GATKs built in tools **GATK:RealignerTargetCreator**, **GATK:IndelRealigner**, **GATK:BaseRecalibrator**. 
 - **Post alignment quality control and reporting** is performed usng a number of tools and custom scripts: **bedtools:genomecov**, .
-- **SNP/INDEL** calling using one of **frebayes**, **platypus**, **GATK:UnifiedGenotyper** or **GATK:HaplotypeCaller** a combibation of if the `ensemble` methods are called.
+- **SNP/INDEL** calling using one of **freebayes**, **platypus**, **GATK:UnifiedGenotyper**, **GATK:HaplotypeCaller** 
+or a combibation of these tools, if the `ensemble` method is called using [bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation).
 - **CNV** calling using one of or a combibation of if the `ensemble` methods are called.
 - **Variant annotation** using using one of or a combibation of if the `ensemble` methods are called.  
 - **Variant reporting** using custom scripts
@@ -77,7 +78,7 @@ We have noticed considerable speed-ups in alignmnet time and increased quality o
 For non-GATK users, use of variant callers that perform local re-aligmnet around candidate sites
 e.g. freebayes, platypus,GATK:HaplotypeCaller, mitigate the need for the indel realignment stages.
 Base quality score recalibration is also recommended. 
-Non-GATK users are encouraged to use aligners such as **[stampy](http://www.well.ox.ac.uk/project-stampy)** and **(novoalign)[http://www.novocraft.com/]** that perform base quality score recal on the fly.
+Non-GATK users are encouraged to use aligners such as **[stampy](http://www.well.ox.ac.uk/project-stampy)** and **[novoalign](http://www.novocraft.com)** that perform base quality score recal on the fly.
 We will be testing and adding fucntionality for use of **[BamUtil](https://github.com/statgen/bamUtil):[recab](http://genome.sph.umich.edu/wiki/BamUtil:_recab)** 
 for base quality score recalibration in the near future as an alternative to GATK. 
 
@@ -85,6 +86,7 @@ for base quality score recalibration in the near future as an alternative to GAT
 - https://basecallbio.wordpress.com/2013/04/23/base-quality-score-rebinning/  
 - https://github.com/statgen/bamUtil  
 - http://genome.sph.umich.edu/wiki/BamUtil:_recab  
+- https://github.com/chapmanb/bcbio.variation  
 
 *** 
 
