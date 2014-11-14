@@ -2,7 +2,7 @@ NGSeasy (beta)
 ===================
 Authors: Stephen J Newhouse, Amos Folarin   
 Release Version: 0.9.0  
-
+****************
 **A [Dockerized](https://www.docker.com/) and [Virtulaized](https://www.virtualbox.org/) ngs pipeline and tool-box.** 
 
 **With NGSeasy you can now have full suite of NGS tools up and running on any high end workstation in an afternoon**
@@ -94,10 +94,11 @@ structural variant calling, basic reporting and visualisations.
 
 | Pipeline             | Short Description    |
 |----------------------|----------------------|
-| ngs_full_gatk        | fastq to recalibrated bam to vcf  |
+| [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk)        | fastq to recalibrated bam to vcf  |
 | ngs_full_no_gatk     | fastq to bam to vcf  |
 
 gatk = indel realignment and base recalibration. Non-academics/commercial groups need to pay for GATK.  
+Currently **ngs_full_gatk** is the most developed module.
 
 ### The full pipelines implement:   
 
