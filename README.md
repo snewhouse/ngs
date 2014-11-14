@@ -28,6 +28,7 @@ Deploying the pipeline is as simple as pulling the container images from the pub
 - Allows reproducible research  
 - Version controlled for auditing  
 - Customisable  
+- Easy to add new tools  
 
 ****
 ### Authors
@@ -72,7 +73,7 @@ The full pipelines implement:
 
 >For academic users or commercial groups whom have paid for GATK, the next steps are to perform   
 
-- **Indel indel realignment and base recalibration** using [GATK](https://www.broadinstitute.org/gatk/) built in tools **GATK:RealignerTargetCreator**, **GATK:IndelRealigner**, **GATK:BaseRecalibrator**. 
+- **Indel indel realignment and base recalibration** using **[GATK](https://www.broadinstitute.org/gatk/)** built in tools **GATK:RealignerTargetCreator**, **GATK:IndelRealigner**, **GATK:BaseRecalibrator**. 
 - **Post alignment quality control and reporting** is performed usng a number of tools and custom scripts: **bedtools:genomecov**, .
 - **SNP and small INDEL** calling using one of 
     - **[freebayes](https://github.com/ekg/freebayes)**, 
