@@ -78,7 +78,9 @@ structural variant calling, basic reporting and visualisations.
 
 ![ngsEASY](https://github.com/KHP-Informatics/ngs/blob/dev2/figs/ngsEASY_component_visualisation.png "Dockerized NGS Pipeline")
 
-### The Pipelines ###
+****************
+
+## The Pipelines ##
 
 | Pipeline             | Short Description    |
 |----------------------|----------------------|
@@ -86,6 +88,8 @@ structural variant calling, basic reporting and visualisations.
 | ngs_full_no_gatk     | fastq to bam to vcf  |
 
 gatk = indel realignment and base recalibration. Non-academics/commercial groups need to pay for GATK.  
+
+****************
 
 The full pipelines implement:   
 
