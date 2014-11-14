@@ -73,8 +73,11 @@ The full pipelines implement:
 
 >For academic users or commercial groups whom have paid for GATK, the next steps are to perform   
 
-- **Indel indel realignment and base recalibration** using **[GATK](https://www.broadinstitute.org/gatk/)** built in tools **GATK:RealignerTargetCreator**, **GATK:IndelRealigner**, **GATK:BaseRecalibrator**. 
-- **Post alignment quality control and reporting** is performed usng a number of tools and custom scripts: **bedtools:genomecov**, .
+- **Indel indel realignment and base quality score recalibration** using **[GATK](https://www.broadinstitute.org/gatk/)** built in tools :
+    - **[GATK:RealignerTargetCreator](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_indels_RealignerTargetCreator.php)** 
+    - **[GATK:IndelRealigner](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_indels_IndelRealigner.php)** 
+    - **[GATK:BaseRecalibrator](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_bqsr_BaseRecalibrator.php)** 
+- **Post alignment quality control and reporting** is performed usng a number of tools and custom scripts: **[bedtools:genomecov](https://github.com/arq5x/bedtools2)**.
 - **SNP and small INDEL** calling using one of 
     - **[freebayes](https://github.com/ekg/freebayes)** 
     - **[platypus](http://www.well.ox.ac.uk/platypus)** 
