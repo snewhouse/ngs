@@ -94,10 +94,11 @@ structural variant calling, basic reporting and visualisations.
 
 | Pipeline             | Short Description    |
 |----------------------|----------------------|
-| ngs_full_gatk        | fastq to recalibrated bam to vcf  |
+| [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk)        | fastq to recalibrated bam to vcf  |
 | ngs_full_no_gatk     | fastq to bam to vcf  |
 
 gatk = indel realignment and base recalibration. Non-academics/commercial groups need to pay for GATK.  
+Currently **ngs_full_gatk** is the most developed module.
 
 ### The full pipelines implement:   
 
