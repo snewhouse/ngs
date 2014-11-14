@@ -1,16 +1,21 @@
-NGSeasy
+NGSeasy (beta)
 ===================
 **A [Dockerized](https://www.docker.com/) and [Virtulaized](https://www.virtualbox.org/) ngs pipeline and tool-box.** 
 
 **With NGSeasy you can now have full suite of NGS tools up and running on any high end workstation in an afternoon**
 
-- **NGSeasy-v1.0 Full Production release will be available Dec 2014**    
-
 **Note:** NGSeasy is under **heavy development** and evolves quickly. 
 
-Please contact us for help/guidance on using the beta release. 
+- **NGSeasy-v1.0 Full Production release will be available Dec 2014**    
+- **NGSeasy updates every 12 months:**
+
+NGSeasy is completely open source and we encourage interested folks to jump in and get involved in the dev with us.
+
 ****
 ### Authors
+
+Please contact us for help/guidance on using the beta release. 
+
 - Amos Folarin <amosfolarin@gmail.com>  
 <a href="http://www.linkedin.com/pub/amos-folarin/34/b06/978">
 <img src="http://www.linkedin.com/img/webpromo/btn_viewmy_160x33.png" width="160" height="33" alt="View Amos's profile on LinkedIn">
@@ -21,9 +26,16 @@ Please contact us for help/guidance on using the beta release.
 <img src="http://www.linkedin.com/img/webpromo/btn_viewmy_160x33.png" width="160" height="33" alt="View Steve's profile on LinkedIn">
 </a>
 
-- **NGSeasy updates every 12 months:**
-
 **Lets us know if you want other tools added to NGSeasy**
+
+### Coming Soon
+- SLOPE (CNV fo targetted NSG)  
+- Cancer Pipelines
+- Annotation Pipelines and Databases
+- Visualisation Pipelines
+- New Aligners:- GSNAP, mr- and mrs-Fast,gem
+- Var Callers:- VarScan2
+- SGE scripts and basic BASH scrips for running outside of Docker
 
 ****************
 
@@ -35,6 +47,7 @@ NGS pipelines typically utilize a large and varied range of software components 
 
 Deploying the pipeline is as simple as pulling the container images from the public repository into any host running Docker. NGSeasy can be deployed on any medium to high-end workstation, high performance computer cluster and compute clouds (public/private cloud computing) - enabling instant access to elastic scalability without investment overheads for additional compute hardware and makes open and reproducible research straight forward for the greater scientific community.
 
+### Advantages ###
 - Easy to use for non-informaticians.  
 - All run from a single config file that can be made in Excel.  
 - User can select from mutiple aligners, variant callers and variant annotators
@@ -50,16 +63,6 @@ Deploying the pipeline is as simple as pulling the container images from the pub
 
 gatk = indel realignment and base recalibration  
 
-### Coming Soon
-- Savant 
-- SLOPE (CNV fo targetted NSG)  
-- Cancer Pipelines
-- Annotation Pipelines and Databases
-- Visualisation Pipelines
-- New Aligners:- GSNAP, mr- and mrs-Fast,gem
-- Var Callers:- VarScan2
-- SGE scripts and basic BASH scrips for running outside of Docker
-
 *** 
 
 ## Dockerised and Automated Builds ##
@@ -67,10 +70,10 @@ gatk = indel realignment and base recalibration
 Get it all at [compbio docker hub](https://registry.hub.docker.com/u/compbio)
 
 ```{bash}
-docker pull compbio/${TOOL}
+docker pull compbio/ngseasy-${TOOL}
 ```
 
-| Tools | Build |
+| Tool | Build |
 |-------------|----------------------|
 |ngseasy-base | automated build |
 |bcbiovar | automated build |
@@ -89,11 +92,12 @@ samtools includes bcftools and htslib
 ## Dockerised and Manual Builds ##
 Tools require registration and/or payment
 
-| Tools | Build |
+| Tool | Build |
 |-------------|----------------------|
 |novoalign | manual build |
 |annovar | manual build |
 |stampy | manual build |
+|platypus | manual build |
 
 Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. These include the following:- 
 
@@ -104,10 +108,10 @@ Currently we are not able to automatically build some of the tools in pre-built 
 * Platypus  
 
 These tools require manual download and registration with the proivder. For non-academics/commercial groups, you will need to pay for some of these tools.
-Once you have paid/registered and downloaded the tool, we provide scripts and guidance on building these tools on your system. 
+Once you have paid/registered and downloaded the tool, we provide scripts and guidance for building these tools on your system. 
 
 ```{bash}
-docker build -t compbio/${TOOL} .
+docker build -t compbio/ngseasy-${TOOL} .
 ```
 
 ***********
