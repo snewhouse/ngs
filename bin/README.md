@@ -86,7 +86,7 @@ or a combibation of these tools, if the `ensemble` method is called using
 **[ExomeDepth](http://cran.r-project.org/web/packages/ExomeDepth/index.html)**,
 or a combibation of if the `ensemble` methods are called.
 - **Variant annotation** using using one 
-**SnpEff(http://snpeff.sourceforge.net/)**, 
+**[SnpEff](http://snpeff.sourceforge.net/)**, 
 **[ANNOVAR](http://www.openbioinformatics.org/annovar/)**, 
 **[VEP](http://www.ensembl.org/info/docs/tools/vep/index.html)**
 or a combibation of if the `ensemble` methods are called.  
