@@ -101,9 +101,9 @@ gatk = indel realignment and base recalibration. Non-academics/commercial groups
 
 ### The full pipelines implement:   
 
-- **Quality control of raw fastq** files using **[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)**  
+- **Quality control of raw fastq** files using **[FASTQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)**  
 
-- **Read trimming** using **[trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic)**.   
+- **Read trimming** using **[TRIMMOMATIC](http://www.usadellab.org/cms/?page=trimmomatic)**.   
 
 - **Alignment** using one of 
     - **[BWA](http://bio-bwa.sourceforge.net/)**  
