@@ -31,7 +31,7 @@ Deploying the pipeline is as simple as pulling the container images from the pub
 
 Please contact us for help/guidance on using the beta release. 
 
-- Amos Folarin <amosfolarin@gmail.com>  [amosfolarin](https://twitter.com/amosfolarin?lang=en)   
+- Amos Folarin <amosfolarin@gmail.com>  [@amosfolarin](https://twitter.com/amosfolarin?lang=en)   
 <a href="http://www.linkedin.com/pub/amos-folarin/34/b06/978">
 <img src="http://www.linkedin.com/img/webpromo/btn_viewmy_160x33.png" width="160" height="33" alt="View Amos's profile on LinkedIn">
 </a>
