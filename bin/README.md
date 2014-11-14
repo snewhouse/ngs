@@ -1,45 +1,53 @@
-NGSeasy
+NGSeasy (beta)
 ===================
 **A [Dockerized](https://www.docker.com/) and [Virtulaized](https://www.virtualbox.org/) ngs pipeline and tool-box.** 
 
 **With NGSeasy you can now have full suite of NGS tools up and running on any high end workstation in an afternoon**
 
+**Note:** NGSeasy is under **heavy development** and the code and docs evolve quickly. 
+
 - **NGSeasy-v1.0 Full Production release will be available Dec 2014**    
-
-**Note:** NGSeasy is under **heavy development** and evolves quickly. 
-
-Please contact us for help/guidance on using the beta release. 
-****
-### Authors
-- Amos Folarin <amosfolarin@gmail.com>  
-<a href="http://www.linkedin.com/pub/amos-folarin/34/b06/978">
-<img src="http://www.linkedin.com/img/webpromo/btn_viewmy_160x33.png" width="160" height="33" alt="View Amos's profile on LinkedIn">
-</a>
-
-- Stephen J Newhouse <stephen.j.newhouse@gmail.com>  
-<a href="http://uk.linkedin.com/pub/dr-stephen-newhouse/29/89a/11a">
-<img src="http://www.linkedin.com/img/webpromo/btn_viewmy_160x33.png" width="160" height="33" alt="View Steve's profile on LinkedIn">
-</a>
-
 - **NGSeasy updates every 12 months:**
 
-**Lets us know if you want other tools added to NGSeasy**
+>NGSeasy is completely open source and we encourage interested folks to jump in and get involved in the dev with us.
 
-****************
-
-## NGSeasy (Easy Analysis of Next Generation Sequencing)
-
+NGSeasy (Easy Analysis of Next Generation Sequencing)
+-------------------------------------------------------
 We present **NGSeasy (Easy Analysis of Next Generation Sequencing)**, a flexible and easy-to-use NGS pipeline for automated alignment, quality control, variant calling and annotation. The pipeline allows users with minimal computational/bioinformatic skills to set up and run an NGS analysis on their own samples, in less than an afternoon, on any operating system (Windows, iOS or Linux) or infrastructure (workstation, cluster or cloud).
 
 NGS pipelines typically utilize a large and varied range of software components and incur a substantial configuration burden during deployment which limits their portability to different computational environments. NGSeasy simplifies this by providing the pipeline components encapsulated in Docker™ containers and bundles in a wide choice of tools for each module. Each module of the pipeline represents one functional grouping of tools (e.g. sequence alignment, variant calling etc.).
 
 Deploying the pipeline is as simple as pulling the container images from the public repository into any host running Docker. NGSeasy can be deployed on any medium to high-end workstation, high performance computer cluster and compute clouds (public/private cloud computing) - enabling instant access to elastic scalability without investment overheads for additional compute hardware and makes open and reproducible research straight forward for the greater scientific community.
 
+### Advantages ###
 - Easy to use for non-informaticians.  
 - All run from a single config file that can be made in Excel.  
 - User can select from mutiple aligners, variant callers and variant annotators
 - No scary python, .yaml or .json files...just one simple Excel workbook saved as a textfile.  
 - Just follow our simple set of instructions and NGS away!  
+- Allows reproducible research  
+- Version controlled for auditing  
+- Customisable  
+- Easy to add new tools  
+
+****
+### Authors
+
+Please contact us for help/guidance on using the beta release. 
+
+- Amos Folarin <amosfolarin@gmail.com>  [@amosfolarin](https://twitter.com/amosfolarin?lang=en)   
+<a href="http://www.linkedin.com/pub/amos-folarin/34/b06/978">
+<img src="http://www.linkedin.com/img/webpromo/btn_viewmy_160x33.png" width="160" height="33" alt="View Amos's profile on LinkedIn">
+</a>
+
+- Stephen J Newhouse <stephen.j.newhouse@gmail.com> [@s_j_newhouse](https://twitter.com/s_j_newhouse?lang=en)  
+<a href="http://uk.linkedin.com/pub/dr-stephen-newhouse/29/89a/11a">
+<img src="http://www.linkedin.com/img/webpromo/btn_viewmy_160x33.png" width="160" height="33" alt="View Steve's profile on LinkedIn">
+</a>
+
+**Lets us know if you want other tools added to NGSeasy**
+
+****************
 
 ### Pipelines ###
 
@@ -48,28 +56,86 @@ Deploying the pipeline is as simple as pulling the container images from the pub
 | ngs_full_gatk        | fastq to recalibrated bam to vcf  |
 | ngs_full_no_gatk     | fastq to bam to vcf  |
 
-gatk = indel realignment and base recalibration  
+gatk = indel realignment and base recalibration. Non-academics/commercial groups need to pay for GATK.  
 
-### Coming Soon
-- Savant 
-- SLOPE (CNV fo targetted NSG)  
-- Cancer Pipelines
-- Annotation Pipelines and Databases
-- Visualisation Pipelines
-- New Aligners:- GSNAP, mr- and mrs-Fast,gem
-- Var Callers:- VarScan2
-- SGE scripts and basic BASH scrips for running outside of Docker
+The full pipelines implement:   
+
+- **Quality control of raw fastq** files using **[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)**  
+- **Read trimming** using **[trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic)**.   
+- **Alignment** using one of 
+    - **[bwa](http://bio-bwa.sourceforge.net/)**  
+    - **[stampy](http://www.well.ox.ac.uk/project-stampy)**   
+    - **[novoalign](http://www.novocraft.com)**  
+    - **[bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)**  
+- **SAM/BAM sorting and indexing** with **[samtools](https://github.com/samtools/samtools)**.  
+- **Read Group information added** using **[Picardtools](http://broadinstitute.github.io/picard/):AddOrReplaceReadGroups** 
+- **Duplicate marking** with **[Picardtools](http://broadinstitute.github.io/picard/):MarkDuplicates**.  
+
+>For academic users or commercial groups whom have paid for GATK, the next steps are to perform   
+
+- **Indel indel realignment and base quality score recalibration** using **[GATK](https://www.broadinstitute.org/gatk/)** built in tools :
+    - **[GATK:RealignerTargetCreator](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_indels_RealignerTargetCreator.php)** 
+    - **[GATK:IndelRealigner](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_indels_IndelRealigner.php)** 
+    - **[GATK:BaseRecalibrator](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_bqsr_BaseRecalibrator.php)** 
+- **Post alignment quality control and reporting** is performed usng a number of tools and custom scripts: 
+    - **[bedtools:genomecov](https://github.com/arq5x/bedtools2)**
+    - **[samtools flagstats]()**
+    - **[bedtools bamtobed]()**
+    - **[PICARDTOOLS CollectMultipleMetrics]()**    
+    - **[PICARDTOOLS CollectAlignmentSummaryMetrics]()**    
+    - **[PICARDTOOLS CollectWgsMetrics]()**    
+    - **[PICARDTOOLS CollectTargetedPcrMetrics]()** (coming soon)    
+- **SNP and small INDEL** calling using one of 
+    - **[freebayes](https://github.com/ekg/freebayes)** 
+    - **[platypus](http://www.well.ox.ac.uk/platypus)** 
+    - **[GATK:UnifiedGenotyper](https://www.broadinstitute.org/gatk/guide/tooldocs/org_broadinstitute_gatk_tools_walkers_genotyper_UnifiedGenotyper.php)** 
+    - **[GATK:HaplotypeCaller](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php)** 
+    - or a combibation of these tools, if the `ensemble` method is called using **[bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation)**
+- **Structural Variant (CNV)** calling using one of the following,
+    - **[DELLY](https://github.com/tobiasrausch/delly)** 
+    - **[LUMPY](https://github.com/arq5x/lumpy-sv/)**
+    - **[cn.MOPS](http://www.bioinf.jku.at/software/cnmops/)**
+    - **[m-HMM](https://www.stt.msu.edu/users/hengwang/mHMM.html)**
+    - **[ExomeDepth](http://cran.r-project.org/web/packages/ExomeDepth/index.html)**
+    - or a combibation of if the `ensemble` methods are called.
+- **Variant annotation** using using one 
+    - **[SnpEff](http://snpeff.sourceforge.net/)** 
+    - **[ANNOVAR](http://www.openbioinformatics.org/annovar/)** 
+    - **[VEP](http://www.ensembl.org/info/docs/tools/vep/index.html)**
+    - or a combibation of if the `ensemble` methods are called.  
+- **Variant reporting** using custom scripts
+
+**Note** Some of the later functions i.e. variant annotation and qc reporting are still in dev.  
+
+We highly recommed read trimming prior to alignment. 
+We have noticed considerable speed-ups in alignmnet time and increased quality of SNP/INDEL calls using trimmed vs raw fastq.
+For non-GATK users, use of variant callers that perform local re-aligmnet around candidate sites
+e.g. [freebayes](https://github.com/ekg/freebayes), [platypus](http://www.well.ox.ac.uk/platypus), mitigate the need for the indel realignment stages.  
+
+Base quality score recalibration is also recommended. 
+Non-GATK users are encouraged to use aligners such as **[stampy](http://www.well.ox.ac.uk/project-stampy)** and **[novoalign](http://www.novocraft.com)** that perform base quality score recal on the fly.
+As an alternative to GATK, We will be testing and adding fucntionality for use of 
+**[BamUtil](https://github.com/statgen/bamUtil):[recab](http://genome.sph.umich.edu/wiki/BamUtil:_recab)** w
+for base quality score recalibration in the near future  
+
+- https://bcbio.wordpress.com/  
+- https://basecallbio.wordpress.com/2013/04/23/base-quality-score-rebinning/  
+- https://github.com/statgen/bamUtil  
+- http://genome.sph.umich.edu/wiki/BamUtil:_recab  
+- https://github.com/chapmanb/bcbio.variation  
+- http://plagnol-lab.blogspot.co.uk/2013/11/faq-and-clarifications-for-exomedepth-r.html
 
 *** 
+
 ## Dockerised and Automated Builds ##
 
 Get it all at [compbio docker hub](https://registry.hub.docker.com/u/compbio)
 
 ```{bash}
-docker pull compbio/${TOOL}
+docker pull compbio/ngseasy-${TOOL}
 ```
 
-| Tools | Build |
+| Tool | Build |
 |-------------|----------------------|
 |ngseasy-base | automated build |
 |bcbiovar | automated build |
@@ -84,18 +150,41 @@ docker pull compbio/${TOOL}
 
 samtools includes bcftools and htslib  
 
+
 ## Dockerised and Manual Builds ##
 Tools require registration and/or payment
 
-| Tools | Build |
+| Tool | Build |
 |-------------|----------------------|
 |novoalign | manual build |
 |annovar | manual build |
 |stampy | manual build |
+|platypus | manual build |
+
+Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. These include the following:- 
+
+* GATK  
+* Novoalign  
+* Annovar  
+* Stampy  
+* Platypus  
+
+These tools require manual download and registration with the proivder. For non-academics/commercial groups, you will need to pay for some of these tools.
+Once you have paid/registered and downloaded the tool, we provide scripts and guidance for building these tools on your system. 
 
 ```{bash}
-docker build -t compbio/${TOOL} /
+docker build -t compbio/ngseasy-${TOOL} .
 ```
+****
+
+### Coming Soon
+- SLOPE (CNV fo targetted NSG)  
+- Cancer Pipelines
+- Annotation Pipelines and Databases
+- Visualisation Pipelines
+- New Aligners:- GSNAP, mr- and mrs-Fast,gem
+- Var Callers:- VarScan2
+- SGE scripts and basic BASH scrips for running outside of Docker
 
 ***********
 
