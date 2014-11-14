@@ -151,17 +151,17 @@ docker pull compbio/ngseasy-${TOOL}
 
 | Tool | Build |
 |-------------|----------------------|
-|ngseasy-base | automated build |
-|bcbiovar | automated build |
-|bedtools | automated build |
-|fastqc | automated build |
-|bwa | automated build |
-|bowtie2 | automated build |
-|picardtools | automated build |
-|samtools | automated build |
-|snpeff | automated build |
-|trimmomatic | automated build |
-|vep | automated build |
+|[ngseasy-base](https://registry.hub.docker.com/u/compbio/ngseasy-base/) | automated build |
+|[bcbiovar](https://registry.hub.docker.com/u/compbio/ngseasy-bcbiovar/) | automated build |
+|[bedtools](https://registry.hub.docker.com/u/compbio/ngseasy-bedtools/) | automated build |
+|[fastqc](https://registry.hub.docker.com/u/compbio/ngseasy-fastqc) | automated build |
+|[bwa](https://registry.hub.docker.com/u/compbio/ngseasy-) | automated build |
+|[bowtie2](https://registry.hub.docker.com/u/compbio/ngseasy-) | automated build |
+|[picardtools](https://registry.hub.docker.com/u/compbio/ngseasy-) | automated build |
+|[samtools](https://registry.hub.docker.com/u/compbio/ngseasy-) | automated build |
+|[snpeff](https://registry.hub.docker.com/u/compbio/ngseasy-) | automated build |
+|[trimmomatic](https://registry.hub.docker.com/u/compbio/ngseasy-) | automated build |
+|[vep](https://registry.hub.docker.com/u/compbio/ngseasy-) | automated build |
 
 samtools includes bcftools and htslib  
 
