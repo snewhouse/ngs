@@ -2,7 +2,7 @@ NGSeasy (beta)
 ===================
 Authors: Stephen J Newhouse, Amos Folarin   
 Release Version: 0.9.0  
-
+****************
 **A [Dockerized](https://www.docker.com/) and [Virtulaized](https://www.virtualbox.org/) ngs pipeline and tool-box.** 
 
 **With NGSeasy you can now have full suite of NGS tools up and running on any high end workstation in an afternoon**
