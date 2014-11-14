@@ -322,7 +322,7 @@ structural variant calling, basic reporting and visualisations.
 
 Dockerised NGSeasy
 ==========================
-![docker](figs/Docker_container_engine_logo.png "Docker")  
+![docker](https://github.com/KHP-Informatics/ngs/blob/master/figs/Docker_container_engine_logo.png "Docker")  
 
 ## Installing Docker
 
