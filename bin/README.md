@@ -88,17 +88,17 @@ The full pipelines implement:
     - **[GATK:BaseRecalibrator](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_bqsr_BaseRecalibrator.php)** 
     
 - **Post alignment quality control and reporting** is performed usng a number of tools and custom scripts: 
+    - **[SAMTOOLS:flagstats](https://github.com/samtools/samtools)**
     - **[BEDTOOLS:genomecov](https://github.com/arq5x/bedtools2)**
-    - **[SAMTOOLS flagstats](https://github.com/samtools/samtools)**
-    - **[BEDTOOLS bamtobed](https://github.com/arq5x/bedtools2)**
+    - **[BEDTOOLS:bamtobed](https://github.com/arq5x/bedtools2)**
     - **[PICARDTOOLS:CollectMultipleMetrics](http://broadinstitute.github.io/picard/command-line-overview.html#CollectMultipleMetrics)**    
     - **[PICARDTOOLS:CollectAlignmentSummaryMetrics](http://broadinstitute.github.io/picard/command-line-overview.html#CollectAlignmentSummaryMetrics)**    
     - **[PICARDTOOLS:CollectWgsMetrics](http://broadinstitute.github.io/picard/command-line-overview.html#CollectWgsMetrics)**    
     - **[PICARDTOOLS:CollectTargetedPcrMetrics](http://broadinstitute.github.io/picard/command-line-overview.html#CollectTargetedPcrMetrics)** (coming soon)    
 
 - **SNP and small INDEL** calling using one of 
-    - **[freebayes](https://github.com/ekg/freebayes)** 
-    - **[platypus](http://www.well.ox.ac.uk/platypus)** 
+    - **[FREEBAYES](https://github.com/ekg/freebayes)** 
+    - **[PLATYPUS](http://www.well.ox.ac.uk/platypus)** 
     - **[GATK:UnifiedGenotyper](https://www.broadinstitute.org/gatk/guide/tooldocs/org_broadinstitute_gatk_tools_walkers_genotyper_UnifiedGenotyper.php)** 
     - **[GATK:HaplotypeCaller](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php)** 
     - or a combibation of these tools, if the `ensemble` method is called using **[bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation)**
