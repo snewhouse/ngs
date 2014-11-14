@@ -64,15 +64,19 @@ The full pipelines implement:
 **[novoalign](http://www.novocraft.com)**, 
 **[bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)**. 
 - **SAM/BAM sorting and indexing** with **[samtools](https://github.com/samtools/samtools)**.  
-- **Read Group information added** using **(Picardtools](http://broadinstitute.github.io/picard/):AddOrReplaceReadGroups** 
+- **Read Group information added** using **(Picardtools)(http://broadinstitute.github.io/picard/):AddOrReplaceReadGroups** 
 - **Duplicate marking** with **(Picardtools](http://broadinstitute.github.io/picard/):MarkDuplicates**.  
 
 >For academic users or commercial groups whom have paid for GATK, the next steps are to perform   
 
-- **Indel indel realignment and base recalibration** using (GATK)(https://www.broadinstitute.org/gatk/) built in tools **GATK:RealignerTargetCreator**, **GATK:IndelRealigner**, **GATK:BaseRecalibrator**. 
+- **Indel indel realignment and base recalibration** using [GATK](https://www.broadinstitute.org/gatk/) built in tools **GATK:RealignerTargetCreator**, **GATK:IndelRealigner**, **GATK:BaseRecalibrator**. 
 - **Post alignment quality control and reporting** is performed usng a number of tools and custom scripts: **bedtools:genomecov**, .
-- **SNP/INDEL** calling using one of **[freebayes](https://github.com/ekg/freebayes)**, **[platypus](http://www.well.ox.ac.uk/platypus)**, **GATK:UnifiedGenotyper**, **GATK:HaplotypeCaller** 
-or a combibation of these tools, if the `ensemble` method is called using [bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation).
+- **SNP/INDEL** calling using one of 
+**[freebayes](https://github.com/ekg/freebayes)**, 
+**[platypus](http://www.well.ox.ac.uk/platypus)**, 
+**[GATK:UnifiedGenotyper](https://www.broadinstitute.org/gatk/guide/tooldocs/org_broadinstitute_gatk_tools_walkers_genotyper_UnifiedGenotyper.php)**, 
+**[GATK:HaplotypeCaller](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php)** 
+or a combibation of these tools, if the `ensemble` method is called using [bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation)**.
 - **CNV** calling using one of or a combibation of if the `ensemble` methods are called.
 - **Variant annotation** using using one of or a combibation of if the `ensemble` methods are called.  
 - **Variant reporting** using custom scripts
