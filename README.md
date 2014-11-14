@@ -280,50 +280,6 @@ own versions of (below) in the build directory:
 
 ******
 
-# The Tools included are as follows :- 
-
-### Fastq manipulation
-- FASTQC
-- SEQTK
-- TRIMMOMATIC
-- FASTX TOOLKIT
-
-### Alignmnet
-- BWA
-- BOWTIE2
-- STAMPY
-- NOVOALIGN [FULL VERSION NOT AVAILABLE FOR PUBLIC USE]
-
-### SAM/BAM Processing
-- GATK
-- PICARDTOOLS
-- SAMTOOLS
-
-### MISC
-- BEDTOOLS
-- VCFTOOLS
-- BCFTOOLS
-
-### VARIANT CALLING
-- GATK
-- SAMTOOLS/BCFTOOLS
-- FREEBAYES
-- PLATYPUS
-
-### VARIANT ANNOTATION
-- ANNOVAR
-- SNPEFF
-- VEP
-
-### CNV/Structural Variant CALLING
-- lumpy
-- delly
-- m-HMM
-- cn.MOPS
-- ExomeDepth  
-
-[Back to The Begining](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngs-easy-v10)
-
 ******
 Getting the Dockerised NGSeasy Pipeline
 -------------------------------------------
@@ -336,7 +292,6 @@ As the containers themselves can be run as executables with pre-specified cpu an
 
 ### Available NGSeasy Docker images
 Available to download at our [compbio Docker Hub](https://hub.docker.com/u/compbio)
-
 
 Getting All NGSeasy images, Reasources and Scripts
 ------------------------------
@@ -355,45 +310,12 @@ All Images can be pulled down from [Docker Hub](https://hub.docker.com/u/compbio
 
 ```bash
 ftp:  159.92.120.21
-user: NGSeasy
-pwd:  NGSeasy1234
+user: compbio-public
+pwd:  compbio-public
 port: 21
 ```
 
-Example:- 
-
-```bash
-ftp 159.92.120.21
-Connected to 159.92.120.21.
-220 NASFTPD Turbo station 1.3.2e Server (ProFTPD) [159.92.120.21]
-Name (159.92.120.21:sjnewhousebrc): NGSeasy
-331 Password required for NGSeasy
-Password:
-230 User NGSeasy logged in
-Remote system type is UNIX.
-Using binary mode to transfer files.
-ftp> cd /Public/NGSeasy_Public_Resources
-250 CWD command successful
-ftp> prompt off
-Interactive mode off.
-ftp> ls
-200 PORT command successful
-150 Opening ASCII mode data connection for file list
--rw-rw----   1 500      everyone 4318681703 Nov 10 13:03 gatk_resources.tar.gz
--rw-rw----   1 500      everyone 17498751262 Nov 10 12:04 reference_genomes_b37.tar.gz
-226 Transfer complete
-ftp> get -r *
-```
-
 I would recommend using a separate program like [FileZilla](https://filezilla-project.org/), which will make it much easier for you to set up and manage your file transfers
-
-**NGSeasy pipeline scripts**
-
-
-Clone latest NGSeasy scripts from out GitHub repository
-```sh
-git clone https://github.com/KHP-Informatics/ngs.git
-```
 
 [Back to The Begining](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngs-easy-v10)
 
