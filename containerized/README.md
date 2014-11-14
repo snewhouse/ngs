@@ -236,25 +236,6 @@ docker build -t compbio/ngseasy-${TOOL} .
 
 ***********
 
-## Table of Contents
-[NOTICE TO USERS](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#notice-to-users-of-the-container-image-or-vm)  
-
-[Software requiring registration](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#software-composing-the-pipeline-requiring-registration)  
-
-[Overview of Pipeline Components](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#overview-of-pipeline-components)  
-
-[NGS Tools](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#the-tools-included-are-as-follows--)  
-
-[Dockerised NGSEASY set up](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#dockerised-ngseasy)  
-
-[Installing Docker](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#installing-docker)  
-
-[Getting the Dockerised NGSEASY Pipeline](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#getting-the-dockerised-ngseasy-pipeline)  
-
-[Running the Dockerised NGSEASY Pipeline](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#running-the-dockerised-ngseasy-pipeline)  
-
-******
-
 ## NOTICE TO USERS OF THE CONTAINER IMAGEs
 
 While the software used to build the image is composed of free software versions
@@ -277,8 +258,6 @@ own versions of (below) in the build directory:
    * ANNOVAR http://www.openbioinformatics.org/annovar/
 
 [Back to The Begining](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngs-easy-v10)
-
-******
 
 ******
 Getting the Dockerised NGSeasy Pipeline
@@ -489,8 +468,8 @@ ftp 159.92.120.21
 
 Connected to 159.92.120.21.
 220 NASFTPD Turbo station 1.3.2e Server (ProFTPD) [159.92.120.21]
-Name (159.92.120.21:sjnewhousebrc): NGSeasy
-331 Password required for NGSeasy
+Name (159.92.120.21:sjnewhousebrc): compbio-public
+331 Password required for compbio-public
 Password:
 230 User NGSeasy logged in
 Remote system type is UNIX.
@@ -568,10 +547,11 @@ ngseasy_get_annovar_db -d /media/ngs_projects/humandb
 
 # in the config file we as to call the pipeline [full]
 # here [ngs_full_gatk] is a wrapper/fucntion for calling the pipeline
+```
 
 Each function is a bash wrapper for an image/container(s)
 
-
+```
 ngs_full_gatk() { 
 
 #step through a full pipeline
@@ -617,8 +597,8 @@ nsgeasy_variant_annotation -c ${config_tsv} -d ${project_directory};
 #nsgeasy_variant_combine -c ${config_tsv} -d ${project_directory}
 #nsgeasy_variant_report -c ${config_tsv} -d ${project_directory}
 
-
 }
+```
 
 recommend full : trimmed aln gatk filtered and ensemble calls (multi SNP/INDELS/SV callers) base recalibration
 if not novoalign then stampy (bwa with stampy)
