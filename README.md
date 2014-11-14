@@ -110,11 +110,11 @@ The full pipelines implement:
     - **[BOWTIE2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)**  
     - *[SNAP](http://snap.cs.berkeley.edu/): COMING SOON!*
     
-- **SAM/BAM sorting and indexing** with **[samtools](https://github.com/samtools/samtools)**.  
+- **SAM/BAM sorting and indexing** with **[SAMTOOLS](https://github.com/samtools/samtools)**.  
 
-- **Read Group information added** using **[Picardtools](http://broadinstitute.github.io/picard/):[AddOrReplaceReadGroups](http://broadinstitute.github.io/picard/command-line-overview.html#AddOrReplaceReadGroups)** 
+- **Read Group information added** using **[PICARDTOOLS](http://broadinstitute.github.io/picard/):[AddOrReplaceReadGroups](http://broadinstitute.github.io/picard/command-line-overview.html#AddOrReplaceReadGroups)** 
 
-- **Duplicate marking** with **[Picardtools](http://broadinstitute.github.io/picard/):[MarkDuplicates](http://broadinstitute.github.io/picard/command-line-overview.html#MarkDuplicates)**.  
+- **Duplicate marking** with **[PICARDTOOLS](http://broadinstitute.github.io/picard/):[MarkDuplicates](http://broadinstitute.github.io/picard/command-line-overview.html#MarkDuplicates)**.  
 
 >For academic users or commercial groups whom have paid for GATK, the next steps are to perform   
 
