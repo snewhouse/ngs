@@ -4,7 +4,7 @@ NGSeasy (beta)
 
 **With NGSeasy you can now have full suite of NGS tools up and running on any high end workstation in an afternoon**
 
-**Note:** NGSeasy is under **heavy development** and evolves quickly. 
+**Note:** NGSeasy is under **heavy development** and the code and docs evolve quickly. 
 
 - **NGSeasy-v1.0 Full Production release will be available Dec 2014**    
 - **NGSeasy updates every 12 months:**
