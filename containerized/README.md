@@ -171,13 +171,14 @@ for base quality score recalibration in the near future
 
 *** 
 
-## Dockerised and Automated Builds ##
+# Available NGSeasy Docker images
+Available to download at our **[compbio Docker Hub](https://hub.docker.com/u/compbio)**
 
-Get it all at [compbio docker hub](https://registry.hub.docker.com/u/compbio)
-
-```{bash}
+```bash
 docker pull compbio/ngseasy-${TOOL}
 ```
+
+## Dockerised and Automated Builds ##
 
 | Tool | Build |
 |-------------|----------------------|
@@ -268,9 +269,6 @@ We have adapted the current best practices from the Genome Analysis Toolkit (GAT
 As the containers themselves can be run as executables with pre-specified cpu and RAM resources, the orchestration of the pipeline can be placed under the control of conventional load balancers if this mode is required.  
 
 *****************
-
-### Available NGSeasy Docker images
-Available to download at our [compbio Docker Hub](https://hub.docker.com/u/compbio)
 
 Getting All NGSeasy images, Reasources and Scripts
 ------------------------------
