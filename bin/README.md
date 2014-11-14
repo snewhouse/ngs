@@ -8,6 +8,7 @@ NGSeasy (beta)
 
 - **NGSeasy-v1.0 Full Production release will be available Dec 2014**    
 - **NGSeasy updates every 12 months:**
+- **GUI in dev**
 
 >NGSeasy is completely open source and we encourage interested folks to jump in and get involved in the dev with us.
 
@@ -127,7 +128,7 @@ For non-GATK users, use of variant callers that perform local re-aligmnet around
 e.g. [freebayes](https://github.com/ekg/freebayes), [platypus](http://www.well.ox.ac.uk/platypus), mitigate the need for the indel realignment stages.  
 
 Base quality score recalibration is also recommended. 
-Non-GATK users are encouraged to use aligners such as **[stampy](http://www.well.ox.ac.uk/project-stampy)** and **[novoalign](http://www.novocraft.com)** that perform base quality score recal on the fly.
+Non-GATK users are encouraged to use aligners such as [stampy](http://www.well.ox.ac.uk/project-stampy) and [novoalign](http://www.novocraft.com) that perform base quality score recal on the fly.
 As an alternative to GATK, We will be testing and adding fucntionality for use of 
 **[BamUtil](https://github.com/statgen/bamUtil):[recab](http://genome.sph.umich.edu/wiki/BamUtil:_recab)** w
 for base quality score recalibration in the near future  
