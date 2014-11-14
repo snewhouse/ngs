@@ -54,6 +54,8 @@ Please contact us for help/guidance on using the beta release.
 
 gatk = indel realignment and base recalibration. Non-academics/commercial groups need to pay for GATK.  
 
+The *full* pipelines go from raw `fastq` to qc'd `fastq` using `timmomatic`  
+
 *** 
 
 ## Dockerised and Automated Builds ##
