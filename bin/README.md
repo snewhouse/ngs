@@ -61,13 +61,14 @@ The full pipelines implement:
 - **Alignment** using one of **bwa**, **stampy**,**novoalin** or **bowtie2**. 
 - **SAM/BAM sorting and indexing** with **samtools**.  
 - **Read Group information added** using **Picardtools**:**AddOrReplaceReadGroups** 
-- **Duplicate marking** with **Picardtools**:**MarkDuplicates**.
-For academic users or commercial groups whom have paid for GATK, the next steps are to perform 
-indel indel realignment and base recalibration using GATKs built in tools **GATK:** and **GATK:**. 
-**Post alignment quality control and reporting** is performed usng a number of tools : .
-**SNP/INDEL** calling using one of **frebayes**, **platypus**, **GATK:UnifiedGenotyper** or **GATK:HaplotypeCaller** a combibation of if the `ensemble` methods are called.
-**CNV** calling using one of or a combibation of if the `ensemble` methods are called.
-**Variant annotation** using using one of or a combibation of if the `ensemble` methods are called.  
+- **Duplicate marking** with **Picardtools**:**MarkDuplicates**.  
+For academic users or commercial groups whom have paid for GATK, the next steps are to perform   
+- **Indel indel realignment and base recalibration** using GATKs built in tools **GATK:** and **GATK:**. 
+- **Post alignment quality control and reporting** is performed usng a number of tools : .
+- **SNP/INDEL** calling using one of **frebayes**, **platypus**, **GATK:UnifiedGenotyper** or **GATK:HaplotypeCaller** a combibation of if the `ensemble` methods are called.
+- **CNV** calling using one of or a combibation of if the `ensemble` methods are called.
+- **Variant annotation** using using one of or a combibation of if the `ensemble` methods are called.  
+- **Variant reporting** using custom scripts
 
 **Note** some of the later functions (annotation and reporting are still in dev)  
 
