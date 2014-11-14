@@ -11,8 +11,8 @@ NGSeasy (beta)
 
 NGSeasy is completely open source and we encourage interested folks to jump in and get involved in the dev with us.
 
-## NGSeasy (Easy Analysis of Next Generation Sequencing)
-
+NGSeasy (Easy Analysis of Next Generation Sequencing)
+-------------------------------------------------------
 We present **NGSeasy (Easy Analysis of Next Generation Sequencing)**, a flexible and easy-to-use NGS pipeline for automated alignment, quality control, variant calling and annotation. The pipeline allows users with minimal computational/bioinformatic skills to set up and run an NGS analysis on their own samples, in less than an afternoon, on any operating system (Windows, iOS or Linux) or infrastructure (workstation, cluster or cloud).
 
 NGS pipelines typically utilize a large and varied range of software components and incur a substantial configuration burden during deployment which limits their portability to different computational environments. NGSeasy simplifies this by providing the pipeline components encapsulated in Docker™ containers and bundles in a wide choice of tools for each module. Each module of the pipeline represents one functional grouping of tools (e.g. sequence alignment, variant calling etc.).
@@ -52,7 +52,7 @@ Please contact us for help/guidance on using the beta release.
 | ngs_full_gatk        | fastq to recalibrated bam to vcf  |
 | ngs_full_no_gatk     | fastq to bam to vcf  |
 
-gatk = indel realignment and base recalibration  
+gatk = indel realignment and base recalibration. Non-academics/commercial groups need to pay for GATK.  
 
 *** 
 
