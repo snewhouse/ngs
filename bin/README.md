@@ -62,10 +62,10 @@ The full pipelines implement:
 - **Quality control of raw fastq** files using **[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)**  
 - **Read trimming** using **[trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic)**.   
 - **Alignment** using one of 
-**[bwa](http://bio-bwa.sourceforge.net/)**, 
-**[stampy](http://www.well.ox.ac.uk/project-stampy)**, 
-**[novoalign](http://www.novocraft.com)**, 
-**[bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)**. 
+    - **[bwa](http://bio-bwa.sourceforge.net/)**  
+    - **[stampy](http://www.well.ox.ac.uk/project-stampy)**   
+    - **[novoalign](http://www.novocraft.com)**  
+    - **[bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)**  
 - **SAM/BAM sorting and indexing** with **[samtools](https://github.com/samtools/samtools)**.  
 - **Read Group information added** using **[Picardtools](http://broadinstitute.github.io/picard/):AddOrReplaceReadGroups** 
 - **Duplicate marking** with **[Picardtools](http://broadinstitute.github.io/picard/):MarkDuplicates**.  
