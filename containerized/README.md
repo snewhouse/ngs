@@ -204,6 +204,8 @@ samtools includes bcftools and htslib
 
 
 ## Dockerised and Manual Builds ##
+Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. 
+
 **These Tools require registration and/or payment and manual building**
 
 | Tool | Build |
@@ -214,13 +216,27 @@ samtools includes bcftools and htslib
 |[platypus](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/nsgeasy_platypus) | manual build |
 |[gatk](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_gatk) | manual build |
 
-Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. These include the following:- 
+### NOTICE TO USERS OF THE CONTAINER IMAGES ###
 
-* GATK  
-* Novoalign  
-* Annovar  
-* Stampy  
-* Platypus  
+While the software used to build the image is composed of free software versions
+some of the software has restrictions on use particularly for commercial 
+purposes. Therefore if you wish to use this for commercial purposes, then you 
+leagally have to approach the owners of the various components yourself!  
+
+This pipeline uses a number of pieces of software which require registration. 
+By using this you are agreeing to observe the Terms and Conditions of the 
+relevant pieces of software that compose this pipeline.  
+
+### Software composing the pipeline requiring registration
+
+If you want to build the image from the Dockerfile then you need to get your 
+own versions of (below) in the build directory:
+
+   * novoalign http://www.novocraft.com/  
+   * Stampy http://www.well.ox.ac.uk/project-stampy  
+   * Platypus http://www.well.ox.ac.uk/platypus  
+   * GATK https://www.broadinstitute.org/gatk/  
+   * ANNOVAR http://www.openbioinformatics.org/annovar/  
 
 These tools require manual download and registration with the proivder. For non-academics/commercial groups, you will need to pay for some of these tools.
 Once you have paid/registered and downloaded the tool, we provide scripts and guidance for building these tools on your system. 
@@ -243,26 +259,6 @@ docker build -t compbio/ngseasy-${TOOL} .
 
 ***********
 
-## NOTICE TO USERS OF THE CONTAINER IMAGEs
-
-While the software used to build the image is composed of free software versions
-some of the software has restrictions on use particularly for commercial 
-purposes. Therefore if you wish to use this for commercial purposes, then you 
-leagally have to approach the owners of the various components yourself!  
-
-This pipeline uses a number of pieces of software which require registration. 
-By using this you are agreeing to observe the Terms and Conditions of the 
-relevant pieces of software that compose this pipeline.  
-
-### Software composing the pipeline requiring registration
-
-If you want to build the image from the Dockerfile then you need to get your 
-own versions of (below) in the build directory:
-
-   * novoalign http://www.novocraft.com/
-   * Stampy http://www.well.ox.ac.uk/project-stampy
-   * GATK https://www.broadinstitute.org/gatk/
-   * ANNOVAR http://www.openbioinformatics.org/annovar/
 
 [Back to The Begining](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngs-easy-v10)
 
@@ -553,8 +549,7 @@ ngseasy_get_annovar_db -d /media/ngs_projects/humandb
 # here [ngs_full_gatk] is a wrapper/fucntion for calling the pipeline
 ```
 
-Each function is a bash wrapper for an image/container(s)
-
+Each function is a bash wrapper for an image/container(s) e.g. **ngs_full_gatk**:-  
 ```
 ngs_full_gatk() { 
 
@@ -595,13 +590,8 @@ nsgeasy_cnv_callers -c ${config_tsv} -d ${project_directory};
 
 #11 Variant Annotation: Annovar
 nsgeasy_variant_annotation -c ${config_tsv} -d ${project_directory};
-
-#TODO
-#variant filter
-#nsgeasy_variant_combine -c ${config_tsv} -d ${project_directory}
-#nsgeasy_variant_report -c ${config_tsv} -d ${project_directory}
-
 }
+
 ```
 
 recommend full : trimmed aln gatk filtered and ensemble calls (multi SNP/INDELS/SV callers) base recalibration
