@@ -7,7 +7,8 @@ NGSeasy (beta)
 **Note:** NGSeasy is under **heavy development** and the code and docs evolve quickly. 
 
 - **NGSeasy-v1.0 Full Production release will be available Dec 2014**    
-- **NGSeasy updates every 12 months:**
+- **NGSeasy updates every 12 months**
+- **GUI in dev**
 
 >NGSeasy is completely open source and we encourage interested folks to jump in and get involved in the dev with us.
 
@@ -49,10 +50,37 @@ Please contact us for help/guidance on using the beta release.
 </a>
 
 **Lets us know if you want other tools added to NGSeasy**
+****************
+
+Dockerised NGSeasy
+==========================
+![docker](https://github.com/KHP-Informatics/ngs/blob/master/figs/Docker_container_engine_logo.png "Docker")  
+
+## Installing Docker
+
+Follow the simple instructions in the links provided below  
+
+- [Mac](https://docs.docker.com/installation/mac/)  
+- [Windows](https://docs.docker.com/installation/windows/)
+- [Ubuntu](https://docs.docker.com/installation/ubuntulinux/)
+
+A full set of instructions for multiple operating systems are available on the [Docker website](https://docs.docker.com/installation/).
 
 ****************
 
-### Pipelines ###
+Overview of Pipeline Components
+================================
+The basic pipeline contains all the basic tools needed for manipulation and 
+quality control of raw fastq files (ILLUMINA focused), SAM/BAM manipulation,
+alignment, cleaning (based on GATK best practises [http://www.broadinstitute.org/gatk/guide/best-practices]) and first pass
+variant discovery. Separate containers are provided for indepth variant annotation,
+structural variant calling, basic reporting and visualisations.  
+
+![ngsEASY](https://github.com/KHP-Informatics/ngs/blob/dev2/figs/ngsEASY_component_visualisation.png "Dockerized NGS Pipeline")
+
+****************
+
+## The Pipelines ##
 
 | Pipeline             | Short Description    |
 |----------------------|----------------------|
@@ -60,6 +88,8 @@ Please contact us for help/guidance on using the beta release.
 | ngs_full_no_gatk     | fastq to bam to vcf  |
 
 gatk = indel realignment and base recalibration. Non-academics/commercial groups need to pay for GATK.  
+
+****************
 
 The full pipelines implement:   
 
@@ -127,7 +157,7 @@ For non-GATK users, use of variant callers that perform local re-aligmnet around
 e.g. [freebayes](https://github.com/ekg/freebayes), [platypus](http://www.well.ox.ac.uk/platypus), mitigate the need for the indel realignment stages.  
 
 Base quality score recalibration is also recommended. 
-Non-GATK users are encouraged to use aligners such as **[stampy](http://www.well.ox.ac.uk/project-stampy)** and **[novoalign](http://www.novocraft.com)** that perform base quality score recal on the fly.
+Non-GATK users are encouraged to use aligners such as [stampy](http://www.well.ox.ac.uk/project-stampy) and [novoalign](http://www.novocraft.com) that perform base quality score recal on the fly.
 As an alternative to GATK, We will be testing and adding fucntionality for use of 
 **[BamUtil](https://github.com/statgen/bamUtil):[recab](http://genome.sph.umich.edu/wiki/BamUtil:_recab)** w
 for base quality score recalibration in the near future  
@@ -151,30 +181,31 @@ docker pull compbio/ngseasy-${TOOL}
 
 | Tool | Build |
 |-------------|----------------------|
-|ngseasy-base | automated build |
-|bcbiovar | automated build |
-|bedtools | automated build |
-|fastqc | automated build |
-|bwa | automated build |
-|bowtie2 | automated build |
-|picardtools | automated build |
-|samtools | automated build |
-|snpeff | automated build |
-|trimmomatic | automated build |
-|vep | automated build |
+|[ngseasy-base](https://registry.hub.docker.com/u/compbio/ngseasy-base/) | automated build |
+|[bcbiovar](https://registry.hub.docker.com/u/compbio/ngseasy-bcbiovar/) | automated build |
+|[bedtools](https://registry.hub.docker.com/u/compbio/ngseasy-bedtools/) | automated build |
+|[fastqc](https://registry.hub.docker.com/u/compbio/ngseasy-fastqc) | automated build |
+|[bwa](https://registry.hub.docker.com/u/compbio/ngseasy-bwa) | automated build |
+|[bowtie2](https://registry.hub.docker.com/u/compbio/ngseasybowtie-) | automated build |
+|[picardtools](https://registry.hub.docker.com/u/compbio/ngseasy-picardtools) | automated build |
+|[samtools](https://registry.hub.docker.com/u/compbio/ngseasy-samtools) | automated build |
+|[snpeff](https://registry.hub.docker.com/u/compbio/ngseasy-snpeff) | automated build |
+|[trimmomatic](https://registry.hub.docker.com/u/compbio/ngseasy-trimmomatic) | automated build |
+|[vep](https://registry.hub.docker.com/u/compbio) | automated build |
 
 samtools includes bcftools and htslib  
 
 
 ## Dockerised and Manual Builds ##
-Tools require registration and/or payment
+**These Tools require registration and/or payment and manual building**
 
 | Tool | Build |
 |-------------|----------------------|
-|novoalign | manual build |
-|annovar | manual build |
-|stampy | manual build |
-|platypus | manual build |
+|[novoalign](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_novoalign) | manual build |
+|[annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar) | manual build |
+|[stampy](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_stampy) | manual build |
+|[platypus](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/nsgeasy_platypus) | manual build |
+|[gatk](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/nsgeasy_gatk) | manual build |
 
 Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. These include the following:- 
 
@@ -224,7 +255,7 @@ docker build -t compbio/ngseasy-${TOOL} .
 
 ******
 
-## NOTICE TO USERS OF THE CONTAINER IMAGE OR VM
+## NOTICE TO USERS OF THE CONTAINER IMAGEs
 
 While the software used to build the image is composed of free software versions
 some of the software has restrictions on use particularly for commercial 
@@ -249,89 +280,7 @@ own versions of (below) in the build directory:
 
 ******
 
-Overview of Pipeline Components
-================================
-The basic pipeline contains all the basic tools needed for manipulation and 
-quality control of raw fastq files (ILLUMINA focused), SAM/BAM manipulation,
-alignment, cleaning (based on GATK best practises [http://www.broadinstitute.org/gatk/guide/best-practices]) and first pass
-variant discovery. Separate containers are provided for indepth variant annotation,
-structural variant calling, basic reporting and visualisations.  
-
-![ngsEASY](figs/ngsEASY_component_visualisation.png "Dockerized NGS Pipeline")
-
-# The Tools included are as follows :- 
-
-### Fastq manipulation
-- FASTQC
-- SEQTK
-- TRIMMOMATIC
-- FASTX TOOLKIT
-
-### Alignmnet
-- BWA
-- BOWTIE2
-- STAMPY
-- NOVOALIGN [FULL VERSION NOT AVAILABLE FOR PUBLIC USE]
-
-### SAM/BAM Processing
-- GATK
-- PICARDTOOLS
-- SAMTOOLS
-
-### MISC
-- BEDTOOLS
-- VCFTOOLS
-- BCFTOOLS
-
-### VARIANT CALLING
-- GATK
-- SAMTOOLS/BCFTOOLS
-- FREEBAYES
-- PLATYPUS
-
-### VARIANT ANNOTATION
-- ANNOVAR
-- SNPEFF
-- VEP
-
-### CNV/Structural Variant CALLING
-- lumpy
-- delly
-- m-HMM
-- cn.MOPS
-- ExomeDepth  
-
-**Software Versions**
-
-- Trimmomatic-0.32
-- bwa-0.7.10
-- bowtie2-2.2.3
-- novocraftV3.02.07.Linux3.0
-- stampy-1.0.23
-- samtools-0.1.19
-- picard-tools-1.115
-- GenomeAnalysisTK-3.2-2
-- Platypus_0.7.4
-- fastqc_v0.11.2  
-
-[Back to The Begining](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngs-easy-v10)
-
 ******
-
-Dockerised NGSeasy
-==========================
-![docker](figs/Docker_container_engine_logo.png "Docker")  
-
-## Installing Docker
-
-Follow the simple instructions in the links provided below  
-
-- [Mac](https://docs.docker.com/installation/mac/)  
-- [Windows](https://docs.docker.com/installation/windows/)
-- [Ubuntu](https://docs.docker.com/installation/ubuntulinux/)
-
-A full set of instructions for multiple operating systems are available on the [Docker website](https://docs.docker.com/installation/).
-
 Getting the Dockerised NGSeasy Pipeline
 -------------------------------------------
 
@@ -343,7 +292,6 @@ As the containers themselves can be run as executables with pre-specified cpu an
 
 ### Available NGSeasy Docker images
 Available to download at our [compbio Docker Hub](https://hub.docker.com/u/compbio)
-
 
 Getting All NGSeasy images, Reasources and Scripts
 ------------------------------
@@ -362,45 +310,12 @@ All Images can be pulled down from [Docker Hub](https://hub.docker.com/u/compbio
 
 ```bash
 ftp:  159.92.120.21
-user: NGSeasy
-pwd:  NGSeasy1234
+user: compbio-public
+pwd:  compbio-public
 port: 21
 ```
 
-Example:- 
-
-```bash
-ftp 159.92.120.21
-Connected to 159.92.120.21.
-220 NASFTPD Turbo station 1.3.2e Server (ProFTPD) [159.92.120.21]
-Name (159.92.120.21:sjnewhousebrc): NGSeasy
-331 Password required for NGSeasy
-Password:
-230 User NGSeasy logged in
-Remote system type is UNIX.
-Using binary mode to transfer files.
-ftp> cd /Public/NGSeasy_Public_Resources
-250 CWD command successful
-ftp> prompt off
-Interactive mode off.
-ftp> ls
-200 PORT command successful
-150 Opening ASCII mode data connection for file list
--rw-rw----   1 500      everyone 4318681703 Nov 10 13:03 gatk_resources.tar.gz
--rw-rw----   1 500      everyone 17498751262 Nov 10 12:04 reference_genomes_b37.tar.gz
-226 Transfer complete
-ftp> get -r *
-```
-
 I would recommend using a separate program like [FileZilla](https://filezilla-project.org/), which will make it much easier for you to set up and manage your file transfers
-
-**NGSeasy pipeline scripts**
-
-
-Clone latest NGSeasy scripts from out GitHub repository
-```sh
-git clone https://github.com/KHP-Informatics/ngs.git
-```
 
 [Back to The Begining](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngs-easy-v10)
 
