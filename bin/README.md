@@ -71,15 +71,25 @@ The full pipelines implement:
 
 - **Indel indel realignment and base recalibration** using [GATK](https://www.broadinstitute.org/gatk/) built in tools **GATK:RealignerTargetCreator**, **GATK:IndelRealigner**, **GATK:BaseRecalibrator**. 
 - **Post alignment quality control and reporting** is performed usng a number of tools and custom scripts: **bedtools:genomecov**, .
-- **SNP/INDEL** calling using one of 
+- **SNP and small INDEL** calling using one of 
 **[freebayes](https://github.com/ekg/freebayes)**, 
 **[platypus](http://www.well.ox.ac.uk/platypus)**, 
 **[GATK:UnifiedGenotyper](https://www.broadinstitute.org/gatk/guide/tooldocs/org_broadinstitute_gatk_tools_walkers_genotyper_UnifiedGenotyper.php)**, 
 **[GATK:HaplotypeCaller](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php)** 
 or a combibation of these tools, if the `ensemble` method is called using 
 **[bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation)**.
-- **CNV** calling using one  of or a combibation of if the `ensemble` methods are called.
-- **Variant annotation** using using one snpEff, ANNOVAR, VEP or a combibation of if the `ensemble` methods are called.  
+- **Structural Variant (CNV)** calling using one of the following,
+**[DELLY](https://github.com/tobiasrausch/delly), 
+**[LUMPY](https://github.com/arq5x/lumpy-sv/)**,
+**[cn.MOPS](http://www.bioinf.jku.at/software/cnmops/)**,
+**[m-HMM](https://www.stt.msu.edu/users/hengwang/mHMM.html)**,
+**[ExomeDepth](http://cran.r-project.org/web/packages/ExomeDepth/index.html)**,
+or a combibation of if the `ensemble` methods are called.
+- **Variant annotation** using using one 
+**SnpEff(http://snpeff.sourceforge.net/)**, 
+**[ANNOVAR](http://www.openbioinformatics.org/annovar/)**, 
+**[VEP](http://www.ensembl.org/info/docs/tools/vep/index.html)**
+or a combibation of if the `ensemble` methods are called.  
 - **Variant reporting** using custom scripts
 
 **Note** Some of the later functions i.e. variant annotation and qc reporting are still in dev.  
@@ -100,6 +110,7 @@ for base quality score recalibration in the near future
 - https://github.com/statgen/bamUtil  
 - http://genome.sph.umich.edu/wiki/BamUtil:_recab  
 - https://github.com/chapmanb/bcbio.variation  
+- http://plagnol-lab.blogspot.co.uk/2013/11/faq-and-clarifications-for-exomedepth-r.html
 
 *** 
 
