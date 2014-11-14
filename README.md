@@ -1,5 +1,8 @@
 NGSeasy (beta)
 ===================
+Authors: Stephen J Newhouse <stephen.j.newhouse@gmail.com>, Amos Folarin <amosfolarin@gmail.com>  
+Release Version: 0.9.0  
+
 **A [Dockerized](https://www.docker.com/) and [Virtulaized](https://www.virtualbox.org/) ngs pipeline and tool-box.** 
 
 **With NGSeasy you can now have full suite of NGS tools up and running on any high end workstation in an afternoon**
@@ -50,6 +53,9 @@ Please contact us for help/guidance on using the beta release.
 </a>
 
 **Lets us know if you want other tools added to NGSeasy**
+
+*Institution: NIHR Maudsley Biomedical Research Centre For Mental Health and Dementia Unit (Denmark Hill), at The Institute of Psychiatry, Psychology & Neuroscience (IoPPN), Kings College London* 
+
 ****************
 
 Dockerised NGSeasy
