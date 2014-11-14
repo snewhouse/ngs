@@ -25,6 +25,9 @@ Deploying the pipeline is as simple as pulling the container images from the pub
 - User can select from mutiple aligners, variant callers and variant annotators
 - No scary python, .yaml or .json files...just one simple Excel workbook saved as a textfile.  
 - Just follow our simple set of instructions and NGS away!  
+- Allows reproducible research  
+- Version controlled for auditing  
+- Customisable  
 
 ****
 ### Authors
