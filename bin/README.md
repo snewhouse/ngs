@@ -167,7 +167,7 @@ samtools includes bcftools and htslib
 
 
 ## Dockerised and Manual Builds ##
-Tools require registration and/or payment
+**These Tools require registration and/or payment and manual building**
 
 | Tool | Build |
 |-------------|----------------------|
