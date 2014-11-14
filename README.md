@@ -60,7 +60,7 @@ The full pipelines implement:
 - **Read trimming** using **[trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic)**.   
 - **Alignment** using one of **[bwa](http://bio-bwa.sourceforge.net/)**,
 **[stampy](http://www.well.ox.ac.uk/project-stampy)**,
-**[novoalign](http://www.novocraft.com)** or **(bowtie2)[http://bowtie-bio.sourceforge.net/bowtie2/index.shtml]**. 
+**[novoalign](http://www.novocraft.com)**,**(bowtie2)[http://bowtie-bio.sourceforge.net/bowtie2/index.shtml]**. 
 - **SAM/BAM sorting and indexing** with **samtools**.  
 - **Read Group information added** using **Picardtools:AddOrReplaceReadGroups** 
 - **Duplicate marking** with **Picardtools:MarkDuplicates**.  
