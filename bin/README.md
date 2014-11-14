@@ -77,7 +77,11 @@ The full pipelines implement:
     - **[GATK:RealignerTargetCreator](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_indels_RealignerTargetCreator.php)** 
     - **[GATK:IndelRealigner](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_indels_IndelRealigner.php)** 
     - **[GATK:BaseRecalibrator](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_bqsr_BaseRecalibrator.php)** 
-- **Post alignment quality control and reporting** is performed usng a number of tools and custom scripts: **[bedtools:genomecov](https://github.com/arq5x/bedtools2)**.
+- **Post alignment quality control and reporting** is performed usng a number of tools and custom scripts: 
+    - **[bedtools:genomecov](https://github.com/arq5x/bedtools2)**
+    - **[]()**
+    - **[]()**
+    - **[]()**    
 - **SNP and small INDEL** calling using one of 
     - **[freebayes](https://github.com/ekg/freebayes)** 
     - **[platypus](http://www.well.ox.ac.uk/platypus)** 
@@ -85,11 +89,11 @@ The full pipelines implement:
     - **[GATK:HaplotypeCaller](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php)** 
     - or a combibation of these tools, if the `ensemble` method is called using **[bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation)**
 - **Structural Variant (CNV)** calling using one of the following,
-    - **[DELLY](https://github.com/tobiasrausch/delly)**, 
-    - **[LUMPY](https://github.com/arq5x/lumpy-sv/)**,
-    - **[cn.MOPS](http://www.bioinf.jku.at/software/cnmops/)**,
-    - **[m-HMM](https://www.stt.msu.edu/users/hengwang/mHMM.html)**,
-    - **[ExomeDepth](http://cran.r-project.org/web/packages/ExomeDepth/index.html)**,
+    - **[DELLY](https://github.com/tobiasrausch/delly)** 
+    - **[LUMPY](https://github.com/arq5x/lumpy-sv/)**
+    - **[cn.MOPS](http://www.bioinf.jku.at/software/cnmops/)**
+    - **[m-HMM](https://www.stt.msu.edu/users/hengwang/mHMM.html)**
+    - **[ExomeDepth](http://cran.r-project.org/web/packages/ExomeDepth/index.html)**
     - or a combibation of if the `ensemble` methods are called.
 - **Variant annotation** using using one 
     - **[SnpEff](http://snpeff.sourceforge.net/)** 
