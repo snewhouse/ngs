@@ -97,7 +97,7 @@ gatk = indel realignment and base recalibration. Non-academics/commercial groups
 
 ****************
 
-The full pipelines implement:   
+### The full pipelines implement:   
 
 - **Quality control of raw fastq** files using **[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)**  
 
