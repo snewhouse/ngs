@@ -50,10 +50,35 @@ Please contact us for help/guidance on using the beta release.
 </a>
 
 **Lets us know if you want other tools added to NGSeasy**
+****************
+
+Dockerised NGSeasy
+==========================
+![docker](https://github.com/KHP-Informatics/ngs/blob/master/figs/Docker_container_engine_logo.png "Docker")  
+
+## Installing Docker
+
+Follow the simple instructions in the links provided below  
+
+- [Mac](https://docs.docker.com/installation/mac/)  
+- [Windows](https://docs.docker.com/installation/windows/)
+- [Ubuntu](https://docs.docker.com/installation/ubuntulinux/)
+
+A full set of instructions for multiple operating systems are available on the [Docker website](https://docs.docker.com/installation/).
 
 ****************
 
-### Pipelines ###
+Overview of Pipeline Components
+================================
+The basic pipeline contains all the basic tools needed for manipulation and 
+quality control of raw fastq files (ILLUMINA focused), SAM/BAM manipulation,
+alignment, cleaning (based on GATK best practises [http://www.broadinstitute.org/gatk/guide/best-practices]) and first pass
+variant discovery. Separate containers are provided for indepth variant annotation,
+structural variant calling, basic reporting and visualisations.  
+
+![ngsEASY](https://github.com/KHP-Informatics/ngs/blob/dev2/figs/ngsEASY_component_visualisation.png "Dockerized NGS Pipeline")
+
+### The Pipelines ###
 
 | Pipeline             | Short Description    |
 |----------------------|----------------------|
@@ -226,7 +251,7 @@ docker build -t compbio/ngseasy-${TOOL} .
 
 ******
 
-## NOTICE TO USERS OF THE CONTAINER IMAGE OR VM
+## NOTICE TO USERS OF THE CONTAINER IMAGEs
 
 While the software used to build the image is composed of free software versions
 some of the software has restrictions on use particularly for commercial 
@@ -250,16 +275,6 @@ own versions of (below) in the build directory:
 [Back to The Begining](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngs-easy-v10)
 
 ******
-
-Overview of Pipeline Components
-================================
-The basic pipeline contains all the basic tools needed for manipulation and 
-quality control of raw fastq files (ILLUMINA focused), SAM/BAM manipulation,
-alignment, cleaning (based on GATK best practises [http://www.broadinstitute.org/gatk/guide/best-practices]) and first pass
-variant discovery. Separate containers are provided for indepth variant annotation,
-structural variant calling, basic reporting and visualisations.  
-
-![ngsEASY](https://github.com/KHP-Informatics/ngs/blob/dev2/figs/ngsEASY_component_visualisation.png "Dockerized NGS Pipeline")
 
 # The Tools included are as follows :- 
 
@@ -303,37 +318,9 @@ structural variant calling, basic reporting and visualisations.
 - cn.MOPS
 - ExomeDepth  
 
-**Software Versions**
-
-- Trimmomatic-0.32
-- bwa-0.7.10
-- bowtie2-2.2.3
-- novocraftV3.02.07.Linux3.0
-- stampy-1.0.23
-- samtools-0.1.19
-- picard-tools-1.115
-- GenomeAnalysisTK-3.2-2
-- Platypus_0.7.4
-- fastqc_v0.11.2  
-
 [Back to The Begining](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngs-easy-v10)
 
 ******
-
-Dockerised NGSeasy
-==========================
-![docker](https://github.com/KHP-Informatics/ngs/blob/master/figs/Docker_container_engine_logo.png "Docker")  
-
-## Installing Docker
-
-Follow the simple instructions in the links provided below  
-
-- [Mac](https://docs.docker.com/installation/mac/)  
-- [Windows](https://docs.docker.com/installation/windows/)
-- [Ubuntu](https://docs.docker.com/installation/ubuntulinux/)
-
-A full set of instructions for multiple operating systems are available on the [Docker website](https://docs.docker.com/installation/).
-
 Getting the Dockerised NGSeasy Pipeline
 -------------------------------------------
 
