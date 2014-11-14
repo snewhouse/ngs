@@ -67,8 +67,8 @@ The full pipelines implement:
 **[novoalign](http://www.novocraft.com)**, 
 **[bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)**. 
 - **SAM/BAM sorting and indexing** with **[samtools](https://github.com/samtools/samtools)**.  
-- **Read Group information added** using **(Picardtools)(http://broadinstitute.github.io/picard/):AddOrReplaceReadGroups** 
-- **Duplicate marking** with **(Picardtools](http://broadinstitute.github.io/picard/):MarkDuplicates**.  
+- **Read Group information added** using **[Picardtools](http://broadinstitute.github.io/picard/):AddOrReplaceReadGroups** 
+- **Duplicate marking** with **[Picardtools](http://broadinstitute.github.io/picard/):MarkDuplicates**.  
 
 >For academic users or commercial groups whom have paid for GATK, the next steps are to perform   
 
