@@ -82,8 +82,9 @@ e.g. freebayes, platypus,GATK:HaplotypeCaller, mitigate the need for the indel r
 
 Base quality score recalibration is also recommended. 
 Non-GATK users are encouraged to use aligners such as **[stampy](http://www.well.ox.ac.uk/project-stampy)** and **[novoalign](http://www.novocraft.com)** that perform base quality score recal on the fly.
-We will be testing and adding fucntionality for use of **[BamUtil](https://github.com/statgen/bamUtil):[recab](http://genome.sph.umich.edu/wiki/BamUtil:_recab)** 
-for base quality score recalibration in the near future as an alternative to GATK. 
+As an alternative to GATK, We will be testing and adding fucntionality for use of 
+**[BamUtil](https://github.com/statgen/bamUtil):[recab](http://genome.sph.umich.edu/wiki/BamUtil:_recab)** w
+for base quality score recalibration in the near future  
 
 - https://bcbio.wordpress.com/  
 - https://basecallbio.wordpress.com/2013/04/23/base-quality-score-rebinning/  
