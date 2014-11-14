@@ -7,7 +7,7 @@ NGSeasy (beta)
 **Note:** NGSeasy is under **heavy development** and the code and docs evolve quickly. 
 
 - **NGSeasy-v1.0 Full Production release will be available Dec 2014**    
-- **NGSeasy updates every 12 months:**
+- **NGSeasy updates every 12 months**
 - **GUI in dev**
 
 >NGSeasy is completely open source and we encourage interested folks to jump in and get involved in the dev with us.
