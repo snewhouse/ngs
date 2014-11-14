@@ -38,7 +38,7 @@ Deploying the pipeline is as simple as pulling the container images from the pub
 - Enforced naming convention and directory structures  
 
 ****
-### Authors
+### Author Contact Details
 
 Please contact us for help/guidance on using the beta release. 
 
