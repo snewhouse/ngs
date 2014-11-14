@@ -61,6 +61,7 @@ gatk = indel realignment and base recalibration
 - SGE scripts and basic BASH scrips for running outside of Docker
 
 *** 
+
 ## Dockerised and Automated Builds ##
 
 Get it all at [compbio docker hub](https://registry.hub.docker.com/u/compbio)
@@ -84,6 +85,7 @@ docker pull compbio/${TOOL}
 
 samtools includes bcftools and htslib  
 
+
 ## Dockerised and Manual Builds ##
 Tools require registration and/or payment
 
@@ -93,8 +95,19 @@ Tools require registration and/or payment
 |annovar | manual build |
 |stampy | manual build |
 
+Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. These include the following:- 
+
+* GATK  
+* Novoalign  
+* Annovar  
+* Stampy  
+* Platypus  
+
+These tools require manual download and registration with the proivder. For non-academics/commercial groups, you will need to pay for some of these tools.
+Once you have paid/registered and downloaded the tool, we provide scripts and guidance on building these tools on your system. 
+
 ```{bash}
-docker build -t compbio/${TOOL} /
+docker build -t compbio/${TOOL} .
 ```
 
 ***********
