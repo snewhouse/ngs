@@ -76,12 +76,13 @@ The full pipelines implement:
 **[platypus](http://www.well.ox.ac.uk/platypus)**, 
 **[GATK:UnifiedGenotyper](https://www.broadinstitute.org/gatk/guide/tooldocs/org_broadinstitute_gatk_tools_walkers_genotyper_UnifiedGenotyper.php)**, 
 **[GATK:HaplotypeCaller](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php)** 
-or a combibation of these tools, if the `ensemble` method is called using [bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation)**.
-- **CNV** calling using one of or a combibation of if the `ensemble` methods are called.
-- **Variant annotation** using using one of or a combibation of if the `ensemble` methods are called.  
+or a combibation of these tools, if the `ensemble` method is called using 
+**[bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation)**.
+- **CNV** calling using one  of or a combibation of if the `ensemble` methods are called.
+- **Variant annotation** using using one snpEff, ANNOVAR, VEP or a combibation of if the `ensemble` methods are called.  
 - **Variant reporting** using custom scripts
 
-**Note** Some of the later functions i.e. annotation and qc reporting are still in dev  
+**Note** Some of the later functions i.e. variant annotation and qc reporting are still in dev.  
 
 We highly recommed read trimming prior to alignment. 
 We have noticed considerable speed-ups in alignmnet time and increased quality of SNP/INDEL calls using trimmed vs raw fastq.
