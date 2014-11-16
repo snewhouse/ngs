@@ -1,3 +1,12 @@
+<html>
+<head>
+<meta name="google-site-verification" content="TUhYnA8mMndzvSbjRXsvwGsuHe-yYdnDum4xkBe8vs0" />
+<title> My title </title>
+</head> 
+<body>
+page contents
+</body>
+</html>
 NGSeasy (beta)
 ===================
 Authors: Stephen J Newhouse, Amos Folarin   
