@@ -1,12 +1,10 @@
 <html>
 <head>
 <meta name="google-site-verification" content="TUhYnA8mMndzvSbjRXsvwGsuHe-yYdnDum4xkBe8vs0" />
-<title> My title </title>
+<title> NGSeasy </title>
 </head> 
 <body>
-page contents
-</body>
-</html>
+
 NGSeasy (beta)
 ===================
 Authors: Stephen J Newhouse, Amos Folarin   
@@ -697,4 +695,7 @@ EXCAVATOR: detecting copy number variants from whole-exome sequencing data @ htt
 
 >We developed a novel software tool, EXCAVATOR, for the detection of copy number variants (CNVs) from whole-exome sequencing data. EXCAVATOR combines a three-step normalization procedure with a novel heterogeneous hidden Markov model algorithm and a calling method that classifies genomic regions into five copy number states. We validate EXCAVATOR on three datasets and compare the results with three other methods. These analyses show that EXCAVATOR outperforms the other methods and is therefore a valuable tool for the investigation of CNVs in largescale projects, as well as in clinical research and diagnostics. EXCAVATOR is freely available at http://sourceforge.net/projects/excavatortool/ webcite.
 
+
+</body>
+</html>
 	
