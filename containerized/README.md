@@ -7,7 +7,7 @@ Release Version: 0.9.0
 
 **With NGSeasy you can now have full suite of NGS tools up and running on any high end workstation in an afternoon**
 
-**Note:** NGSeasy is under **heavy development** and the code and docs evolve quickly. 
+**Note:** NGSeasy is under **heavy development** and the code and docs evolve quickly.  
 
 - **NGSeasy-v1.0 Full Production release will be available Dec 2014**    
 - **NGSeasy updates every 12 months**
@@ -197,26 +197,35 @@ for base quality score recalibration in the near future
 # Available NGSeasy Docker images
 Available to download at our **[compbio Docker Hub](https://hub.docker.com/u/compbio)**
 
-```bash
-docker pull compbio/ngseasy-${TOOL}
-```
 
 ## Dockerised and Automated Builds ##
+
+The following opensource tools are all provided as automated builds. 
 
 | Tool | Build |
 |-------------|----------------------|
 |[ngseasy-base](https://registry.hub.docker.com/u/compbio/ngseasy-base/) | automated build |
-|[bcbiovar](https://registry.hub.docker.com/u/compbio/ngseasy-bcbiovar/) | automated build |
-|[bedtools](https://registry.hub.docker.com/u/compbio/ngseasy-bedtools/) | automated build |
 |[fastqc](https://registry.hub.docker.com/u/compbio/ngseasy-fastqc) | automated build |
+|[trimmomatic](https://registry.hub.docker.com/u/compbio/ngseasy-trimmomatic) | automated build |
 |[bwa](https://registry.hub.docker.com/u/compbio/ngseasy-bwa) | automated build |
 |[bowtie2](https://registry.hub.docker.com/u/compbio/ngseasybowtie-) | automated build |
 |[picardtools](https://registry.hub.docker.com/u/compbio/ngseasy-picardtools) | automated build |
 |[samtools](https://registry.hub.docker.com/u/compbio/ngseasy-samtools) | automated build |
-|[snpeff](https://registry.hub.docker.com/u/compbio/ngseasy-snpeff) | automated build |
-|[trimmomatic](https://registry.hub.docker.com/u/compbio/ngseasy-trimmomatic) | automated build |
+|[freebayes](https://registry.hub.docker.com/u/compbio/ngseasy-freebayes/) | automated build |
+|[bedtools](https://registry.hub.docker.com/u/compbio/ngseasy-bedtools/) | automated build |
+|[bcbiovar](https://registry.hub.docker.com/u/compbio/ngseasy-bcbiovar/) | automated build |
+|[delly](https://registry.hub.docker.com/u/compbio/ngseasy-delly) | automated build |
+|[lumpy](https://registry.hub.docker.com/u/compbio/ngseasy-lumpy) | automated build |
+|[cnmops](https://registry.hub.docker.com/u/compbio/ngseasy-cnmops) | automated build |
+|[mhmm](https://registry.hub.docker.com/u/compbio/ngseasy-mhmm) | automated build |
+|[exomedepth](https://registry.hub.docker.com/u/compbio/ngseasy-exomedepth) | automated build |
 
 samtools includes bcftools and htslib  
+
+Its as easy as: - 
+```bash
+docker pull compbio/ngseasy-${TOOL}
+```
 
 ## Dockerised and Manual Builds ##
 Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. 
