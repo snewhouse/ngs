@@ -182,7 +182,17 @@ for base quality score recalibration in the near future
 - https://github.com/chapmanb/bcbio.variation  
 - http://plagnol-lab.blogspot.co.uk/2013/11/faq-and-clarifications-for-exomedepth-r.html
 
-*** 
+### Coming Soon
+- New Aligners:- [SNAP](http://snap.cs.berkeley.edu/), GSNAP, mr- and mrs-Fast,gem
+- https://github.com/amplab/snap
+- SLOPE (CNV fo targetted NSG)  
+- Cancer Pipelines
+- Annotation Pipelines and Databases
+- Visualisation Pipelines
+- Var Callers:- VarScan2
+- SGE scripts and basic BASH scrips for running outside of Docker
+
+******** 
 
 # Available NGSeasy Docker images
 Available to download at our **[compbio Docker Hub](https://hub.docker.com/u/compbio)**
@@ -205,10 +215,8 @@ docker pull compbio/ngseasy-${TOOL}
 |[samtools](https://registry.hub.docker.com/u/compbio/ngseasy-samtools) | automated build |
 |[snpeff](https://registry.hub.docker.com/u/compbio/ngseasy-snpeff) | automated build |
 |[trimmomatic](https://registry.hub.docker.com/u/compbio/ngseasy-trimmomatic) | automated build |
-|[vep](https://registry.hub.docker.com/u/compbio) | automated build |
 
 samtools includes bcftools and htslib  
-
 
 ## Dockerised and Manual Builds ##
 Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. 
@@ -253,7 +261,7 @@ Its as easy as:-
 docker build -t compbio/ngseasy-${TOOL} .
 ```
 
-### Lage Annotation Containers
+### Lage Variant Annotation Container Images
 
 The tools used for variant annotation use large databases and the docker images exceed 10GB. Therefore, the user should manually build these container images prior to running the NGS pipelines.
 Docker build files ([Dockerfile](https://docs.docker.com/jsearch/?q=Dockerfile)) are available for 
@@ -272,18 +280,6 @@ Its as easy as:-
 ```{bash}
 docker build -t compbio/ngseasy-${TOOL} .
 ```
-
-****
-
-### Coming Soon
-- New Aligners:- [SNAP](http://snap.cs.berkeley.edu/), GSNAP, mr- and mrs-Fast,gem
-- https://github.com/amplab/snap
-- SLOPE (CNV fo targetted NSG)  
-- Cancer Pipelines
-- Annotation Pipelines and Databases
-- Visualisation Pipelines
-- Var Callers:- VarScan2
-- SGE scripts and basic BASH scrips for running outside of Docker
 
 ***********
 
