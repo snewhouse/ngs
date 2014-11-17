@@ -41,6 +41,10 @@ Deploying the pipeline is as simple as pulling the container images from the pub
 - If it's broke...we will fix it..
 - Enforced naming convention and directory structures  
 
+We have adapted the current best practices from the Genome Analysis Toolkit (GATK, http://www.broadinstitute.org/gatk/guide/best-practices)  for processing raw alignments in SAM/BAM format and variant calling. The current workflow, has been optimised for Illumina platforms, but can easily be adapted for other sequencing platforms, with minimal effort.  
+
+As the containers themselves can be run as executables with pre-specified cpu and RAM resources, the orchestration of the pipeline can be placed under the control of conventional load balancers if this mode is required.  
+
 ****
 ### Author Contact Details
 
@@ -248,6 +252,27 @@ Its as easy as:-
 ```{bash}
 docker build -t compbio/ngseasy-${TOOL} .
 ```
+
+### Lage Annotation Containers
+
+The tools used for variant annotation use large databases and the docker images exceed 10GB. Therefore, the user should manually build these container images prior to running the NGS pipelines.
+Docker build files ([Dockerfile](https://docs.docker.com/jsearch/?q=Dockerfile)) are available for 
+- [1Annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar/Dockerfile)  
+- [VEP](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_vep/Dockerfile)   
+- [snpEff](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_snpeff/Dockerfile)  
+
+| Tool | Build |
+|-------------|----------------------|
+|[annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar) | manual build |
+|[vep](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_vep) | manual build |
+|[snpeff](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_snpeff) | manual build |
+
+
+Its as easy as:-  
+```{bash}
+docker build -t compbio/ngseasy-${TOOL} .
+```
+
 ****
 
 ### Coming Soon
@@ -262,20 +287,12 @@ docker build -t compbio/ngseasy-${TOOL} .
 
 ***********
 
-Getting the Dockerised NGSeasy Pipeline
+Getting the Dockerised NGSeasy Pipeline(s)
 -------------------------------------------
 
-We have adapted the current best practices from the Genome Analysis Toolkit (GATK, http://www.broadinstitute.org/gatk/guide/best-practices)  for processing raw alignments in SAM/BAM format and variant calling. The current workflow, has been optimised for Illumina platforms, but can easily be adapted for other sequencing platforms, with minimal effort.  
-
-As the containers themselves can be run as executables with pre-specified cpu and RAM resources, the orchestration of the pipeline can be placed under the control of conventional load balancers if this mode is required.  
-
-*****************
-
-Getting All NGSeasy images, Reasources and Scripts
-------------------------------
+## Getting All NGSeasy images, Reasources and Scripts
 
 All Images can be pulled down from [Docker Hub](https://hub.docker.com/u/compbio/) using the script [get_NGSeasy.sh](https://github.com/KHP-Informatics/ngs/blob/master/containerized/get_NGSeasy.sh)
-
 
 ### NGSeasy Reasources
 
@@ -301,22 +318,6 @@ I would recommend using a separate program like [FileZilla](https://filezilla-pr
 
 NGSeasy Project Set up
 --------------------------
-
-## Step 0. Set up project directories
-
-Fastq files must have suffix and be gzipped: **_1.fq.gz** or **_2.fq.gz**  
-furture version will allow any format  
-
-```bash
-#--------------------------------#
-# make top level dirs 
-#--------------------------------#
-cd media
-mkdir ngs_projects
-mkdir ngs_projects/fastq_raw
-mkdir ngs_projects/config_files
-```
-****
 
 ## Step 1. Set up project configuration file
 
@@ -346,9 +347,16 @@ NCPU|number|Number of cores to call|
 ****
 
 ## Step 2. Initiate the Project
-The user needs to make the relevent directory structure on their local machine. Running this script ensures that all relevant directories are set up, ans also enforces a clean structure to the NGS project.  
+The user needs to make the relevent directory structure on their local machine before starting and NGS run. 
 
-On our sysetm we typically set up a top-level driectory called `ngs_projects` within which we store output from all our individual NGS projects. Within this we make a `raw_fastq` folder, where we temporarily store all the raw fastq files for each project. This folder acts as an initial stagging area for the raw fastq files. During the project set up, we copy/move project/sample related fastq files to their own specific directories.
+Running this script `ngseasy_initiate_project` ensures that all relevant directories are set up, ans also enforces a clean structure to the NGS project.  
+
+On our sysetm we typically set up a top-level driectory called `ngs_projects` within which we store output from all our individual NGS projects. 
+
+Within this we make a `raw_fastq` folder, where we temporarily store all the raw fastq files for each project. 
+This folder acts as an initial stagging area for the raw fastq files. During the project set up, we copy/move project/sample related fastq files to their own specific directories.
+Fastq files must have suffix and be gzipped: **_1.fq.gz** or **_2.fq.gz**  
+furture version will allow any format  
 
 Running `ngseasy_initiate_project` with the relevent configuration file, will set up the following directory structure for every project and sample within a project:-  
 
@@ -404,41 +412,20 @@ In the Docker container the project directory is mounted in `/home/pipeman/ngs_p
 ngseasy_volumes_container -d /media/ngs_projects
 ```
 
-## Summary
-
-```bash
-#make top level dirs 
-
-mkdir ngs_projects
-mkdir ngs_projects/fastq_raw
-mkdir ngs_projects/config_files
-```
-- copy/download raw fastq file to [ngs_projects/fastq_raw] 
-
-- set up project specific configuration file [config.file.tsv] 
-
-```bash
-# Set up NGSeasy
-ngseasy_initiate_project -c config.file.tsv -d /media/ngs_projects
-ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
-ngseasy_volumes_container -d /media/ngs_projects
-```
-
-** You are now ready to run **
-
 ****
 
-## Running a full pipeline : from raw fastq to vcf calls
+## Running a NGS full pipeline : from raw fastq to vcf calls
 
-See https://github.com/KHP-Informatics/ngs/tree/dev2/bin for dev functions (Still workin on these). Each of these will call a separate container and run a part of the NGS pipeline. Each step is usually dependent on the previous step(s) - in that they require certain data/input/output in the correct format and with the correct nameing conventions enforced by our pipeline to exist, before executing.
+See https://github.com/KHP-Informatics/ngs/tree/dev2/bin for dev functions (Still working on these). 
+Each of these will call a separate container and run a part of the NGS pipeline. Each step is usually 
+dependent on the previous step(s) - in that they require certain data/input/output in the correct format 
+and with the correct nameing conventions enforced by our pipeline to exist, before executing.
 
 A full pipeline is set out below :-  
 
-```bash
+### make top level dirs 
 
-#--------------------------------#
-# make top level dirs 
-#--------------------------------#
+```bash
 cd media
 mkdir ngs_projects
 mkdir ngs_projects/fastq_raw # fastq staging area
@@ -446,7 +433,7 @@ mkdir ngs_projects/config_files # config files
 mkdir ngs_projects/humandb # for annovar databses
 ```
 
-#get NGSeasy resources
+### get NGSeasy resources
 
 ```bash
 # ftp From 159.92.120.21 ........copy data and extract
