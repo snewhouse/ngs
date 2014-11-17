@@ -66,6 +66,17 @@ Please contact us for help/guidance on using the beta release.
 
 ****************
 
+Overview of Pipeline Components
+================================
+The basic pipeline contains all the basic tools needed for manipulation and 
+quality control of raw fastq files (ILLUMINA focused), SAM/BAM manipulation,
+alignment, cleaning (based on GATK best practises [http://www.broadinstitute.org/gatk/guide/best-practices]) and first pass
+variant discovery. Separate containers are provided for indepth variant annotation,
+structural variant calling, basic reporting and visualisations.  
+
+![ngsEASY](https://github.com/KHP-Informatics/ngs/blob/dev2/figs/ngsEASY_component_visualisation.png "Dockerized NGS Pipeline")
+
+
 Dockerised NGSeasy
 ==========================
 ![docker](https://github.com/KHP-Informatics/ngs/blob/master/figs/Docker_container_engine_logo.png "Docker")  
@@ -82,23 +93,11 @@ A full set of instructions for multiple operating systems are available on the [
 
 ****************
 
-Overview of Pipeline Components
-================================
-The basic pipeline contains all the basic tools needed for manipulation and 
-quality control of raw fastq files (ILLUMINA focused), SAM/BAM manipulation,
-alignment, cleaning (based on GATK best practises [http://www.broadinstitute.org/gatk/guide/best-practices]) and first pass
-variant discovery. Separate containers are provided for indepth variant annotation,
-structural variant calling, basic reporting and visualisations.  
-
-![ngsEASY](https://github.com/KHP-Informatics/ngs/blob/dev2/figs/ngsEASY_component_visualisation.png "Dockerized NGS Pipeline")
-
-****************
-
-## The Pipelines ##
+## The NGSeasy Pipelines ##
 
 | Pipeline             | Short Description    |
 |----------------------|----------------------|
-| [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk)        | fastq to recalibrated bam to vcf using GATK  |
+| [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk) | fastq to recalibrated bam to vcf using GATK  |
 | ngs_full_no_gatk     | fastq to recalibrated bam to vcf  |
 
 gatk = indel realignment and base recalibration. Non-academics/commercial groups need to pay for GATK.  
