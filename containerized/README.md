@@ -98,13 +98,18 @@ structural variant calling, basic reporting and visualisations.
 
 | Pipeline             | Short Description    |
 |----------------------|----------------------|
-| [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk)        | fastq to recalibrated bam to vcf  |
-| ngs_full_no_gatk     | fastq to bam to vcf  |
+| [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk)        | fastq to recalibrated bam to vcf using GATK  |
+| ngs_full_no_gatk     | fastq to recalibrated bam to vcf  |
 
 gatk = indel realignment and base recalibration. Non-academics/commercial groups need to pay for GATK.  
-Currently **ngs_full_gatk** is the most developed module.
 
-### The "full" pipelines implement:   
+Currently **ngs_full_gatk** pipeline is the most developed module.  
+
+The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK. Here BamUtil:recab is used to recalibrate base quality scores
+and freebayes/platypus are the variant callers of choice.
+
+
+### The "*_full_*" pipelines implement:   
 
 - **Quality control of raw fastq** files using **[FASTQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)**  
 
