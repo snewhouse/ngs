@@ -307,7 +307,7 @@ docker build -t compbio/ngseasy-${TOOL} .
 Getting the Dockerised NGSeasy Pipeline(s)
 -------------------------------------------
 
-### Getting All NGSeasy images, Reasources and Scripts
+### Getting All NGSeasy images
 
 All Images can be pulled down from [Docker Hub](https://hub.docker.com/u/compbio/) using the script [get_NGSeasy.sh](https://github.com/KHP-Informatics/ngs/blob/master/containerized/get_NGSeasy.sh)
 
