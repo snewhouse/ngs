@@ -163,6 +163,7 @@ and freebayes/platypus are the variant callers of choice.
     - **[m-HMM](https://www.stt.msu.edu/users/hengwang/mHMM.html)**
     - **[ExomeDepth](http://cran.r-project.org/web/packages/ExomeDepth/index.html)**
     - or a combibation of if the `ensemble` methods are called.
+    - *[SLOPE](http://www-genepi.med.utah.edu/suppl/SLOPE/index.html) : COMING SOON!*
 
 - **Variant annotation** using using one 
     - **[SnpEff](http://snpeff.sourceforge.net/)** 
@@ -195,7 +196,7 @@ for base quality score recalibration in the near future
 ### Coming Soon
 - New Aligners:- [SNAP](http://snap.cs.berkeley.edu/), GSNAP, mr- and mrs-Fast,gem
 - https://github.com/amplab/snap
-- SLOPE (CNV fo targetted NSG)  
+- [SLOPE (CNV fo targetted NSG)] ((http://www.biomedcentral.com/1471-2164/12/184)) 
 - Cancer Pipelines
 - Annotation Pipelines and Databases
 - Visualisation Pipelines

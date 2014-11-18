@@ -9,8 +9,8 @@ ENV HOME /root
 ENV DEBIAN_FRONTEND noninteractive
 
 # Update
-RUN apt-get update -y && apt-get upgrade -y \
-	apt-get install -y \
+RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get install -y \
 	libatlas3-base \
 	libblas3 \
 	liblzma5 \
@@ -41,13 +41,14 @@ RUN apt-get update -y && apt-get upgrade -y \
 	r-base-core \
 	r-base-dev \
 	r-recommended \
-	r-cran-vgam
+	r-cran-vgam \
+	r-cran-rsqlite
 
 ## bioconductor and R libs ##
 ## needed fo R CNV tools  
 
-RUN /usr/bin/Rscript --no-save --no-restore -e 'source("http://www.bioconductor.org/biocLite.R"); biocLite()' \
-	&& /usr/bin/Rscript --no-save --no-restore -e 'source("http://www.bioconductor.org/biocLite.R"); biocLite("ExomeDepth",dependencies=TRUE)'
+RUN /usr/bin/Rscript --no-save --no-restore -e 'source("http://www.bioconductor.org/biocLite.R"); biocLite()' && \
+    /usr/bin/Rscript --no-save --no-restore -e 'source("http://www.bioconductor.org/biocLite.R"); biocLite("ExomeDepth",dependencies=TRUE)'
 
 #-------------------------------PERMISSIONS--------------------------
 RUN chmod -R 777 /usr/local/pipeline
