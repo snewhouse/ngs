@@ -136,6 +136,7 @@ and freebayes/platypus are the variant callers of choice.
     - **[GATK:BaseRecalibrator](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_bqsr_BaseRecalibrator.php)** 
 
 > For the non-GATK version    
+
 - **Base quality score recalibration** using [BamUtil](http://genome.sph.umich.edu/wiki/BamUtil)  
     - **[BamUtil:recab](http://genome.sph.umich.edu/wiki/BamUtil:_recab)** 
 
