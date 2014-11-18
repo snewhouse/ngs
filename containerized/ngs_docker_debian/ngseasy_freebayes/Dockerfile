@@ -9,7 +9,7 @@ ENV HOME /root
 ENV DEBIAN_FRONTEND noninteractive
 
 # Update
-RUN apt-get update -y && apt-get upgrade
+RUN apt-get update -y && apt-get upgrade -y
 
 #---------------------- FREEBAYES  -------------------------------- 
 RUN cd /usr/local/pipeline \
