@@ -224,6 +224,7 @@ The following opensource tools are all provided as automated builds.
 |[cnmops](https://registry.hub.docker.com/u/compbio/ngseasy-cnmops) | automated build |
 |[mhmm](https://registry.hub.docker.com/u/compbio/ngseasy-mhmm) | automated build |
 |[exomedepth](https://registry.hub.docker.com/u/compbio/ngseasy-exomedepth) | automated build |
+|[bamutil](https://registry.hub.docker.com/u/compbio/ngseasy-bamutil) | automated build |
 
 samtools includes bcftools and htslib  
 
@@ -300,7 +301,7 @@ docker build -t compbio/ngseasy-${TOOL} .
 Getting the Dockerised NGSeasy Pipeline(s)
 -------------------------------------------
 
-## Getting All NGSeasy images, Reasources and Scripts
+### Getting All NGSeasy images, Reasources and Scripts
 
 All Images can be pulled down from [Docker Hub](https://hub.docker.com/u/compbio/) using the script [get_NGSeasy.sh](https://github.com/KHP-Informatics/ngs/blob/master/containerized/get_NGSeasy.sh)
 
@@ -329,36 +330,6 @@ I would recommend using a separate program like [FileZilla](https://filezilla-pr
 NGSeasy Project Set up
 --------------------------
 
-## Step 1. Set up project configuration file
-
-In Excel make config file and save as [TAB] Delimited file with ``.tsv`` extenstion.  
-See Example provided and [GoogleDoc](https://docs.google.com/spreadsheets/d/1kp1Nyw0x3zXqO2Wm2Z25ErJ0Z-Uoab8tjRPq9h4sonk/edit?usp=sharing). Remove the header from this file before running the pipeline. This sets up Information related to: Project Name, Sample Name, Library Type, Pipeline to call, NCPU.
-
-The [config.file.tsv] should contain the following 15 columns for each sample to be run through a pipeline:- 
-
-|Variable|type|Description|Options/Examples|
-|--------|--------|--------|--------|
-POJECT_ID|string|Project ID|Cancer|
-SAMPLE_ID|string|Sample ID| T100|
-FASTQ1|string|Raw fastq file name read 1| foo_1_fq.gz|
-FASTQ2|string|Raw fastq file name read 1| foo_2_fq.gz|
-PROJECT_DIR|string|Project Directory| /medida/ngs_projects |
-DNA_PREP_LIBRARY_ID|string|DNA Libray Prep ID| Custom_Cancer |
-NGS_PLATFORM|string|Platform Name| ILLUMINA |
-NGS_TYPE|string|Experiment type| WGS/WEX/TGS/ |
-BED_ANNO|string|Annotation Bed File|exons_b37.bed|
-PIPELINE|string|NGSeasy Pipeline Script|ngs_full_gatk/ngs_full_no_gatk|
-ALIGNER|string|Aligner| bwa/bowtie/stampy/novoalign|
-VARCALLER|string|Variant Caller|ensemble/freebayes/platypus/UnifiedGenotyper/HaplotypeCaller|
-GTMODEGATK|string|GATK Variant Caller Mode|EMIT_ALL_CONFIDENT_SITES/EMIT_VARIANTS_ONLY|
-CLEANUP|string|Clean Up Files (TRUE/FALSE)|TRUE/FALSE|
-NCPU|number|Number of cores to call|1..n|
-
-_coming soon_ options to add user email, specify non-gatk runs  
-
-****
-
-## Step 2. Initiate the Project
 The user needs to make the relevent directory structure on their local machine before starting and NGS run. 
 
 Running this script `ngseasy_initiate_project` ensures that all relevant directories are set up, ans also enforces a clean structure to the NGS project.  
@@ -401,14 +372,42 @@ ngs_projects
 		|__config_files  
 
 ```
-### Running **ngseasy_initiate_project**
+## Running **ngseasy_initiate_project**
 
 ```bash
 ngseasy_initiate_project -c config.file.tsv -d /media/ngs_projects
 ```
+
+## NGSeasy Project configuration file
+
+In Excel make config file and save as [TAB] Delimited file with ``.tsv`` extenstion.  
+See Example provided and [GoogleDoc](https://docs.google.com/spreadsheets/d/1kp1Nyw0x3zXqO2Wm2Z25ErJ0Z-Uoab8tjRPq9h4sonk/edit?usp=sharing). Remove the header from this file before running the pipeline. This sets up Information related to: Project Name, Sample Name, Library Type, Pipeline to call, NCPU.
+
+The [config.file.tsv] should contain the following 15 columns for each sample to be run through a pipeline:- 
+
+|Variable|type|Description|Options/Examples|
+|--------|--------|--------|--------|
+POJECT_ID|string|Project ID|Cancer|
+SAMPLE_ID|string|Sample ID| T100|
+FASTQ1|string|Raw fastq file name read 1| foo_1_fq.gz|
+FASTQ2|string|Raw fastq file name read 1| foo_2_fq.gz|
+PROJECT_DIR|string|Project Directory| /medida/ngs_projects |
+DNA_PREP_LIBRARY_ID|string|DNA Libray Prep ID| Custom_Cancer |
+NGS_PLATFORM|string|Platform Name| ILLUMINA |
+NGS_TYPE|string|Experiment type| WGS/WEX/TGS/ |
+BED_ANNO|string|Annotation Bed File|exons_b37.bed|
+PIPELINE|string|NGSeasy Pipeline Script|ngs_full_gatk/ngs_full_no_gatk|
+ALIGNER|string|Aligner| bwa/bowtie/stampy/novoalign|
+VARCALLER|string|Variant Caller|ensemble/freebayes/platypus/UnifiedGenotyper/HaplotypeCaller|
+GTMODEGATK|string|GATK Variant Caller Mode|EMIT_ALL_CONFIDENT_SITES/EMIT_VARIANTS_ONLY|
+CLEANUP|string|Clean Up Files (TRUE/FALSE)|TRUE/FALSE|
+NCPU|number|Number of cores to call|1..n|
+
+_coming soon_ options to add user email, specify non-gatk runs  
+
 ****
 
-## Step 3. Copy Project Fastq files to relevent Project/Sample Directories
+## Copy Project Fastq files to relevent Project/Sample Directories
 
 ```bash
 ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
@@ -416,7 +415,7 @@ ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
 
 ****
 
-## Step 4. Start the NGSeasy Volume Contaier
+## Start the NGSeasy Volume Contaier
 
 In the Docker container the project directory is mounted in `/home/pipeman/ngs_projects`
 
