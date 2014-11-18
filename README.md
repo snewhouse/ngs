@@ -282,7 +282,7 @@ Its as easy as:-
 docker build -t compbio/ngseasy-${TOOL} .
 ```
 
-### Lage Variant Annotation Container Images
+### Large Variant Annotation Container Images
 
 The tools used for variant annotation use large databases and the docker images exceed 10GB. Therefore, the user should manually build these container images prior to running the NGS pipelines.
 Docker build files ([Dockerfile](https://docs.docker.com/jsearch/?q=Dockerfile)) are available for 
