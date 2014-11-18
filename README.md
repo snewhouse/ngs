@@ -201,6 +201,7 @@ for base quality score recalibration in the near future
 - Visualisation Pipelines
 - Var Callers:- VarScan2
 - SGE scripts and basic BASH scrips for running outside of Docker
+- biobambam https://github.com/gt1/biobambam  
 
 ******** 
 
