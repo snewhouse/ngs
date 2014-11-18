@@ -331,6 +331,7 @@ I would recommend using a separate program like [FileZilla](https://filezilla-pr
 
 [Back to The Begining](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngs-easy-v10)
 
+
 ****************
 
 NGSeasy Project Set up
@@ -338,9 +339,32 @@ NGSeasy Project Set up
 
 The user needs to make the relevent directory structure on their local machine before starting and NGS run. 
 
-Running this script `ngseasy_initiate_project` ensures that all relevant directories are set up, ans also enforces a clean structure to the NGS project.  
-
 On our sysetm we typically set up a top-level driectory called `ngs_projects` within which we store output from all our individual NGS projects. 
+
+## Get and PATH NGSeasy scripts
+
+```bash
+mkdir ngs_projects
+
+cd ngs_projects
+
+mkdir ngseasy 
+
+cd ngs_projects/nsgeasy
+
+git clone https://github.com/KHP-Informatics/ngs.git
+
+# eg :- 
+
+export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/bin
+
+# or add to global .bashrc
+
+echo "export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/bin" ~/.bashrc
+source ~/.bashrc
+```
+
+Running the script `ngseasy_initiate_project` ensures that all relevant directories are set up, and also enforces a clean structure to the NGS project.  
 
 Within this we make a `raw_fastq` folder, where we temporarily store all the raw fastq files for each project. 
 This folder acts as an initial stagging area for the raw fastq files. During the project set up, we copy/move project/sample related fastq files to their own specific directories.
