@@ -40,6 +40,7 @@ Deploying the pipeline is as simple as pulling the container images from the pub
 - Easy to add new tools  
 - If it's broke...we will fix it..
 - Enforced naming convention and directory structures  
+- Allows users to run "Bake Offs" between tools with ease  
 
 We have adapted the current best practices from the Genome Analysis Toolkit (GATK, http://www.broadinstitute.org/gatk/guide/best-practices)  for processing raw alignments in SAM/BAM format and variant calling. The current workflow, has been optimised for Illumina platforms, but can easily be adapted for other sequencing platforms, with minimal effort.  
 
@@ -335,23 +336,25 @@ See Example provided and [GoogleDoc](https://docs.google.com/spreadsheets/d/1kp1
 
 The [config.file.tsv] should contain the following 15 columns for each sample to be run through a pipeline:- 
 
-|Variable|type|Description|
-|--------|--------|--------|
-POJECT_ID|string|Project ID|
-SAMPLE_ID|string|Sample ID|
-FASTQ1|string|Raw fastq file name read 1|
-FASTQ2|string|Raw fastq file name read 1|
-PROJECT_DIR|string|Project Directory|
-DNA_PREP_LIBRARY_ID|string|DNA Libray Prep ID|
-NGS_PLATFORM|string|Platform Name|
-NGS_TYPE|string|Experiment type|
-BED_ANNO|string|Annotation Bed File
-PIPELINE|string|NGSeasy Pipeline Script|
-ALIGNER|string|Aligner|
-VARCALLER|string|Variant Caller|
-GTMODEGATK|string|GATK Variant Caller Mode|
-CLEANUP|string|Clean Up Files (TRUE/FALSE)|
-NCPU|number|Number of cores to call|
+|Variable|type|Description|Options/Examples|
+|--------|--------|--------|--------|
+POJECT_ID|string|Project ID|Cancer|
+SAMPLE_ID|string|Sample ID| T100|
+FASTQ1|string|Raw fastq file name read 1| foo_1_fq.gz|
+FASTQ2|string|Raw fastq file name read 1| foo_2_fq.gz|
+PROJECT_DIR|string|Project Directory| /medida/ngs_projects |
+DNA_PREP_LIBRARY_ID|string|DNA Libray Prep ID| Custom_Cancer |
+NGS_PLATFORM|string|Platform Name| ILLUMINA |
+NGS_TYPE|string|Experiment type| WGS/WEX/TGS/ |
+BED_ANNO|string|Annotation Bed File|exons_b37.bed|
+PIPELINE|string|NGSeasy Pipeline Script|ngs_full_gatk/ngs_full_no_gatk|
+ALIGNER|string|Aligner| bwa/bowtie/stampy/novoalign|
+VARCALLER|string|Variant Caller|ensemble/freebayes/platypus/UnifiedGenotyper/HaplotypeCaller|
+GTMODEGATK|string|GATK Variant Caller Mode|EMIT_ALL_CONFIDENT_SITES/EMIT_VARIANTS_ONLY|
+CLEANUP|string|Clean Up Files (TRUE/FALSE)|TRUE/FALSE|
+NCPU|number|Number of cores to call|1..n|
+
+_coming soon_ options to add user email, specify non-gatk runs  
 
 ****
 
