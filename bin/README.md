@@ -1,6 +1,6 @@
 NGSeasy (beta)
 ===================
-Authors: Stephen J Newhouse, Amos Folarin   
+Authors: Stephen J Newhouse, Amos Folarin , Maximilian Kerz  
 Release Version: 0.9.0  
 ****************
 **A [Dockerized](https://www.docker.com/) and [Virtulaized](https://www.virtualbox.org/) ngs pipeline and tool-box.** 
@@ -11,7 +11,7 @@ Release Version: 0.9.0
 
 - **NGSeasy-v1.0 Full Production release will be available Dec 2014**    
 - **NGSeasy updates every 12 months**
-- **GUI in dev**
+- **GUI in development**
 
 ****************
 
@@ -128,13 +128,18 @@ and freebayes/platypus are the variant callers of choice.
 
 - **Duplicate marking** with **[PICARDTOOLS](http://broadinstitute.github.io/picard/):[MarkDuplicates](http://broadinstitute.github.io/picard/command-line-overview.html#MarkDuplicates)**.  
 
->For academic users or commercial groups whom have paid for GATK, the next steps are to perform   
+>For academic users and/or commercial/clinical groups whom have paid for GATK licensing, the next steps are to perform   
 
 - **Indel indel realignment and base quality score recalibration** using **[GATK](https://www.broadinstitute.org/gatk/)** built in tools :
     - **[GATK:RealignerTargetCreator](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_indels_RealignerTargetCreator.php)** 
     - **[GATK:IndelRealigner](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_indels_IndelRealigner.php)** 
     - **[GATK:BaseRecalibrator](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_bqsr_BaseRecalibrator.php)** 
-    
+
+> For the non-GATK version    
+
+- **Base quality score recalibration** using [BamUtil](http://genome.sph.umich.edu/wiki/BamUtil)  
+    - **[BamUtil:recab](http://genome.sph.umich.edu/wiki/BamUtil:_recab)** 
+
 - **Post alignment quality control and reporting** is performed usng a number of tools and custom scripts: 
     - **[SAMTOOLS:flagstats](https://github.com/samtools/samtools)**
     - **[BEDTOOLS:genomecov](https://github.com/arq5x/bedtools2)**
