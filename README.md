@@ -242,26 +242,10 @@ docker pull compbio/ngseasy-${TOOL}
 ## Dockerised and Manual Builds ##
 Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. 
 
-**These Tools require registration and/or payment and manual building**
-
-| Tool | Build |
-|-------------|----------------------|
-|[novoalign](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_novoalign) | manual build |
-|[annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar) | manual build |
-|[stampy](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_stampy) | manual build |
-|[platypus](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/nsgeasy_platypus) | manual build |
-|[gatk](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_gatk) | manual build |
-
-### NOTICE TO USERS OF THE CONTAINER IMAGES ###
-
 While the software used to build the image is composed of free software versions
 some of the software has restrictions on use particularly for commercial 
 purposes. Therefore if you wish to use this for commercial purposes, then you 
 leagally have to approach the owners of the various components yourself!  
-
-This pipeline uses a number of pieces of software which require registration. 
-By using this you are agreeing to observe the Terms and Conditions of the 
-relevant pieces of software that compose this pipeline.  
 
 ### Software composing the pipeline requiring registration
 
@@ -275,7 +259,18 @@ own versions of (below) in the build directory:
    * ANNOVAR http://www.openbioinformatics.org/annovar/  
 
 These tools require manual download and registration with the proivder. For non-academics/commercial groups, you will need to pay for some of these tools.
-Once you have paid/registered and downloaded the tool, we provide scripts and guidance for building these tools on your system. 
+
+**These Tools require registration and/or payment and manual building**
+
+| Tool | Build |
+|-------------|----------------------|
+|[novoalign](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_novoalign) | manual build |
+|[annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar) | manual build |
+|[stampy](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_stampy) | manual build |
+|[platypus](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/nsgeasy_platypus) | manual build |
+|[gatk](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_gatk) | manual build |
+
+Once you have paid/registered and downloaded the tool, we provide scripts and guidance for building these tools on your system.  
 
 Its as easy as:-  
 ```{bash}
