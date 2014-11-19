@@ -480,42 +480,27 @@ mkdir ngs_projects/humandb # for annovar databses
 
 ### get NGSeasy resources
 
-```bash
 # ftp From 159.92.120.21 ........copy data and extract
 
-# FTP Details
-# ftp:  159.92.120.21
-# user: NGSeasy
-# pwd:  NGSeasy1234
-# port: 21
-```
+### FTP Details
+- **ftp:**  159.92.120.21  
+- **user:** compbio-public  
+- **pwd:**  compbio-public  
+- **port:** 21  
 
 ```bash
 cd ngs_projects
 ```
-
+### ftp
 ```bash
 ftp 159.92.120.21
+```
 
-Connected to 159.92.120.21.
-220 NASFTPD Turbo station 1.3.2e Server (ProFTPD) [159.92.120.21]
-Name (159.92.120.21:sjnewhousebrc): compbio-public
-331 Password required for compbio-public
-Password:
-230 User NGSeasy logged in
-Remote system type is UNIX.
-Using binary mode to transfer files.
+### mget resources
+```bash
 ftp> cd /Public/NGSeasy_Public_Resources
-250 CWD command successful
 ftp> prompt off
-Interactive mode off.
-ftp> ls
-200 PORT command successful
-150 Opening ASCII mode data connection for file list
--rw-rw----   1 500      everyone 4318681703 Nov 10 13:03 gatk_resources.tar.gz
--rw-rw----   1 500      everyone 17498751262 Nov 10 12:04 reference_genomes_b37.tar.gz
-226 Transfer complete
-ftp> get -r *
+ftp> mget *.gz
 ftp> exit
 ```
 
