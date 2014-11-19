@@ -203,6 +203,8 @@ for base quality score recalibration in the near future
 - Var Callers:- VarScan2
 - SGE scripts and basic BASH scrips for running outside of Docker
 - biobambam https://github.com/gt1/biobambam  
+- bamaddrg https://github.com/ekg/bamaddrg  
+- bamtools https://github.com/ekg/bamtools  
 
 ******** 
 
