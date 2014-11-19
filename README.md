@@ -360,7 +360,7 @@ The user needs to make the relevent directory structure on their local machine b
 On our sysetm we typically set up a top-level driectory called `ngs_projects` within which we store output from all our individual NGS projects. 
 
 
-### Make top level directories 
+## Make top level directories 
 
 Here we are working from local top level directory called `media`. This can be any folder on your system ie `~/${USER}`.  
 
@@ -411,9 +411,11 @@ echo "export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/bin" ~/.bashrc
 source ~/.bashrc
 ```
 
+**alternatively donwload the scripts from our [GitHub](https://github.com/KHP-Informatics/ngs)** 
+
 ****
 
-### 
+## Set up NGS Project Working Directories
 
 Running the script `ngseasy_initiate_project` ensures that all relevant directories are set up, and also enforces a clean structure to the NGS project.  
 
@@ -424,7 +426,7 @@ furture version will allow any format
 
 Running `ngseasy_initiate_project` with the relevent configuration file, will set up the following directory structure for every project and sample within a project:-  
 
-### NGS Project Directory 
+## NGS Project Directory 
 ```bash
 .
 ngs_projects  
