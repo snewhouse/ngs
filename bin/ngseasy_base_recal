@@ -121,7 +121,7 @@ then
   -P \
   --name BaseRecalibrator_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-gatk:v0.9.3 \
+  -t compbio/ngseasy-gatk:${VERSION} \
   java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
   -T BaseRecalibrator \
   -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
@@ -146,7 +146,7 @@ then
   -P \
   --name PrintReads_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-gatk:v0.9.3 \
+  -t compbio/ngseasy-gatk:${VERSION} \
   java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
   -T PrintReads \
   -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
@@ -168,7 +168,7 @@ then
   -P \
   --name samtools_index_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 \
+  -t compbio/ngseasy-samtools:${VERSION} \
   /usr/local/pipeline/samtools/samtools index ${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam
 
   sudo docker logs samtools_index_${SAMPLE_ID} >> ${LOGFILE}.log
@@ -184,7 +184,7 @@ then
   -P \
   --name BaseRecalibrator_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-gatk:v0.9.3 \
+  -t compbio/ngseasy-gatk:${VERSION} \
   java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
   -T BaseRecalibrator \
   -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
@@ -228,7 +228,7 @@ fi
   -P \
   --name AnalyzeCovariates_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-gatk:v0.9.3 \
+  -t compbio/ngseasy-gatk:${VERSION} \
   java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
   -T AnalyzeCovariates \
   -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \

@@ -129,7 +129,7 @@ then
   -P \
   --name AddOrReplaceReadGroups_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-picardtools:v0.9 \
+  -t compbio/ngseasy-picardtools:${VERSION} \
   java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.119/AddOrReplaceReadGroups.jar \
   TMP_DIR=${SOUTDocker}/tmp \
   VALIDATION_STRINGENCY=SILENT \

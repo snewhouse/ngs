@@ -171,7 +171,7 @@ then
   -P \
   --name samtools_filter_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-samtools:${VERSION} /bin/bash -c \
   "/usr/local/pipeline/samtools/samtools \
   view \
   -b \
@@ -212,7 +212,7 @@ fi
   -P \
   --name samtools_flagstats_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c "usr/local/pipeline/samtools/samtools flagstats ${bam_file} > ${qc_file}.flagstats"
+  -t compbio/ngseasy-samtools:${VERSION} /bin/bash -c "usr/local/pipeline/samtools/samtools flagstats ${bam_file} > ${qc_file}.flagstats"
   
   sudo docker logs samtools_flagstats_${SAMPLE_ID} >> ${LOGFILE}.log
   sudo docker rm samtools_flagstats_${SAMPLE_ID}
@@ -229,7 +229,7 @@ fi
   -P \
   --name bedtools_bamtobed_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-bedtools:v0.9 /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools bamtobed -i ${filtered_bam} > ${filtered_qc}.bed"
+  -t compbio/ngseasy-bedtools:${VERSION} /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools bamtobed -i ${filtered_bam} > ${filtered_qc}.bed"
 
   sudo docker logs bedtools_bamtobed_${SAMPLE_ID} >> ${LOGFILE}.log
   sudo docker rm bedtools_bamtobed_${SAMPLE_ID}
@@ -247,7 +247,7 @@ fi
   -P \
   --name bedtools_merge_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-bedtools:v0.9 /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools merge -i ${filtered_bam}.bed > ${filtered_qc}.merged.bed"
+  -t compbio/ngseasy-bedtools:${VERSION} /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools merge -i ${filtered_bam}.bed > ${filtered_qc}.merged.bed"
 
   sudo docker logs bedtools_merge_${SAMPLE_ID} >> ${LOGFILE}.log
   sudo docker rm bedtools_merge_${SAMPLE_ID}
@@ -264,7 +264,7 @@ fi
   -P \
   --name bedtools_genomecov_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-bedtools:v0.9 /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools genomecov -ibam ${filtered_bam} -bga > ${filtered_qc}.genomecov.bed"
+  -t compbio/ngseasy-bedtools:${VERSION} /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools genomecov -ibam ${filtered_bam} -bga > ${filtered_qc}.genomecov.bed"
 
   sudo docker logs bedtools_genomecov_${SAMPLE_ID} >> ${LOGFILE}.log
   sudo docker rm bedtools_genomecov_${SAMPLE_ID}
@@ -288,7 +288,7 @@ fi
   -P \
   --name CollectMultipleMetrics_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-picardtools:v0.9 \
+  -t compbio/ngseasy-picardtools:${VERSION} \
   java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.119/CollectMultipleMetrics.jar \
   TMP_DIR=${SOUTDocker}/tmp \
   VALIDATION_STRINGENCY=SILENT \
@@ -317,7 +317,7 @@ fi
   -P \
   --name CollectAlignmentSummaryMetrics_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-picardtools:v0.9 \
+  -t compbio/ngseasy-picardtools:${VERSION} \
   java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.119/CollectAlignmentSummaryMetrics.jar \
   TMP_DIR=${SOUTDocker}/tmp \
   VALIDATION_STRINGENCY=SILENT \
@@ -344,7 +344,7 @@ fi
   -P \
   --name CollectWgsMetrics_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-picardtools:v0.9 \
+  -t compbio/ngseasy-picardtools:${VERSION} \
   java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.119/CollectWgsMetrics.jar \
   TMP_DIR=${SOUTDocker}/tmp \
   VALIDATION_STRINGENCY=SILENT \
@@ -376,7 +376,7 @@ fi
 #  -P \
 #  --name CollectTargetedPcrMetrics_${SAMPLE_ID} \
 #  --volumes-from volumes_container \
-#  -t compbio/ngseasy-picardtools:v0.9 \
+#  -t compbio/ngseasy-picardtools:${VERSION} \
 #    java -XX:ParallelGCThreads=${NCPU} -Xmx6g -jar /usr/local/pipeline/picardtools/picard-tools-1.119/CollectTargetedPcrMetrics.jar \
 #    TMP_DIR=${SOUTDocker}/tmp \
 #    VALIDATION_STRINGENCY=SILENT \
@@ -406,7 +406,7 @@ fi
 #  -P \
 #  --name FindCoveredIntervals_${SAMPLE_ID} \
 #  --volumes-from volumes_container \
-#  -t compbio/ngseasy-gatk:v0.9.3 \
+#  -t compbio/ngseasy-gatk:${VERSION} \
 #  java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T FindCoveredIntervals -R ${REFGenomes}/human_g1k_v37.fasta \
 #  -I ${bam_file}  \
 #  -o ${qc_file}_CoveredIntervals_x4.list \
