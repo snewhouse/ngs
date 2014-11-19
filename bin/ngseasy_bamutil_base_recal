@@ -124,7 +124,7 @@ then
 # bamutil recab
   logger_ngseasy " START bamUtil:recab  "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name bamutil_recab_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -137,9 +137,9 @@ then
     --storeQualTag OQ \
     --maxBaseQual 40
 
-  sudo docker logs bamutil_recab_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker logs bamutil_recab_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  sudo docker rm bamutil_recab_${SAMPLE_ID}
+  docker rm bamutil_recab_${SAMPLE_ID}
 
   logger_ngseasy " END bamUtil:recab  "  ${LOGFILE}
 

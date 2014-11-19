@@ -79,7 +79,7 @@ EOF
 #run docker image  
 # HOST_VOL_DIR=/media/ngs_projects
 
-  sudo docker run \
+  docker run \
   -d \
   -P \
   -v ${host_vol_dir}/fastq_raw:/home/pipeman/fastq_raw \

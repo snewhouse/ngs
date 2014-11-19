@@ -125,7 +125,7 @@ then
 
 	logger_ngseasy " Platform Unit: [${platform_unit}]"  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name AddOrReplaceReadGroups_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -148,9 +148,9 @@ then
   cp -v ${SOUT}/alignments/${BAM_PREFIX}.addrg.bai ${SOUT}/alignments/${BAM_PREFIX}.addrg.bam.bai;
 
 # logs
-    sudo docker logs AddOrReplaceReadGroups_${SAMPLE_ID} >> ${LOGFILE}.log
+    docker logs AddOrReplaceReadGroups_${SAMPLE_ID} >> ${LOGFILE}.log
 
-    sudo docker rm AddOrReplaceReadGroups_${SAMPLE_ID}
+    docker rm AddOrReplaceReadGroups_${SAMPLE_ID}
 
 else
 	logger_ngseasy " ${SOUT}/alignments/${BAM_PREFIX}.addrg.bam already exists "  ${LOGFILE}

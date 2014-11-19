@@ -242,7 +242,7 @@ EOF
   fi
 
 #run docker image  
-  sudo docker run \
+  docker run \
   -d \
   -P \
   -v ${host_vol_dir}/fastq_raw:/home/pipeman/fastq_raw \
@@ -345,7 +345,7 @@ then
 fi
   
 #run compbio/ngseasy-fastq
-  sudo docker run \
+  docker run \
   -d \
   -P \
   --name fastqc \
@@ -353,7 +353,7 @@ fi
   -t compbio/ngseasy-fastqc:${VERSION} /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_fastqc_pre_trimm.sh "config" ${fastqc_pre} /home/pipeman/ngs_projects/${config_tsv}
 
 else
-  sudo docker run \
+  docker run \
   -d \
   -P \
   --name fastqc \

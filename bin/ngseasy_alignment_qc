@@ -167,7 +167,7 @@ then
   logger_ngseasy " Filtered BAM [${SOUT}/alignments/${BAM_PREFIX}.filtered.bam] Does Not Exist "  ${LOGFILE}
   logger_ngseasy " START samtools view -bh -q 20 -F 1796 [${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam]  "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name samtools_filter_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -181,8 +181,8 @@ then
   ${bam_file} > ${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam; 
   /usr/local/pipeline/samtools/samtools index ${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam"
 
-  sudo docker logs samtools_filter_${SAMPLE_ID} >> ${LOGFILE}.log
-  sudo docker rm samtools_filter_${SAMPLE_ID}
+  docker logs samtools_filter_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker rm samtools_filter_${SAMPLE_ID}
 
   cp -v ${SOUT}/alignments/${BAM_PREFIX}.filtered.bai ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam.bai;
 
@@ -208,14 +208,14 @@ fi
 
   logger_ngseasy " START SAMTOOLS FLAGSTATS  "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name samtools_flagstats_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-samtools:${VERSION} /bin/bash -c "usr/local/pipeline/samtools/samtools flagstats ${bam_file} > ${qc_file}.flagstats"
   
-  sudo docker logs samtools_flagstats_${SAMPLE_ID} >> ${LOGFILE}.log
-  sudo docker rm samtools_flagstats_${SAMPLE_ID}
+  docker logs samtools_flagstats_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker rm samtools_flagstats_${SAMPLE_ID}
   
   logger_ngseasy " END SAMTOOLS FLAGSTATS  "  ${LOGFILE}
 
@@ -225,14 +225,14 @@ fi
 
   logger_ngseasy " START BEDTOOLS bamtobed  "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name bedtools_bamtobed_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-bedtools:${VERSION} /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools bamtobed -i ${filtered_bam} > ${filtered_qc}.bed"
 
-  sudo docker logs bedtools_bamtobed_${SAMPLE_ID} >> ${LOGFILE}.log
-  sudo docker rm bedtools_bamtobed_${SAMPLE_ID}
+  docker logs bedtools_bamtobed_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker rm bedtools_bamtobed_${SAMPLE_ID}
   
   logger_ngseasy " END BEDTOOLS bamtobed  "  ${LOGFILE}
 
@@ -243,14 +243,14 @@ fi
 
   logger_ngseasy " START BEDTOOLS merge  "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name bedtools_merge_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-bedtools:${VERSION} /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools merge -i ${filtered_bam}.bed > ${filtered_qc}.merged.bed"
 
-  sudo docker logs bedtools_merge_${SAMPLE_ID} >> ${LOGFILE}.log
-  sudo docker rm bedtools_merge_${SAMPLE_ID}
+  docker logs bedtools_merge_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker rm bedtools_merge_${SAMPLE_ID}
   
   logger_ngseasy " END BEDTOOLS merge  "  ${LOGFILE}
 
@@ -260,14 +260,14 @@ fi
 
   logger_ngseasy " START BEDTOOLS genomecov  "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name bedtools_genomecov_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-bedtools:${VERSION} /bin/bash -c "/usr/local/pipeline/bedtools2/bin/bedtools genomecov -ibam ${filtered_bam} -bga > ${filtered_qc}.genomecov.bed"
 
-  sudo docker logs bedtools_genomecov_${SAMPLE_ID} >> ${LOGFILE}.log
-  sudo docker rm bedtools_genomecov_${SAMPLE_ID}
+  docker logs bedtools_genomecov_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker rm bedtools_genomecov_${SAMPLE_ID}
   
   logger_ngseasy " END BEDTOOLS genomecov  "  ${LOGFILE}  
   
@@ -284,7 +284,7 @@ fi
 
   logger_ngseasy " START PICARDTOOLS CollectMultipleMetrics  "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name CollectMultipleMetrics_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -301,8 +301,8 @@ fi
   PROGRAM=QualityScoreDistribution \
   PROGRAM=MeanQualityByCycle;
 
-  sudo docker logs CollectMultipleMetrics_${SAMPLE_ID} >> ${LOGFILE}.log
-  sudo docker rm CollectMultipleMetrics_${SAMPLE_ID}
+  docker logs CollectMultipleMetrics_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker rm CollectMultipleMetrics_${SAMPLE_ID}
   
  logger_ngseasy " END PICARDTOOLS CollectMultipleMetrics  "  ${LOGFILE}
   
@@ -313,7 +313,7 @@ fi
 
   logger_ngseasy " START PICARDTOOLS CollectAlignmentSummaryMetrics  "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name CollectAlignmentSummaryMetrics_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -328,8 +328,8 @@ fi
   ASSUME_SORTED=true \
   METRIC_ACCUMULATION_LEVEL=SAMPLE;
     
-  sudo docker logs CollectAlignmentSummaryMetrics_${SAMPLE_ID} >> ${LOGFILE}.log
-  sudo docker rm CollectAlignmentSummaryMetrics_${SAMPLE_ID}
+  docker logs CollectAlignmentSummaryMetrics_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker rm CollectAlignmentSummaryMetrics_${SAMPLE_ID}
   
  logger_ngseasy " END PICARDTOOLS CollectAlignmentSummaryMetrics  "  ${LOGFILE}
   
@@ -340,7 +340,7 @@ fi
   
   logger_ngseasy " START PICARDTOOLS CollectWgsMetrics  "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name CollectWgsMetrics_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -356,8 +356,8 @@ fi
   MINIMUM_BASE_QUALITY=20 \
   COVERAGE_CAP=250;
   
-  sudo docker logs CollectWgsMetrics_${SAMPLE_ID} >> ${LOGFILE}.log
-  sudo docker rm CollectWgsMetrics_${SAMPLE_ID}
+  docker logs CollectWgsMetrics_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker rm CollectWgsMetrics_${SAMPLE_ID}
   
  logger_ngseasy " END PICARDTOOLS CollectWgsMetrics  "  ${LOGFILE}
   
@@ -372,7 +372,7 @@ fi
 
 #  logger_ngseasy " START PICARDTOOLS CollectTargetedPcrMetrics  "  ${LOGFILE}
 #
-#  sudo docker run \
+#  docker run \
 #  -P \
 #  --name CollectTargetedPcrMetrics_${SAMPLE_ID} \
 #  --volumes-from volumes_container \
@@ -389,8 +389,8 @@ fi
 #    METRIC_ACCUMULATION_LEVEL=ALL_READS \
 #    PER_TARGET_COVERAGE=${qc_file}_per_target_coverage;
 #    
-#  sudo docker logs CollectTargetedPcrMetrics_${SAMPLE_ID} >> ${LOGFILE}.log
-#  sudo docker rm CollectTargetedPcrMetrics_${SAMPLE_ID}
+#  docker logs CollectTargetedPcrMetrics_${SAMPLE_ID} >> ${LOGFILE}.log
+#  docker rm CollectTargetedPcrMetrics_${SAMPLE_ID}
 #  
 # logger_ngseasy " END PICARDTOOLS CollectTargetedPcrMetrics  "  ${LOGFILE}    
 
@@ -402,7 +402,7 @@ fi
 
 #  logger_ngseasy " START GATK FindCoveredIntervals  "  ${LOGFILE}
 #
-#  sudo docker run \
+#  docker run \
 #  -P \
 #  --name FindCoveredIntervals_${SAMPLE_ID} \
 #  --volumes-from volumes_container \
@@ -412,8 +412,8 @@ fi
 #  -o ${qc_file}_CoveredIntervals_x4.list \
 #  --coverage_threshold 4;
 #
-#  sudo docker logs FindCoveredIntervals_${SAMPLE_ID} >> ${LOGFILE}.log
-#  sudo docker rm FindCoveredIntervals_${SAMPLE_ID}
+#  docker logs FindCoveredIntervals_${SAMPLE_ID} >> ${LOGFILE}.log
+#  docker rm FindCoveredIntervals_${SAMPLE_ID}
 #  
 # logger_ngseasy " END GATK FindCoveredIntervals  "  ${LOGFILE}
  

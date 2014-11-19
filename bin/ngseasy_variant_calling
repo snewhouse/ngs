@@ -124,7 +124,7 @@ then
   logger_ngseasy " Filtered BAM [${SOUT}/alignments/${BAM_PREFIX}.filtered.bam] Does Not Exist "  ${LOGFILE}
   logger_ngseasy " START samtools view -bh -q 20 -F 1796 [${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam]  "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name samtools_filter_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -138,8 +138,8 @@ then
   ${bam_file} > ${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam; 
   /usr/local/pipeline/samtools/samtools index ${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam"
 
-  sudo docker logs samtools_filter_${SAMPLE_ID} >> ${LOGFILE}.log
-  sudo docker rm samtools_filter_${SAMPLE_ID}
+  docker logs samtools_filter_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker rm samtools_filter_${SAMPLE_ID}
 
   cp -v ${SOUT}/alignments/${BAM_PREFIX}.filtered.bai ${SOUT}/alignments/${BAM_PREFIX}.filtered.bam.bai;
 
@@ -160,7 +160,7 @@ then
   
 logger_ngseasy " START Variant Calling using Freebayes " ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name Freebayes_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -176,9 +176,9 @@ logger_ngseasy " START Variant Calling using Freebayes " ${LOGFILE}
     --genotype-qualities > ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf;"
 
     #logs
-  sudo docker logs Freebayes_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker logs Freebayes_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  sudo docker rm Freebayes_${SAMPLE_ID}
+  docker rm Freebayes_${SAMPLE_ID}
 
 # copy vcf to cohort vcf directory
 
@@ -205,7 +205,7 @@ then
   logger_ngseasy " NGS_TYPE is Targeted/WEX so no duplicate filtering  "  ${LOGFILE}
   # for exome/whole genome data no duplicate filtering
   
-  sudo docker run -P \
+  docker run -P \
   --name platypus_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-platypus:${VERSION} python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
@@ -230,7 +230,7 @@ then
   
   else
   
-  sudo docker run -P \
+  docker run -P \
       --name platypus_${SAMPLE_ID} \
       --volumes-from volumes_container \
       -t compbio/ngseasy-platypus:${VERSION} python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
@@ -251,8 +251,8 @@ then
 	--minVarFreq 0.0;
         
 #logs
-  sudo docker logs platypus_${SAMPLE_ID} >> ${LOGFILE}.log
-  sudo docker rm platypus_${SAMPLE_ID}
+  docker logs platypus_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker rm platypus_${SAMPLE_ID}
 
   # copy vcf to cohort vcf directory
   cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
@@ -280,7 +280,7 @@ then
   # UnifiedGenotyper EMIT_ALL_CONFIDENT_SITES
   logger_ngseasy " START GATK UnifiedGenotyper " ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name UnifiedGenotyper_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -322,9 +322,9 @@ then
   --annotation VariantType;
 
 #logs
-  sudo docker logs UnifiedGenotyper_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker logs UnifiedGenotyper_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  sudo docker rm UnifiedGenotyper_${SAMPLE_ID}
+  docker rm UnifiedGenotyper_${SAMPLE_ID}
 
   # copy vcf to cohort vcf directory
   cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
@@ -345,7 +345,7 @@ then
  
   logger_ngseasy " START Variant Calling using HaplotypeCaller "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name HaplotypeCaller_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -388,9 +388,9 @@ then
   --annotation VariantType;
 
 #logs
-  sudo docker logs HaplotypeCaller_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker logs HaplotypeCaller_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  sudo docker rm HaplotypeCaller_${SAMPLE_ID}
+  docker rm HaplotypeCaller_${SAMPLE_ID}
 
   # copy vcf to cohort vcf directory
   cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
@@ -415,7 +415,7 @@ logger_ngseasy " START Variant Calling using Freebayes " ${LOGFILE}
   
 VARCALLER="freebayes"
 
-  sudo docker run \
+  docker run \
   -P \
   --name Freebayes_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -431,9 +431,9 @@ VARCALLER="freebayes"
     --genotype-qualities > ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf;"
 
 #logs
-  sudo docker logs Freebayes_${SAMPLE_ID} >> ${LOGFILE}.log#
+  docker logs Freebayes_${SAMPLE_ID} >> ${LOGFILE}.log#
 
-  sudo docker rm Freebayes_${SAMPLE_ID}
+  docker rm Freebayes_${SAMPLE_ID}
 
   # copy vcf to cohort vcf directory
   cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
@@ -452,7 +452,7 @@ then
   
     logger_ngseasy " NGS_TYPE is Targeted/WEX so no duplicate filtering  "  ${LOGFILE}
     # for exome/whole genome data no duplicate filtering
-  sudo docker run \
+  docker run \
   -P \
   --name platypus_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -477,7 +477,7 @@ then
   cp -v ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
 
 else 
-  sudo docker run \
+  docker run \
       -P \
       --name platypus_${SAMPLE_ID} \
       --volumes-from volumes_container \
@@ -500,9 +500,9 @@ else
         
 #logs
                   
-  sudo docker logs platypus_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker logs platypus_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  sudo docker rm platypus_${SAMPLE_ID}
+  docker rm platypus_${SAMPLE_ID}
 
   # copy vcf to cohort vcf directory
   cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
@@ -518,7 +518,7 @@ fi
 #
 #  logger_ngseasy " START GATK UnifiedGenotyper " ${LOGFILE}
 #
-#  sudo docker run \
+#  docker run \
 #  -P \
 #  --name UnifiedGenotyper_${SAMPLE_ID} \
 #  --volumes-from volumes_container \
@@ -560,9 +560,9 @@ fi
 #  --annotation VariantType;
 #
 #logs
-#  sudo docker logs UnifiedGenotyper_${SAMPLE_ID} >> ${LOGFILE}.log
+#  docker logs UnifiedGenotyper_${SAMPLE_ID} >> ${LOGFILE}.log
 #
-#  sudo docker rm UnifiedGenotyper_${SAMPLE_ID}
+#  docker rm UnifiedGenotyper_${SAMPLE_ID}
 #
 #  # copy vcf to cohort vcf directory
 #  cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
@@ -578,7 +578,7 @@ fi
 
   logger_ngseasy " START Variant Calling using HaplotypeCaller "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name HaplotypeCaller_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -621,9 +621,9 @@ fi
   --annotation VariantType;
 
 #logs
-  sudo docker logs HaplotypeCaller_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker logs HaplotypeCaller_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  sudo docker rm HaplotypeCaller_${SAMPLE_ID}
+  docker rm HaplotypeCaller_${SAMPLE_ID}
 
   # copy vcf to cohort vcf directory
   cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
@@ -643,7 +643,7 @@ fi
 
 params_yaml="/home/pipeman/ngseasy_scripts/ensemble.calling.params.yaml"
 
-  sudo docker run \
+  docker run \
   -P \
   --name bcbio-variation_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -673,7 +673,7 @@ then
     
   VARCALLER="freebayes"
 
-  sudo docker run \
+  docker run \
   -P \
   --name Freebayes_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -689,9 +689,9 @@ then
     --genotype-qualities > ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf;"
 
 #logs
-  sudo docker logs Freebayes_${SAMPLE_ID} >> ${LOGFILE}.log#
+  docker logs Freebayes_${SAMPLE_ID} >> ${LOGFILE}.log#
 
-  sudo docker rm Freebayes_${SAMPLE_ID}
+  docker rm Freebayes_${SAMPLE_ID}
 
   # copy vcf to cohort vcf directory
   cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
@@ -710,7 +710,7 @@ VARCALLER="platypus"
     
       logger_ngseasy " NGS_TYPE is Targeted/WEX so no duplicate filtering  "  ${LOGFILE}
       # for exome/whole genome data no duplicate filtering
-      sudo docker run \
+      docker run \
       -P \
       --name platypus_${SAMPLE_ID} \
       --volumes-from volumes_container \
@@ -735,7 +735,7 @@ VARCALLER="platypus"
       cp -v ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
 
     else
-          sudo docker run \
+          docker run \
           -P \
           --name platypus_${SAMPLE_ID} \
           --volumes-from volumes_container \
@@ -758,9 +758,9 @@ VARCALLER="platypus"
 	      
             
   #logs
-    sudo docker logs platypus_${SAMPLE_ID} >> ${LOGFILE}.log
+    docker logs platypus_${SAMPLE_ID} >> ${LOGFILE}.log
 
-    sudo docker rm platypus_${SAMPLE_ID}
+    docker rm platypus_${SAMPLE_ID}
 
     # copy vcf to cohort vcf directory
     cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
@@ -782,7 +782,7 @@ fi
 
 params_yaml="/home/pipeman/ngseasy_scripts/ensemble.fast.calling.params.yaml"
 
-  sudo docker run \
+  docker run \
   -P \
   --name bcbio-variation_${SAMPLE_ID} \
   --volumes-from volumes_container \

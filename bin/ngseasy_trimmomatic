@@ -140,7 +140,7 @@ SOUTDocker=${DOCKERHOME}/${POJECT_ID}/${SAMPLE_ID}
 # adapter_fa
 adapter_fa="/home/pipeman/reference_genomes_b37/contaminant_list.fa"
 
-  sudo docker run \
+  docker run \
   -P \
   --rm=true \
   --name trimmomatic.${SAMPLE_ID} \
@@ -183,7 +183,7 @@ fi
 
   logger_ngseasy " START: FASTQC on Trimmomatic filtered Fastq files " ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --rm=true \
   --name fastqc_post_trimm.${SAMPLE_ID} \
@@ -214,7 +214,7 @@ fi
   logger_ngseasy " END: FASTQC on Trimmomatic filtered Fastq files " ${LOGFILE}
 
   #remove 
-  #sudo docker rm -f trimmomatic.${SAMPLE_ID} fastqc_post_trimm.${SAMPLE_ID} 
+  #docker rm -f trimmomatic.${SAMPLE_ID} fastqc_post_trimm.${SAMPLE_ID} 
 
 #------permissions------------#
 chmod -R 777 ${SOUT}/*

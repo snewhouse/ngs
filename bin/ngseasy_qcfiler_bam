@@ -121,7 +121,7 @@ fi
 #index bam
   logger_ngseasy " START samtools view -bh -q 20 -F 1796 [${SOUTDocker}/alignments/${input_bam}]  "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name samtools_filter_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -136,9 +136,9 @@ fi
   /usr/local/pipeline/samtools/samtools index ${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam; 
   cp -v ${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bai ${SOUTDocker}/alignments/${BAM_PREFIX}.filtered.bam.bai"
 
-  sudo docker logs samtools_filter_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker logs samtools_filter_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  sudo docker rm samtools_filter_${SAMPLE_ID}
+  docker rm samtools_filter_${SAMPLE_ID}
 
   logger_ngseasy " END samtools view -b -h -q 20 -F 1796 [${SOUTDocker}/alignments/${input_bam}]  "  ${LOGFILE}
 
