@@ -549,10 +549,14 @@ source ~/.bashrc
 
 ### Get NGSeasy Tools and Container Images
 
+All tools available as automated builds can be downloaded/pulled from our (DockerHub)[]. Or the provided script `get_containers.sh ` can be used.
+
 ```bash
-#get images
-bash get_containers.sh
+# get images
+bash get_containers.sh v1.0
 ```
+
+****
 
 ### Build Annotation Container Images
 
@@ -562,11 +566,50 @@ The user needs to manually build the following annotation tools:-
 - VEP
 - snpEff
 
+**Note** Annovar requires user registration.
+
+Once built on the user system, these container images can persist for as long as the user wants.
+
 ### Build VEP
+```bash
+cd /media/ngs_projects/nsgeasy/ngs/containerized/ngs_docker_debian/ngseasy_vep
+```
+
+```bash
+sudo docker build -t compbio/ngseasy-vep:${VERSION} .
+```
 
 ### Build Annovar
+```bash
+cd /media/ngs_projects/nsgeasy/ngs/containerized/ngs_docker_debian/ngseasy_annovar
+```
+
+```bash
+sudo docker build -t compbio/ngseasy-annovar:${VERSION} .
+```
 
 ### Build snpEff
+```bash
+cd /media/ngs_projects/nsgeasy/ngs/containerized/ngs_docker_debian/ngseasy_snpeff
+```
+
+```bash
+sudo docker build -t compbio/ngseasy-snpeff:${VERSION} .
+```
+
+
+****
+
+### Build Licensed and Registered Container Images
+
+The user needs to manually build the following annotation tools:-   
+
+- GATK
+- Stampy
+- Platypus
+- Novoalign
+
+
 
 ****
 
