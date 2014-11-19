@@ -197,12 +197,7 @@ As an alternative to GATK, we will be testing and adding fucntionality for use o
 **[BamUtil](https://github.com/statgen/bamUtil):[recab](http://genome.sph.umich.edu/wiki/BamUtil:_recab)** 
 for base quality score recalibration in the near future  
 
-- https://bcbio.wordpress.com/  
-- https://basecallbio.wordpress.com/2013/04/23/base-quality-score-rebinning/  
-- https://github.com/statgen/bamUtil  
-- http://genome.sph.umich.edu/wiki/BamUtil:_recab  
-- https://github.com/chapmanb/bcbio.variation  
-- http://plagnol-lab.blogspot.co.uk/2013/11/faq-and-clarifications-for-exomedepth-r.html
+****
 
 ### Coming Soon
 - New Aligners:- [SNAP](http://snap.cs.berkeley.edu/), GSNAP, mr- and mrs-Fast,gem
@@ -217,11 +212,23 @@ for base quality score recalibration in the near future
 - bamaddrg https://github.com/ekg/bamaddrg  
 - bamtools https://github.com/ekg/bamtools  
 
+*****
+
+## Useful Links 
+
+- https://bcbio.wordpress.com/  
+- https://basecallbio.wordpress.com/2013/04/23/base-quality-score-rebinning/  
+- https://github.com/statgen/bamUtil  
+- http://genome.sph.umich.edu/wiki/BamUtil:_recab  
+- https://github.com/chapmanb/bcbio.variation  
+- http://plagnol-lab.blogspot.co.uk/2013/11/faq-and-clarifications-for-exomedepth-r.html
+
 ******** 
 
 # Available NGSeasy Docker images
 Available to download at our **[compbio Docker Hub](https://hub.docker.com/u/compbio)**
 
+******** 
 
 ## Dockerised and Automated Builds ##
 
@@ -252,6 +259,7 @@ Its as easy as: -
 ```bash
 docker pull compbio/ngseasy-${TOOL}
 ```
+******** 
 
 ## Dockerised and Manual Builds ##
 Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. 
@@ -290,6 +298,7 @@ Its as easy as:-
 ```{bash}
 docker build -t compbio/ngseasy-${TOOL} .
 ```
+******** 
 
 ### Large Variant Annotation Container Images
 
