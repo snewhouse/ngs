@@ -6,6 +6,7 @@ Publication: pending
 
 Authors: Stephen J Newhouse, Amos Folarin , Maximilian Kerz  
 Release Version: 0.9.0  
+
 ****************
 **A [Dockerized](https://www.docker.com/) and [Virtulaized](https://www.virtualbox.org/) ngs pipeline and tool-box.** 
 
