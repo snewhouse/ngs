@@ -72,7 +72,7 @@ fi
 
 # begin reading config file line by line
   
-while read -r f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12 f13 f14 f15
+while read -r f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12 f13 f14 f15 f16
 do
 
 # set varibales  
@@ -92,6 +92,7 @@ do
   GTMODEGATK=$f13
   CLEANUP=$f14
   NCPU=$f15
+	VERSION=$f16
   FASTQDIR=${project_directory}/fastq_raw
 
 #-------------------------------------------------------------------#

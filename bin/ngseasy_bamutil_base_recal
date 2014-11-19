@@ -46,6 +46,13 @@ EOF
       esac
   done
 
+  # got opts or not?
+if test -z "$2"  
+then
+	    usage;
+	    exit 1;
+fi
+  
 #check config file exists.
 if [ ! -e "${config_tsv}" ] 
 then
@@ -83,7 +90,7 @@ do
   GTMODEGATK=$f13
   CLEANUP=$f14
   NCPU=$f15
-  VERSION=$f16
+	VERSION=$f16
 
 
 #Logfile 
@@ -121,11 +128,21 @@ then
   -P \
   --name bamutil_recab_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-bamutil:${VERSION} /usr/local/pipeline/bamUtil/bin/bam recab --in ${INPUT}.bam --out ${OUTPUT}.bam --refFile ${REF} --dbsnp ${DBSNP} --storeQualTag OQ --maxBaseQual 40
+  -t compbio/ngseasy-bamutil:${VERSION} \
+    /usr/local/pipeline/bamUtil/bin/bam recab \
+    --in ${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bam \
+    --out ${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam \
+    --refFile /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
+    --dbsnp ${DBSNP} \
+    --storeQualTag OQ \
+    --maxBaseQual 40
 
-  
-  
-  
+  sudo docker logs bamutil_recab_${SAMPLE_ID} >> ${LOGFILE}.log
+
+  sudo docker rm bamutil_recab_${SAMPLE_ID}
+
+  logger_ngseasy " END bamUtil:recab  "  ${LOGFILE}
+
 fi
 
 
