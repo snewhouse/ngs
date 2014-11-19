@@ -322,21 +322,21 @@ docker build -t compbio/ngseasy-${TOOL} .
 
 ***********
 
-Getting the Dockerised NGSeasy Pipeline(s)
--------------------------------------------
+Getting the Dockerised NGSeasy Pipeline(s) and Resources
+----------------------------------------------------------
 
-### Getting All NGSeasy images
+## Getting All NGSeasy images
 
-All Images can be pulled down from [Docker Hub](https://hub.docker.com/u/compbio/) using the script [get_NGSeasy.sh](https://github.com/KHP-Informatics/ngs/blob/master/containerized/get_NGSeasy.sh)
+All Images can be pulled down from [Docker Hub](https://hub.docker.com/u/compbio/) using the script [get_NGSeasy.sh](https://github.com/KHP-Informatics/ngs/blob/master/bin/get_NGSeasy.sh)
 
-### NGSeasy Reasources
+## NGSeasy Reasources
 
 - **reference_genomes_b37.tgz** b37 reference genomes indexed for use with all provided aligners (BWA, Bowtie2, Stampy, Novoalign) and annotation bed files for use with pipeline scripts
 - **gatk_resources.tar.gz** gatk resources bundle
 - **fastq_example.tgz** Example 75bp PE Illumina Whole Exome Sequence fastq data for **NA12878**
 - Annotation Databases Coming in the next update 
  
-### FTP Login Details
+## FTP Login Details
 
 ```bash
 ftp:  159.92.120.21
@@ -358,6 +358,27 @@ NGSeasy Project Set up
 The user needs to make the relevent directory structure on their local machine before starting and NGS run. 
 
 On our sysetm we typically set up a top-level driectory called `ngs_projects` within which we store output from all our individual NGS projects. 
+
+Within this directory we make the following folders: - 
+
+### Make top level directories 
+
+Here we are working from local top level directory called `media`. This can be any folder on your system ie `~/${USER}`. 
+
+```bash
+cd media
+
+mkdir ngs_projects # make toplevel NGS folder
+
+mkdir ngs_projects/fastq_raw # fastq staging area
+
+mkdir ngs_projects/config_files # config files
+
+mkdir ngs_projects/ngseasy # NGSeasy scripts
+
+mkdir ngs_projects/humandb # for annovar databses
+```
+
 
 ## Get and PATH NGSeasy scripts
 
