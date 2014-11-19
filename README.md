@@ -359,11 +359,12 @@ The user needs to make the relevent directory structure on their local machine b
 
 On our sysetm we typically set up a top-level driectory called `ngs_projects` within which we store output from all our individual NGS projects. 
 
-Within this directory we make the following folders: - 
 
 ### Make top level directories 
 
-Here we are working from local top level directory called `media`. This can be any folder on your system ie `~/${USER}`. 
+Here we are working from local top level directory called `media`. This can be any folder on your system ie `~/${USER}`.  
+
+Within this directory we make the following folders: - 
 
 ```bash
 cd media
@@ -379,29 +380,40 @@ mkdir ngs_projects/ngseasy # NGSeasy scripts
 mkdir ngs_projects/humandb # for annovar databses
 ```
 
+We then need to get the latest NGSeasy scripts from [GitHub](https://github.com/KHP-Informatics/ngs) 
 
 ## Get and PATH NGSeasy scripts
 
+The user is required to download the scripts to the `ngseasy` directory
+
+**move to the `ngseasy` directory**
+
 ```bash
-mkdir ngs_projects
+cd /media/ngs_projects/nsgeasy
+```
 
-cd ngs_projects
+**clone the [ngs](https://github.com/KHP-Informatics/ngs) repository**
 
-mkdir ngseasy 
-
-cd ngs_projects/nsgeasy
-
+```bash
 git clone https://github.com/KHP-Informatics/ngs.git
+```
 
-# eg :- 
+**add `nsgeasy/ngs/bin` to your system PATH**
 
+```bash
 export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/bin
+```
 
-# or add to global .bashrc
+**or add to global .bashrc**
 
+```bash
 echo "export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/bin" ~/.bashrc
 source ~/.bashrc
 ```
+
+****
+
+### 
 
 Running the script `ngseasy_initiate_project` ensures that all relevant directories are set up, and also enforces a clean structure to the NGS project.  
 
