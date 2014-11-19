@@ -457,7 +457,7 @@ ngs_projects
 ```
 
 
-## Running **ngseasy_initiate_project**
+**Running `ngseasy_initiate_project`**
 
 ```bash
 ngseasy_initiate_project -c config.file.tsv -d /media/ngs_projects
