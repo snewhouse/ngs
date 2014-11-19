@@ -613,74 +613,118 @@ The user needs to manually build the following annotation tools:-
 
 ****
 
+### Set up project directories
 ```bash
-#------------------------------------------------#
-# to be run outside of docker and before ngseasy #
-#------------------------------------------------#
-
 ngseasy_initiate_project -c config.file.tsv -d /media/ngs_projects
-
-ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
-
-ngseasy_get_annovar_db -d /media/ngs_projects/humandb
 ```
+
+### Copy fastq to project/sample directories
+```bash
+ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
+```
+
+*** 
+
+### A pipeline is called using :-
 
 ```bash
-#--------------------#
-# NGSEASY Dockerised #
-#--------------------#
-
-# A pipeline is called using :-
-
     ngseasy -c config.file.tsv -d /media/nsg_projects
-
-# in the config file we as to call the pipeline [full]
-# here [ngs_full_gatk] is a wrapper/fucntion for calling the pipeline
 ```
+    
+In the config file we as to call the pipeline [ngs_full_gatk]. The pipeline is defined in the config file as [ngs_full_gatk].
+Here [ngs_full_gatk] is a wrapper/fucntion for calling an NGS pipeline.  
 
-Each function is a bash wrapper for an image/container(s) e.g. **ngs_full_gatk**:-  
-```
-ngs_full_gatk() { 
+Each function is a bash wrapper for an image/container(s) e.g:-  
 
-#step through a full pipeline
+**ngs_full_gatk**  
 
-#1 FastQC raw data
-ngseasy_fastqc -c ${config_tsv} -d ${project_directory} -t 1;
+```bash
+#!/bin/bash -x
 
-#2 Trimm Fastq files
-ngseasy_fastq_trimm -c ${config_tsv} -d ${project_directory};
+#usage printing func
+usage()
+{
+cat << EOF
+  This script calls the NGSeasy pipeline ngs_full_gatk
 
-#3 FastQC trimmed file
-ngseasy_fastqqc -c ${config_tsv} -d ${project_directory} -t 0;
+  ARGUMENTS:
+  -h      Flag: Show this help message
+  -c      NGSeasy project and run configureation file
+  -d      NGSeasy project directory
 
-#4 Run Alignment
-ngseasy_alignment -c ${config_tsv} -d ${project_directory};
+  EXAMPLE USAGE:
+    
+    ngseasy -c config.file.tsv -d project_directory
 
-#5 Add read groups ie sample info to BAM file
-nsgeasy_add_readgroups -c ${config_tsv} -d ${project_directory};
-
-#5 Mark Duplicates
-ngseasy_mark_dupes -c ${config_tsv} -d ${project_directory};
-
-#6 Indel Realignment
-nsgeasy_indel_realignment -c ${config_tsv} -d ${project_directory};
-
-#7 Base Recalibration
-nsgeasy_base_recalibration -c ${config_tsv} -d ${project_directory};
-
-#8 Alignment QC reports
-ngseasy_alignment_qc -c ${config_tsv} -d ${project_directory};
-
-#9 Call Vairants : SNPS and small Indels
-nsgeasy_var_callers -c ${config_tsv} -d ${project_directory};
-
-#10 CNV Calling
-nsgeasy_cnv_callers -c ${config_tsv} -d ${project_directory};
-
-#11 Variant Annotation: Annovar
-nsgeasy_variant_annotation -c ${config_tsv} -d ${project_directory};
+EOF
 }
 
+#get options for command line args
+  while  getopts "hc:d:" opt
+  do
+
+      case ${opt} in
+	  h)
+	  usage #print help
+	  exit 0
+	  ;;
+	  
+	  c)
+	  config_tsv=${OPTARG}
+	  ;;
+
+	  d)
+	  project_directory=${OPTARG}
+	  ;; 
+      esac
+  done
+
+#check config file exists.
+if [ ! -e "${config_tsv}" ] 
+then
+	    echo "ERROR :  ${config_tsv} does not exist "
+	    usage;
+	    exit 1;
+fi
+
+#check exists.
+  if [ ! -d "${project_directory}" ] 
+  then
+	  echo " ERROR : ${project_directory} does not exist "
+	  usage;
+	  exit 1;
+  fi
+
+##################  
+# start pipeline #
+##################
+
+ngseasy_fastqc  -c ${config_tsv} -d ${project_directory}
+
+ngseasy_trimmomatic -c ${config_tsv} -d ${project_directory}
+
+ngseasy_alignment -c ${config_tsv} -d ${project_directory}
+
+ngseasy_addreadgroup -c ${config_tsv} -d ${project_directory}
+
+ngseasy_markduplicates -c ${config_tsv} -d ${project_directory}
+
+ngseasy_indel_realn -c ${config_tsv} -d ${project_directory}
+
+ngseasy_base_recal -c ${config_tsv} -d ${project_directory}
+
+ngseasy_filter_recalbam -c ${config_tsv} -d ${project_directory}
+
+ngseasy_alignment_qc -c ${config_tsv} -d ${project_directory}
+ 
+ngseasy_variant_calling -c ${config_tsv} -d ${project_directory}
+
+# coming soon...
+# ngseasy_filter_bam -c ${config_tsv} -d ${project_directory}
+# ngseasy_cnv_calling -c ${config_tsv} -d ${project_directory}
+# ngseasy_variant_filtering -c ${config_tsv} -d ${project_directory}
+# ngseasy_variant_annotation -c ${config_tsv} -d ${project_directory}
+# ngseasy_report -c ${config_tsv} -d ${project_directory}
 ```
 
 ****
