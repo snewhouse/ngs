@@ -30,6 +30,7 @@ cat << EOF
 # container images
 EOF
 
+VERSION=${1}
 
 sudo docker pull compbio/ngseasy-fastx-toolkit:${VERSION}
 sudo docker pull compbio/ngseasy-mhmm:${VERSION}
