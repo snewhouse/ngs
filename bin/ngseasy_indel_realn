@@ -113,7 +113,7 @@ then
 #RealignerTargetCreator
 	logger_ngseasy " START RealignerTargetCreator  "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name RealignerTargetCreator_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -126,16 +126,16 @@ then
   -I ${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bam \
   -o ${SOUTDocker}/alignments/${BAM_PREFIX}.dupemk.bam.IndelRealigner.intervals;
 
-  sudo docker logs RealignerTargetCreator_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker logs RealignerTargetCreator_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  sudo docker rm RealignerTargetCreator_${SAMPLE_ID}
+  docker rm RealignerTargetCreator_${SAMPLE_ID}
 
 	logger_ngseasy " END RealignerTargetCreator  "  ${LOGFILE}
 
 #IndelRealigner
 	logger_ngseasy " START IndelRealigner  "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name IndelRealignerr_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -150,23 +150,23 @@ then
   --consensusDeterminationModel USE_READS \
   -LOD 0.4;
 
-  sudo docker logs IndelRealignerr_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker logs IndelRealignerr_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  sudo docker rm IndelRealignerr_${SAMPLE_ID}
+  docker rm IndelRealignerr_${SAMPLE_ID}
 
 #index bam
 	logger_ngseasy " START samtools index [${SOUTDocker}/alignments/${BAM_PREFIX}.realn.bam]  "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name samtools_index_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-samtools:${VERSION} \
   /usr/local/pipeline/samtools/samtools index ${SOUTDocker}/alignments/${BAM_PREFIX}.realn.bam
 
-  sudo docker logs samtools_index_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker logs samtools_index_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  sudo docker rm samtools_index_${SAMPLE_ID}
+  docker rm samtools_index_${SAMPLE_ID}
 
     logger_ngseasy " END IndelRealigner  "  ${LOGFILE}
 

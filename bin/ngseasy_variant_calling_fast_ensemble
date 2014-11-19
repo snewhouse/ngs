@@ -125,7 +125,7 @@ then
     
   VARCALLER="freebayes"
 
-  sudo docker run \
+  docker run \
   -P \
   --name Freebayes_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -139,9 +139,9 @@ then
     --genotype-qualities > ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf;"
 
 #logs
-  sudo docker logs Freebayes_${SAMPLE_ID} >> ${LOGFILE}.log#
+  docker logs Freebayes_${SAMPLE_ID} >> ${LOGFILE}.log#
 
-  sudo docker rm Freebayes_${SAMPLE_ID}
+  docker rm Freebayes_${SAMPLE_ID}
 
   # copy vcf to cohort vcf directory
   cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
@@ -160,7 +160,7 @@ VARCALLER="platypus"
     
       logger_ngseasy " NGS_TYPE is Targeted/WEX so no duplicate filtering  "  ${LOGFILE}
       # for exome/whole genome data no duplicate filtering
-      sudo docker run \
+      docker run \
       -P \
       --name platypus_${SAMPLE_ID} \
       --volumes-from volumes_container \
@@ -178,7 +178,7 @@ VARCALLER="platypus"
       cp -v ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
 
     else
-          sudo docker run \
+          docker run \
           -P \
           --name platypus_${SAMPLE_ID} \
           --volumes-from volumes_container \
@@ -193,9 +193,9 @@ VARCALLER="platypus"
             --minBaseQual=20;
             
   #logs
-    sudo docker logs platypus_${SAMPLE_ID} >> ${LOGFILE}.log
+    docker logs platypus_${SAMPLE_ID} >> ${LOGFILE}.log
 
-    sudo docker rm platypus_${SAMPLE_ID}
+    docker rm platypus_${SAMPLE_ID}
 
     # copy vcf to cohort vcf directory
     cp ${SOUT}/vcf/${BAM_PREFIX}.raw.snps.indels.${VARCALLER}.vcf ${PROJECT_DIR}/${POJECT_ID}/cohort_vcfs/;
@@ -217,7 +217,7 @@ fi
 
 params_yaml="/home/pipeman/ngseasy_scripts/ensemble.fast.calling.params.yaml"
 
-  sudo docker run \
+  docker run \
   -P \
   --name bcbio-variation_${SAMPLE_ID} \
   --volumes-from volumes_container \

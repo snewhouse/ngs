@@ -117,7 +117,7 @@ then
 # BaseRecalibrator pre recal
 	logger_ngseasy " START BaseRecalibrator  "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name BaseRecalibrator_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -133,16 +133,16 @@ then
   --knownSites ${KNOWN_SNPS_OMNI} \
   --knownSites ${KNOWN_SNPS_b138};
 
-  sudo docker logs BaseRecalibrator_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker logs BaseRecalibrator_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  sudo docker rm BaseRecalibrator_${SAMPLE_ID}
+  docker rm BaseRecalibrator_${SAMPLE_ID}
 
   logger_ngseasy " END BaseRecalibrator  "  ${LOGFILE}
 
 #PrintReads BQSR recalibration 
   logger_ngseasy " START PrintReads BQSR recalibration   "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name PrintReads_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -157,30 +157,30 @@ then
   -I ${SOUTDocker}/alignments/${BAM_PREFIX}.realn.bam \
   -o ${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam;
 
-  sudo docker logs PrintReads_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker logs PrintReads_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  sudo docker rm PrintReads_${SAMPLE_ID}
+  docker rm PrintReads_${SAMPLE_ID}
 
 #index bam
 	logger_ngseasy " START samtools index [${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam]  "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name samtools_index_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-samtools:${VERSION} \
   /usr/local/pipeline/samtools/samtools index ${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam
 
-  sudo docker logs samtools_index_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker logs samtools_index_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  sudo docker rm samtools_index_${SAMPLE_ID}
+  docker rm samtools_index_${SAMPLE_ID}
 
   logger_ngseasy " END PrintReads BQSR recalibration  "  ${LOGFILE}
 
 # BaseRecalibrator post recal
   logger_ngseasy " START BaseRecalibrator post recal  "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name BaseRecalibrator_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -196,9 +196,9 @@ then
   --knownSites ${KNOWN_SNPS_OMNI} \
   --knownSites ${KNOWN_SNPS_b138};
 
-  sudo docker logs BaseRecalibrator_${SAMPLE_ID} >> ${LOGFILE}.log
+  docker logs BaseRecalibrator_${SAMPLE_ID} >> ${LOGFILE}.log
 
-  sudo docker rm BaseRecalibrator_${SAMPLE_ID}
+  docker rm BaseRecalibrator_${SAMPLE_ID}
 
   logger_ngseasy " END BaseRecalibrator post recal "  ${LOGFILE}
 
@@ -224,7 +224,7 @@ fi
 #
   logger_ngseasy " START AnalyzeCovariates post recal  "  ${LOGFILE}
 
-  sudo docker run \
+  docker run \
   -P \
   --name AnalyzeCovariates_${SAMPLE_ID} \
   --volumes-from volumes_container \
@@ -237,9 +237,9 @@ fi
   -csv ${SOUTDocker}/reports/${BAM_PREFIX}.recal.bam.BaseRecalibrator.BQSR.csv \
 #  -plots ${SOUTDocker}/reports/${BAM_PREFIX}.recal.bam.BaseRecalibrator.BQSR.pdf;
 #
-  sudo docker logs AnalyzeCovariates_${SAMPLE_ID} >> ${LOGFILE}.log#
+  docker logs AnalyzeCovariates_${SAMPLE_ID} >> ${LOGFILE}.log#
 
-  sudo docker rm AnalyzeCovariates_${SAMPLE_ID}
+  docker rm AnalyzeCovariates_${SAMPLE_ID}
 
   logger_ngseasy " END AnalyzeCovariates post recal "  ${LOGFILE}
 
