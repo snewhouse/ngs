@@ -128,7 +128,7 @@ then
   -P \
   --name samtools_filter_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-samtools:${VERSION} /bin/bash -c \
   "/usr/local/pipeline/samtools/samtools \
   view \
   -b \
@@ -164,7 +164,7 @@ logger_ngseasy " START Variant Calling using Freebayes " ${LOGFILE}
   -P \
   --name Freebayes_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-freebayes:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-freebayes:${VERSION} /bin/bash -c \
   "/usr/local/pipeline/freebayes/bin/freebayes \
     -f /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
     -b ${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam \
@@ -208,7 +208,7 @@ then
   sudo docker run -P \
   --name platypus_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-platypus:v0.9 python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
+  -t compbio/ngseasy-platypus:${VERSION} python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
       --nCPU ${NCPU} \
       --bamFiles=${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam \
       --refFile=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
@@ -233,7 +233,7 @@ then
   sudo docker run -P \
       --name platypus_${SAMPLE_ID} \
       --volumes-from volumes_container \
-      -t compbio/ngseasy-platypus:v0.9 python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
+      -t compbio/ngseasy-platypus:${VERSION} python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
         --nCPU ${NCPU} \
         --bamFiles=${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam \
         --refFile=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
@@ -284,7 +284,7 @@ then
   -P \
   --name UnifiedGenotyper_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-gatk:v0.9.3 \
+  -t compbio/ngseasy-gatk:${VERSION} \
   java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
   -T UnifiedGenotyper \
   -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
@@ -349,7 +349,7 @@ then
   -P \
   --name HaplotypeCaller_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-gatk:v0.9.3 \
+  -t compbio/ngseasy-gatk:${VERSION} \
   java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
   -T HaplotypeCaller \
   -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
@@ -419,7 +419,7 @@ VARCALLER="freebayes"
   -P \
   --name Freebayes_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-freebayes:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-freebayes:${VERSION} /bin/bash -c \
   "/usr/local/pipeline/freebayes/bin/freebayes \
     -f /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
     -b ${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam \
@@ -456,7 +456,7 @@ then
   -P \
   --name platypus_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-platypus:v0.9 python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
+  -t compbio/ngseasy-platypus:${VERSION} python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
       --nCPU ${NCPU} \
       --bamFiles=${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam \
       --refFile=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
@@ -481,7 +481,7 @@ else
       -P \
       --name platypus_${SAMPLE_ID} \
       --volumes-from volumes_container \
-      -t compbio/ngseasy-platypus:v0.9 python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
+      -t compbio/ngseasy-platypus:${VERSION} python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
         --nCPU ${NCPU} \
         --bamFiles=${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam \
         --refFile=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
@@ -522,7 +522,7 @@ fi
 #  -P \
 #  --name UnifiedGenotyper_${SAMPLE_ID} \
 #  --volumes-from volumes_container \
-#  -t compbio/ngseasy-gatk:v0.9.3 \
+#  -t compbio/ngseasy-gatk:${VERSION} \
 #  java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
 #  -T UnifiedGenotyper \
 #  -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
@@ -582,7 +582,7 @@ fi
   -P \
   --name HaplotypeCaller_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-gatk:v0.9.3 \
+  -t compbio/ngseasy-gatk:${VERSION} \
   java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
   -T HaplotypeCaller \
   -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
@@ -647,7 +647,7 @@ params_yaml="/home/pipeman/ngseasy_scripts/ensemble.calling.params.yaml"
   -P \
   --name bcbio-variation_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-bcbio-variation:v0.9.1 java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/bcbio/bcbio.variation-0.1.7-standalone.jar variant-ensemble \
+  -t compbio/ngseasy-bcbio-variation:${VERSION}.1 java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/bcbio/bcbio.variation-0.1.7-standalone.jar variant-ensemble \
   ${params_yaml} \
   /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.ensemble.vcf \
@@ -677,7 +677,7 @@ then
   -P \
   --name Freebayes_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-freebayes:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-freebayes:${VERSION} /bin/bash -c \
   "/usr/local/pipeline/freebayes/bin/freebayes \
     -f /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
     -b ${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam \
@@ -714,7 +714,7 @@ VARCALLER="platypus"
       -P \
       --name platypus_${SAMPLE_ID} \
       --volumes-from volumes_container \
-      -t compbio/ngseasy-platypus:v0.9 python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
+      -t compbio/ngseasy-platypus:${VERSION} python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
           --nCPU ${NCPU} \
           --bamFiles=${SOUTDocker}/alignments/${BAM_PREFIX}.recal.bam \
           --refFile=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
@@ -739,7 +739,7 @@ VARCALLER="platypus"
           -P \
           --name platypus_${SAMPLE_ID} \
           --volumes-from volumes_container \
-          -t compbio/ngseasy-platypus:v0.9 python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
+          -t compbio/ngseasy-platypus:${VERSION} python /usr/local/pipeline/Platypus_0.7.9.1/Platypus.py callVariants \
             --nCPU ${NCPU} \
             --bamFiles=${SOUTDocker}/alignments/${BAM_PREFIX}.bam \
             --refFile=/home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
@@ -786,7 +786,7 @@ params_yaml="/home/pipeman/ngseasy_scripts/ensemble.fast.calling.params.yaml"
   -P \
   --name bcbio-variation_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-bcbio-variation:v0.9.1 java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/bcbio/bcbio.variation-0.1.7-standalone.jar variant-ensemble \
+  -t compbio/ngseasy-bcbio-variation:${VERSION}.1 java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/bcbio/bcbio.variation-0.1.7-standalone.jar variant-ensemble \
   ${params_yaml} \
   /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
   ${SOUTDocker}/vcf/${BAM_PREFIX}.raw.snps.indels.ensemble.vcf \

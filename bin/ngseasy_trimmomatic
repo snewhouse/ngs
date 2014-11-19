@@ -145,7 +145,7 @@ adapter_fa="/home/pipeman/reference_genomes_b37/contaminant_list.fa"
   --rm=true \
   --name trimmomatic.${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-trimmomatic:v0.9 java -jar /usr/local/pipeline/Trimmomatic-0.32/trimmomatic-0.32.jar PE \
+  -t compbio/ngseasy-trimmomatic:${VERSION} java -jar /usr/local/pipeline/Trimmomatic-0.32/trimmomatic-0.32.jar PE \
     -threads ${NCPU} \
     -phred33 \
     -trimlog ${SOUTDocker}/fastq/trimm_qc.log \
@@ -188,7 +188,7 @@ fi
   --rm=true \
   --name fastqc_post_trimm.${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-fastqc:v0.9 /usr/local/pipeline/FastQC/fastqc \
+  -t compbio/ngseasy-fastqc:${VERSION} /usr/local/pipeline/FastQC/fastqc \
     --threads ${NCPU} \
     --extract \
     --quiet \

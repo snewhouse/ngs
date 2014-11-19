@@ -146,7 +146,7 @@ SOUTDocker=${DOCKERHOME}/${POJECT_ID}/${SAMPLE_ID}
   --rm=true \
   --name fastqc.${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-fastqc:v0.9 /usr/local/pipeline/FastQC/fastqc \
+  -t compbio/ngseasy-fastqc:${VERSION} /usr/local/pipeline/FastQC/fastqc \
     --threads ${NCPU} \
     --extract \
     --quiet \

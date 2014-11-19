@@ -157,7 +157,7 @@ if [ "${ALIGNER}" == "bwa" ]
   -P \
   --name ${ALIGNER}_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-bwa:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-bwa:${VERSION} /bin/bash -c \
   "/usr/local/pipeline/bwa-0.7.10/bwa mem -t ${NCPU} /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta ${qcdPeFASTQ1} ${qcdPeFASTQ2} > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.sam"
 
 #log docker run 
@@ -171,7 +171,7 @@ if [ "${ALIGNER}" == "bwa" ]
   -P \
   --name sam2bam_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-samtools:${VERSION} /bin/bash -c \
   "usr/local/pipeline/samtools/samtools view -bhS ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.sam > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bam"
 
 #log docker run 
@@ -183,7 +183,7 @@ if [ "${ALIGNER}" == "bwa" ]
   -P \
   --name samtools_sort_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-samtools:${VERSION} /bin/bash -c \
   "/usr/local/pipeline/samtools/samtools sort -f ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bam ${SOUTDocker}/alignments/${BAM_PREFIX}.sort.bam"
 
 #log docker run 
@@ -196,7 +196,7 @@ if [ "${ALIGNER}" == "bwa" ]
   -P \
   --name samtools_index_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 \
+  -t compbio/ngseasy-samtools:${VERSION} \
   /usr/local/pipeline/samtools/samtools index ${SOUTDocker}/alignments/${BAM_PREFIX}.sort.bam
 
 #log docker run 
@@ -219,7 +219,7 @@ then
   -P \
   --name ${ALIGNER}_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-novoalign:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-novoalign:${VERSION} /bin/bash -c \
     "/usr/local/pipeline/novocraft/novoalign \
    -d /home/pipeman/reference_genomes_b37/human_g1k_v37.novoIndex \
    -f ${qcdPeFASTQ1} ${qcdPeFASTQ2} \
@@ -248,7 +248,7 @@ then
   -P \
   --name sam2bam_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-samtools:${VERSION} /bin/bash -c \
   "usr/local/pipeline/samtools/samtools view -bhS ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.sam > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bam"
 
 #log docker run 
@@ -260,7 +260,7 @@ then
   -P \
   --name samtools_sort_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-samtools:${VERSION} /bin/bash -c \
   "/usr/local/pipeline/samtools/samtools sort -f ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bam ${SOUTDocker}/alignments/${BAM_PREFIX}.sort.bam"
 
 #log docker run 
@@ -273,7 +273,7 @@ then
   -P \
   --name samtools_index_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 \
+  -t compbio/ngseasy-samtools:${VERSION} \
   /usr/local/pipeline/samtools/samtools index ${SOUTDocker}/alignments/${BAM_PREFIX}.sort.bam
 
 #log docker run 
@@ -298,7 +298,7 @@ then
   -P \
   --name ${ALIGNER}_bwa_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-bwa:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-bwa:${VERSION} /bin/bash -c \
   "/usr/local/pipeline/bwa-0.7.10/bwa mem -t ${NCPU} /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta ${qcdPeFASTQ1} ${qcdPeFASTQ2} > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bwa.sam";
 
 #log docker run 
@@ -312,7 +312,7 @@ then
   -P \
   --name sam2bam_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-samtools:${VERSION} /bin/bash -c \
   "/usr/local/pipeline/samtools/samtools view -bhS ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bwa.sam > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bwa.bam"
 
 #log docker run 
@@ -326,7 +326,7 @@ then
   -P \
   --name samtools_sort_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-samtools:${VERSION} /bin/bash -c \
   "/usr/local/pipeline/samtools/samtools sort -f ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bwa.bam ${SOUTDocker}/alignments/${BAM_PREFIX}.sort.bwa.bam"
 
 #log docker run 
@@ -340,7 +340,7 @@ then
   -P \
   --name samtools_index_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 \
+  -t compbio/ngseasy-samtools:${VERSION} \
   /usr/local/pipeline/samtools/samtools index ${SOUTDocker}/alignments/${BAM_PREFIX}.sort.bwa.bam
 
 #log docker run 
@@ -356,7 +356,7 @@ then
     -P \
     --name ${ALIGNER}_${SAMPLE_ID} \
     --volumes-from volumes_container \
-    -t compbio/ngseasy-stampy:v0.9 \
+    -t compbio/ngseasy-stampy:${VERSION} \
     python  /usr/local/pipeline/stampy-1.0.23/stampy.py \
       -g /home/pipeman/reference_genomes_b37/human_g1k_v37 \
       -h /home/pipeman/reference_genomes_b37/human_g1k_v37 \
@@ -385,7 +385,7 @@ then
   -P \
   --name sam2bam_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-samtools:${VERSION} /bin/bash -c \
   "/usr/local/pipeline/samtools/samtools view -bhS ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.sam > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bam"
 
 #log docker run 
@@ -399,7 +399,7 @@ then
   -P \
   --name samtools_sort_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-samtools:${VERSION} /bin/bash -c \
   "/usr/local/pipeline/samtools/samtools sort -f ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bam ${SOUTDocker}/alignments/${BAM_PREFIX}.sort.bam"
 
 #log docker run 
@@ -413,7 +413,7 @@ then
   -P \
   --name samtools_index_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 \
+  -t compbio/ngseasy-samtools:${VERSION} \
   /usr/local/pipeline/samtools/samtools index ${SOUTDocker}/alignments/${BAM_PREFIX}.sort.bam
 
 #log docker run 
@@ -440,7 +440,7 @@ then
     -P \
     --name ${ALIGNER}_${SAMPLE_ID} \
     --volumes-from volumes_container \
-    -t compbio/ngseasy-bowtie2:v0.9 \
+    -t compbio/ngseasy-bowtie2:${VERSION} \
     /usr/local/pipeline/bowtie2-2.2.3/bowtie2 --end-to-end -threads ${NCPU} -x /home/pipeman/reference_genomes_b37/human_g1k_v37 \
     -1 ${qcdPeFASTQ1} \
     -2 ${qcdPeFASTQ2} \
@@ -456,7 +456,7 @@ then
   -P \
   --name sam2bam_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-samtools:${VERSION} /bin/bash -c \
   "/usr/local/pipeline/samtools/samtools view -bhS ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.sam > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bam"
 
 #log docker run 
@@ -470,7 +470,7 @@ then
   -P \
   --name samtools_sort_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-samtools:${VERSION} /bin/bash -c \
   "/usr/local/pipeline/samtools/samtools sort -f ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.bam ${SOUTDocker}/alignments/${BAM_PREFIX}.sort.bam"
 
 #log docker run 
@@ -484,7 +484,7 @@ then
   -P \
   --name samtools_index_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 \
+  -t compbio/ngseasy-samtools:${VERSION} \
   /usr/local/pipeline/samtools/samtools index ${SOUTDocker}/alignments/${BAM_PREFIX}.sort.bam
 
 #log docker run 

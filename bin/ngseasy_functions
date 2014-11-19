@@ -350,7 +350,7 @@ fi
   -P \
   --name fastqc \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-fastqc:v0.9 /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_fastqc_pre_trimm.sh "config" ${fastqc_pre} /home/pipeman/ngs_projects/${config_tsv}
+  -t compbio/ngseasy-fastqc:${VERSION} /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_fastqc_pre_trimm.sh "config" ${fastqc_pre} /home/pipeman/ngs_projects/${config_tsv}
 
 else
   sudo docker run \
@@ -358,7 +358,7 @@ else
   -P \
   --name fastqc \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-fastqc:v0.9 /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_fastqc_pre_trimm.sh "manually" ${fastqc_pre} ${sample_id} ${fastq_prefix} ${project_id} ${project_directory}
+  -t compbio/ngseasy-fastqc:${VERSION} /bin/bash /home/pipeman/ngseasy_scripts/run_ngseasy_fastqc_pre_trimm.sh "manually" ${fastqc_pre} ${sample_id} ${fastq_prefix} ${project_id} ${project_directory}
 fi
 
 }

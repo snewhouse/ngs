@@ -110,7 +110,7 @@ BAM_PREFIX=${SAMPLE_ID}.${NGS_TYPE}.${NGS_PLATFORM}.${ALIGNER}
   -P \
   --name samtools_filter_${SAMPLE_ID} \
   --volumes-from volumes_container \
-  -t compbio/ngseasy-samtools:v0.9 /bin/bash -c \
+  -t compbio/ngseasy-samtools:${VERSION} /bin/bash -c \
   "/usr/local/pipeline/samtools/samtools \
   view \
   -b \
