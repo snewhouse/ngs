@@ -66,7 +66,7 @@ fi
 # read config file #
 # begin reading config file line by line
   
-while read -r f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12 f13 f14 f15
+while read -r f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12 f13 f14 f15 f16
 do
 
 
@@ -89,6 +89,7 @@ do
   GTMODEGATK=$f13
   CLEANUP=$f14
   NCPU=$f15
+  VERSION=$f16
 
 #mounted docker dir
 #script run in docker container and will look for volumes specifef in ngseasy_volumes_contaier
@@ -108,7 +109,7 @@ SOUT=${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}
 run=`date +"%d%m%y-%H%M%S"`
 
 #make sample spec config file and save to sample run folder 
-echo "${POJECT_ID} ${SAMPLE_ID} ${FASTQ1} ${FASTQ2} ${PROJECT_DIR} ${DNA_PREP_LIBRARY_ID} ${NGS_PLATFORM} ${NGS_TYPE} ${BED_ANNO} ${PIPELINE} ${ALIGNER} ${VARCALLER} ${GTMODEGATK} ${CLEANUP} ${NCPU}" | perl -p -i -e 's/ /\t/g' > ${SOUT}/${SAMPLE_ID}_${PIPELINE}_${run}.config.tsv
+echo "${POJECT_ID} ${SAMPLE_ID} ${FASTQ1} ${FASTQ2} ${PROJECT_DIR} ${DNA_PREP_LIBRARY_ID} ${NGS_PLATFORM} ${NGS_TYPE} ${BED_ANNO} ${PIPELINE} ${ALIGNER} ${VARCALLER} ${GTMODEGATK} ${CLEANUP} ${NCPU} ${VERSION}" | perl -p -i -e 's/ /\t/g' > ${SOUT}/${SAMPLE_ID}_${PIPELINE}_${run}.config.tsv
 
 #sample config 
 sample_config=${SOUT}/${SAMPLE_ID}_${PIPELINE}_${run}.config.tsv

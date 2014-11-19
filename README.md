@@ -434,6 +434,8 @@ VARCALLER|string|Variant Caller|ensemble/freebayes/platypus/UnifiedGenotyper/Hap
 GTMODEGATK|string|GATK Variant Caller Mode|EMIT_ALL_CONFIDENT_SITES/EMIT_VARIANTS_ONLY|
 CLEANUP|string|Clean Up Files (TRUE/FALSE)|TRUE/FALSE|
 NCPU|number|Number of cores to call|1..n|
+VERSION|number|NGSeasy Version |v0.9/v1.0|
+
 
 _coming soon_ options to add user email, specify non-gatk runs  
 
