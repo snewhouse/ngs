@@ -480,17 +480,12 @@ mkdir ngs_projects/humandb # for annovar databses
 
 ### get NGSeasy resources
 
-# ftp From 159.92.120.21 ........copy data and extract
-
 ### FTP Details
 - **ftp:**  159.92.120.21  
 - **user:** compbio-public  
 - **pwd:**  compbio-public  
 - **port:** 21  
 
-```bash
-cd ngs_projects
-```
 ### ftp
 ```bash
 ftp 159.92.120.21
@@ -504,6 +499,7 @@ ftp> mget *.gz
 ftp> exit
 ```
 
+### Extract resources
 ```bash
 # Extract resources
 tar xvf gatk_resources.tar.gz; 
@@ -514,16 +510,20 @@ tar xvf reference_genomes_b37.tgz;
 gunzip *
 ```
 
-```bash
-#--------------------------------#
-# get and PATH nsgeasy scripts
-#--------------------------------#
+### Get NGSeasy scripts
 
+[**NGSeasy GitHub Repo**](https://github.com/KHP-Informatics/ngs)
+
+### Git Clone
+```bash
 cd ngs_projects/nsgeasy
 git clone https://github.com/KHP-Informatics/ngs.git
 git checkout dev2
+```
 
-# eg :- 
+### Set Path
+```bash
+# set PATH 
 
 export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/bin
 
