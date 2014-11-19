@@ -181,15 +181,18 @@ Here BamUtil:recab is used to recalibrate base quality scores and freebayes/plat
 
 **Note** Some of the later functions i.e. variant annotation and qc reporting are still in dev.  
 
-We highly recommed read trimming prior to alignment. 
-We have noticed considerable speed-ups in alignmnet time and increased quality of SNP/INDEL calls using trimmed vs raw fastq.
+**We highly recommed read trimming prior to alignment.**
+We have noticed considerable speed-ups in alignmnet time and increased quality of SNP/INDEL calls using trimmed vs raw fastq.  
+
 For non-GATK users, use of variant callers that perform local re-aligmnet around candidate sites
 e.g. [freebayes](https://github.com/ekg/freebayes), [platypus](http://www.well.ox.ac.uk/platypus), mitigate the need for the indel realignment stages.  
 
-Base quality score recalibration is also recommended. 
-Non-GATK users are encouraged to use aligners such as [stampy](http://www.well.ox.ac.uk/project-stampy) and [novoalign](http://www.novocraft.com) that perform base quality score recal on the fly.
-As an alternative to GATK, We will be testing and adding fucntionality for use of 
-**[BamUtil](https://github.com/statgen/bamUtil):[recab](http://genome.sph.umich.edu/wiki/BamUtil:_recab)** w
+**Base quality score recalibration is also recommended.**  
+
+Non-GATK users are encouraged to use aligners such as [stampy](http://www.well.ox.ac.uk/project-stampy) and [novoalign](http://www.novocraft.com) that perform base quality score recal on the fly.  
+
+As an alternative to GATK, we will be testing and adding fucntionality for use of 
+**[BamUtil](https://github.com/statgen/bamUtil):[recab](http://genome.sph.umich.edu/wiki/BamUtil:_recab)** 
 for base quality score recalibration in the near future  
 
 - https://bcbio.wordpress.com/  
