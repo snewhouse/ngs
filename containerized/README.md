@@ -471,10 +471,13 @@ cd media
 mkdir ngs_projects
 mkdir ngs_projects/fastq_raw # fastq staging area
 mkdir ngs_projects/config_files # config files
+mkdir ngs_projects/ngseasy # scripts
 mkdir ngs_projects/humandb # for annovar databses
 ```
 
-### get NGSeasy resources
+****
+
+### Get NGSeasy resources
 
 ### FTP Details
 - **ftp:**  159.92.120.21  
@@ -482,39 +485,49 @@ mkdir ngs_projects/humandb # for annovar databses
 - **pwd:**  compbio-public  
 - **port:** 21  
 
-### ftp
+### FTP
 ```bash
 ftp 159.92.120.21
 ```
 
 ### mget resources
 ```bash
+cd ngs_projects
 ftp> cd /Public/NGSeasy_Public_Resources
 ftp> prompt off
 ftp> mget *.gz
 ftp> exit
 ```
+****
 
 ### Extract resources
 ```bash
 # Extract resources
+cd ngs_projects/
 tar xvf gatk_resources.tar.gz; 
+cd ngs_projects/gatk_resources
 gunzip *
 
 # Extract Reference Genomes
+cd ngs_projects/
 tar xvf reference_genomes_b37.tgz; 
+cd ngs_projects/reference_genomes_b37
 gunzip *
 ```
+****
 
 ### Get NGSeasy scripts
 
-[**NGSeasy GitHub Repo**](https://github.com/KHP-Informatics/ngs)
+All scripts available at our [**NGSeasy GitHub Repo**](https://github.com/KHP-Informatics/ngs)
 
 ### Git Clone
 ```bash
 cd ngs_projects/nsgeasy
 git clone https://github.com/KHP-Informatics/ngs.git
-git checkout dev2
+
+# update if needed
+cd ngs_projects/nsgeasy/ngs
+git pull
 ```
 
 ### Set Path
@@ -528,13 +541,30 @@ export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/bin
 echo "export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/bin" ~/.bashrc
 source ~/.bashrc
 ```
+****
 
-- to do [get_annovar_humandb]  
+### Get NGSeasy Tools and Container Images
 
 ```bash
 #get images
 bash get_containers.sh
 ```
+
+### Build Annotation Container Images
+
+The user needs to manually build the following annotation tools:-   
+
+- Annovar
+- VEP
+- snpEff
+
+### Build VEP
+
+### Build Annovar
+
+### Build snpEff
+
+****
 
 ```bash
 #------------------------------------------------#
