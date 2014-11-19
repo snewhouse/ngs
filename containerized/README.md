@@ -181,6 +181,8 @@ Here BamUtil:recab is used to recalibrate base quality scores and freebayes/plat
 
 **Note** Some of the later functions i.e. variant annotation and qc reporting are still in dev.  
 
+****
+
 **We highly recommed read trimming prior to alignment.**
 We have noticed considerable speed-ups in alignmnet time and increased quality of SNP/INDEL calls using trimmed vs raw fastq.  
 
