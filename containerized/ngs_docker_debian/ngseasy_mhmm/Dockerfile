@@ -10,6 +10,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Update
 RUN apt-get update -y && apt-get upgrade -y
+
 RUN apt-get install -y \
 	libatlas3-base \
 	libblas3 \
@@ -44,16 +45,12 @@ RUN apt-get install -y \
 	r-cran-vgam \
 	r-cran-rsqlite
 
-## bioconductor and R libs ##
-## needed fo R CNV tools  
-
 #---------------------------------m-HMM -------------------------------------#
-## needed fo R CNV tools  
-RUN /usr/bin/Rscript --no-save --no-restore -e 'source("http://www.bioconductor.org/biocLite.R"); biocLite()' \
-  && cd /usr/local/pipeline/ \
-  && wget https://www.stt.msu.edu/users/hengwang/mHMM%20Data/mHMM_1.0.tar.gz \
-  && sudo R CMD INSTALL mHMM_1.0.tar.gz \
-  && rm mHMM_1.0.tar.gz;
+  
+RUN /usr/bin/Rscript --no-save --no-restore -e 'source("http://www.bioconductor.org/biocLite.R"); biocLite()' && \
+	cd /usr/local/pipeline/ && \
+	wget https://www.stt.msu.edu/users/hengwang/mHMM%20Data/mHMM_1.0.tar.gz && \
+ 	sudo R CMD INSTALL mHMM_1.0.tar.gz && rm mHMM_1.0.tar.gz;
 
 #-------------------------------PERMISSIONS--------------------------
 RUN chmod -R 777 /usr/local/pipeline
