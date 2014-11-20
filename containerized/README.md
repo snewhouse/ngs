@@ -312,7 +312,7 @@ ngs_projects
 |__ngseasy
 ```
 
-The following directories are obtained in **step 6. Download NGSeasy Resources**
+The following directories are obtained in **[6. Download NGSeasy Resources](https://github.com/KHP-Informatics/ngs/tree/dev2#6-download-ngseasy-resources)**
 **- reference_genomes_b37  **  
 **- gatk_resources **  
 
