@@ -294,42 +294,32 @@ docker build -t compbio/ngseasy-${TOOL} .
 ***
 
 ## 5. Make NGS project directory
+The user needs to make the relevent directory structures on their local machine before starting an NGS run. 
+
+On our sysetm we typically set up a top-level driectory called `ngs_projects` within which we store output from all our individual NGS projects. 
+
+### Make top level directories 
+
+Here we are working from local top level directory called `media`. This can be any folder on your system ie `~/${USER}`.  
+
+Within this directory we make the following folders: - 
+
+```bash
+cd media
+
+mkdir ngs_projects # make toplevel NGS folder
+
+mkdir ngs_projects/fastq_raw # fastq staging area
+
+mkdir ngs_projects/config_files # config files
+
+mkdir ngs_projects/ngseasy # NGSeasy scripts
+
+mkdir ngs_projects/humandb # for annovar databses
+```
+
 
 ## 6. Download NGSeasy Resources
-
-
-****************
-
-## The NGSeasy Pipelines ##
-
-| Pipeline             | Short Description    |
-|----------------------|----------------------|
-| [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk) | fastq to recalibrated bam to vcf using GATK  |
-| [ngs_full_no_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_no_gatk)    | fastq to recalibrated bam to vcf  |
-
-gatk version includes indel realignment and base recalibration.  
-
-Non-academics/commercial groups need to pay for GATK.  
-
-Currently **ngs_full_gatk** pipeline is the most developed module.  
-
-The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK. Here BamUtil:recab is used to recalibrate base quality scores and freebayes/platypus are the variant callers of choice.
-****************
-
-
-
-
-***********
-
-
-
-
-
-
-
-
-## NGSeasy Reasources
-
 Download the indexed reference genomes and example data for use with NGSeasy.
 
 - **reference_genomes_b37.tgz** b37 reference genomes indexed for use with all provided aligners (BWA, Bowtie2, Stampy, Novoalign) and annotation bed files for use with pipeline scripts
@@ -353,6 +343,32 @@ I would recommend using a separate program like [FileZilla](https://filezilla-pr
 
 ****************
 
+## The NGSeasy Pipelines ##
+
+| Pipeline             | Short Description    |
+|----------------------|----------------------|
+| [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk) | fastq to recalibrated bam to vcf using GATK  |
+| [ngs_full_no_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_no_gatk)    | fastq to recalibrated bam to vcf  |
+
+gatk version includes indel realignment and base recalibration.  
+
+Non-academics/commercial groups need to pay for GATK.  
+
+Currently **ngs_full_gatk** pipeline is the most developed module.  
+
+The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK. Here BamUtil:recab is used to recalibrate base quality scores and freebayes/platypus are the variant callers of choice.
+****************
+
+
+
+
+
+## NGSeasy Reasources
+
+
+
+****************
+
 NGSeasy Project Set up
 --------------------------
 
@@ -365,30 +381,6 @@ NGSeasy Project Set up
 ### 5. Make NGS project directory
 ### 6. Download NGSeasy Resources
 
-The user needs to make the relevent directory structures on their local machine before starting and NGS run. 
-
-On our sysetm we typically set up a top-level driectory called `ngs_projects` within which we store output from all our individual NGS projects. 
-
-
-## Make top level directories 
-
-Here we are working from local top level directory called `media`. This can be any folder on your system ie `~/${USER}`.  
-
-Within this directory we make the following folders: - 
-
-```bash
-cd media
-
-mkdir ngs_projects # make toplevel NGS folder
-
-mkdir ngs_projects/fastq_raw # fastq staging area
-
-mkdir ngs_projects/config_files # config files
-
-mkdir ngs_projects/ngseasy # NGSeasy scripts
-
-mkdir ngs_projects/humandb # for annovar databses
-```
 
 We then need to get the latest NGSeasy scripts from [GitHub](https://github.com/KHP-Informatics/ngs) 
 
