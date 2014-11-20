@@ -296,7 +296,7 @@ docker build -t compbio/ngseasy-${TOOL} .
 ## 5. Make NGS project directory
 The user needs to make the relevent directory structures on their local machine before starting an NGS run. 
 
-On our sysetm we typically set up a top-level driectory called `ngs_projects` within which we store output from all our individual NGS projects. 
+On our sysetm we typically set up a top-level driectory called **`ngs_projects`** within which we store output from all our individual NGS projects. 
 
 ### Make top level directories 
 
