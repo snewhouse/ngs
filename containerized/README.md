@@ -296,26 +296,31 @@ docker build -t compbio/ngseasy-${TOOL} .
 ## 5. Make NGS project directory
 The user needs to make the relevent directory structures on their local machine before starting an NGS run. 
 
-On our sysetm we typically set up a top-level driectory called **`ngs_projects`** within which we store output from all our individual NGS projects. 
+On our sysetm we typically set up a top-level driectory called **ngs_projects** within which we store output from all our individual NGS projects. 
 
 ### Make top level directories 
 
-Here we are working from local top level directory called `media`. This can be any folder on your system ie `~/${USER}`.  
+Here we are working from local top level directory called **media/**. This can be any folder on your system ie **~/${USER}**.  
 
 Within this directory we make the following folders: - 
 
 ```bash
 cd media
 
-mkdir ngs_projects # make toplevel NGS folder
+# make toplevel NGS folder
+mkdir ngs_projects 
 
-mkdir ngs_projects/fastq_raw # fastq staging area
+# fastq staging area
+mkdir ngs_projects/fastq_raw 
 
-mkdir ngs_projects/config_files # config files
+# config files
+mkdir ngs_projects/config_files 
 
-mkdir ngs_projects/ngseasy # NGSeasy scripts
+# NGSeasy scripts
+mkdir ngs_projects/ngseasy 
 
-mkdir ngs_projects/humandb # for annovar databses
+# for annovar databses
+mkdir ngs_projects/humandb 
 ```
 
 
