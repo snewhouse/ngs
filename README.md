@@ -221,7 +221,6 @@ docker pull compbio/ngseasy-${TOOL}
 
 ## 3. Manually Build required NGSeasy Container Images
 
-### Dockerised and Manual Builds ##
 Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. 
 
 Some of the software has restrictions on use particularly for commercial 
@@ -237,6 +236,8 @@ leagally have to approach the owners of the various components yourself!
    * ANNOVAR http://www.openbioinformatics.org/annovar/  
 
 **These tools require manual download and registration with the proivder. For non-academics/commercial groups, you will need to pay for some of these tools.**
+
+### Dockerised and Manual Builds ##
 
 | Tool | Build |
 |-------------|----------------------|
