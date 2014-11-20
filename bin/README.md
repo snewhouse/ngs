@@ -639,7 +639,7 @@ The pipeline is defined in the config file as **[ngs_full_gatk]**
 
 *****
 
-### ngs_full_gatk ###  
+### ngs_full_gatk  
 
 Each **pipeline** is a bash wrapper that calls the required image/container(s) 
 
