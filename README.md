@@ -312,6 +312,10 @@ ngs_projects
 |__ngseasy
 ```
 
+The following directories are obtained in **step 6. Download NGSeasy Resources**
+**|__reference_genomes_b37  **
+**|__gatk_resources **
+
 
 ```bash
 # Move to media/
@@ -328,10 +332,8 @@ mkdir ngs_projects/config_files
 
 # NGSeasy scripts
 mkdir ngs_projects/ngseasy 
-
-# for annovar databses
-mkdir ngs_projects/humandb 
 ```
+
 
 
 ## 6. Download NGSeasy Resources
