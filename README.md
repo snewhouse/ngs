@@ -223,10 +223,15 @@ for base quality score recalibration in the near future
 - https://github.com/chapmanb/bcbio.variation  
 - http://plagnol-lab.blogspot.co.uk/2013/11/faq-and-clarifications-for-exomedepth-r.html
 
-******** 
 
-# Available NGSeasy Docker images
-Available to download at our **[compbio Docker Hub](https://hub.docker.com/u/compbio)**
+***********
+
+Getting the Dockerised NGSeasy Pipeline(s) and Resources
+----------------------------------------------------------
+
+## Getting All NGSeasy Docker images
+
+All Images can be pulled down from **[compbio Docker Hub](https://hub.docker.com/u/compbio/)** or using the script [get_NGSeasy.sh](https://github.com/KHP-Informatics/ngs/blob/master/bin/get_NGSeasy.sh)
 
 ******** 
 
@@ -280,9 +285,7 @@ own versions of (below) in the build directory:
    * GATK https://www.broadinstitute.org/gatk/  
    * ANNOVAR http://www.openbioinformatics.org/annovar/  
 
-These tools require manual download and registration with the proivder. For non-academics/commercial groups, you will need to pay for some of these tools.
-
-**These Tools require registration and/or payment and manual building**
+**These tools require manual download and registration with the proivder. For non-academics/commercial groups, you will need to pay for some of these tools.**
 
 | Tool | Build |
 |-------------|----------------------|
@@ -320,16 +323,11 @@ Its as easy as:-
 docker build -t compbio/ngseasy-${TOOL} .
 ```
 
-***********
-
-Getting the Dockerised NGSeasy Pipeline(s) and Resources
-----------------------------------------------------------
-
-## Getting All NGSeasy images
-
-All Images can be pulled down from [Docker Hub](https://hub.docker.com/u/compbio/) using the script [get_NGSeasy.sh](https://github.com/KHP-Informatics/ngs/blob/master/bin/get_NGSeasy.sh)
+***
 
 ## NGSeasy Reasources
+
+Download the indexed reference genomes and example data for use with NGSeasy.
 
 - **reference_genomes_b37.tgz** b37 reference genomes indexed for use with all provided aligners (BWA, Bowtie2, Stampy, Novoalign) and annotation bed files for use with pipeline scripts
 - **gatk_resources.tar.gz** gatk resources bundle
@@ -355,7 +353,7 @@ I would recommend using a separate program like [FileZilla](https://filezilla-pr
 NGSeasy Project Set up
 --------------------------
 
-The user needs to make the relevent directory structure on their local machine before starting and NGS run. 
+The user needs to make the relevent directory structures on their local machine before starting and NGS run. 
 
 On our sysetm we typically set up a top-level driectory called `ngs_projects` within which we store output from all our individual NGS projects. 
 
@@ -411,7 +409,7 @@ echo "export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/bin" ~/.bashrc
 source ~/.bashrc
 ```
 
-**alternatively donwload the scripts from our [GitHub](https://github.com/KHP-Informatics/ngs)** 
+**alternatively donwload the scripts from our [GitHub Release](https://github.com/KHP-Informatics/ngs)** 
 
 ****
 
