@@ -190,6 +190,20 @@ Dockerised NGSeasy
 
 The following section describes getting the Dockerised NGSeasy Pipeline(s) and Resources, project set up and running NGSeasy.
 
+### 1. Install Docker
+### 2. Get NGSeasy Automated build Container Images
+### 3. Manually Build required NGSeasy Container Images
+### 4. Manually Build NGSeasy Variant Annotaion Container Images
+### 5. Make NGSeasy project directory
+### 6. Download NGSeasy Resources
+### 7. Get NGSeasy Sripts
+### 8. Set up NGSeasy Project Working Directories
+### 9. NGSeasy Project configuration file
+### 10. Copy Project Fastq files to relevent Project/Sample Directories
+### 11. Start the NGSeasy Volume Contaier
+### 12. Running an NGSeasy full pipeline : from raw fastq to vcf calls
+
+*****
 ## 1. Install Docker
 
 Follow the simple instructions in the links provided below  
@@ -492,7 +506,7 @@ The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK.
 
 ****************
 
-## 8. Set up NGS Project Working Directories
+## 8. Set up NGSeasy Project Working Directories
 
 Running the script `ngseasy_initiate_project` ensures that all relevant directories are set up, and also enforces a clean structure to the NGS project.  
 
@@ -600,7 +614,7 @@ ngseasy_volumes_container -d /media/ngs_projects
 
 ****
 
-## 12. Running a NGS full pipeline : from raw fastq to vcf calls
+## 12. Running an NGSeasy full pipeline : from raw fastq to vcf calls
 
 See https://github.com/KHP-Informatics/ngs/tree/dev2/bin for dev functions (Still working on these). 
 Each of these will call a separate container and run a part of the NGS pipeline. Each step is usually 
