@@ -180,6 +180,8 @@ for base quality score recalibration.
 - biobambam https://github.com/gt1/biobambam  
 - bamaddrg https://github.com/ekg/bamaddrg  
 - bamtools https://github.com/ekg/bamtools  
+
+
 ************
 
 Dockerised NGSeasy
