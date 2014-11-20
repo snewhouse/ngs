@@ -192,18 +192,18 @@ The following section describes getting the Dockerised NGSeasy Pipeline(s) and R
 
 *****
 
-**1. Install Docker**  
-**2. Get NGSeasy Automated build Container Images**  
-**3. Manually Build required NGSeasy Container Images**  
-**4. Manually Build NGSeasy Variant Annotaion Container Images**  
-**5. Make NGSeasy project directory**  
-**6. Download NGSeasy Resources**  
-**7. Get NGSeasy Sripts**  
-**8. Set up NGSeasy Project Working Directories**  
-**9. NGSeasy Project configuration file**  
-**10. Copy Project Fastq files to relevent Project/Sample Directories**  
-**11. Start the NGSeasy Volume Contaier**  
-**12. Running an NGSeasy full pipeline : from raw fastq to vcf calls**  
+**1. [Install Docker](https://github.com/KHP-Informatics/ngs#1-install-docker)**  
+**2. [Get NGSeasy Automated build Container Images](https://github.com/KHP-Informatics/ngs#2-get-ngseasy-automated-build-container-images)**  
+**3. [Manually Build required NGSeasy Container Images](https://github.com/KHP-Informatics/ngs#3-manually-build-required-ngseasy-container-images)**  
+**4. [Manually Build NGSeasy Variant Annotaion Container Images](https://github.com/KHP-Informatics/ngs#4-manually-build-ngseasy-variant-annotaion-container-images)**  
+**5. [Make NGSeasy project directory](https://github.com/KHP-Informatics/ngs#5-make-ngseasy-project-directory)**  
+**6. [Download NGSeasy Resources](https://github.com/KHP-Informatics/ngs#6-download-ngseasy-resources)**  
+**7. [Get NGSeasy Sripts](https://github.com/KHP-Informatics/ngs#7-get-ngseasy-sripts)**  
+**8. [Set up NGSeasy Project Working Directories](https://github.com/KHP-Informatics/ngs#8-set-up-ngseasy-project-working-directories)**  
+**9. [NGSeasy Project configuration file](https://github.com/KHP-Informatics/ngs#9-ngseasy-project-configuration-file)**  
+**10. [Copy Project Fastq files to relevent Project/Sample Directories](https://github.com/KHP-Informatics/ngs#10-copy-project-fastq-files-to-relevent-projectsample-directories)**  
+**11. [Start the NGSeasy Volume Contaier](https://github.com/KHP-Informatics/ngs#11-start-the-ngseasy-volume-contaier)**  
+**12. [Running an NGSeasy full pipeline : from raw fastq to vcf calls](https://github.com/KHP-Informatics/ngs#12-running-an-ngseasy-full-pipeline--from-raw-fastq-to-vcf-calls)**  
 
 *****
 ## 1. Install Docker
