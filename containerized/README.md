@@ -72,8 +72,8 @@ Please contact us for help/guidance on using the beta release.
 
 ****************
 
-Overview of Pipeline Components
-================================
+Overview of the NGSeasy Pipeline Components
+=============================================
 The basic pipeline contains all the basic tools needed for manipulation and 
 quality control of raw fastq files (ILLUMINA focused), SAM/BAM manipulation,
 alignment, cleaning (based on GATK best practises [http://www.broadinstitute.org/gatk/guide/best-practices]) and first pass
@@ -83,39 +83,12 @@ structural variant calling, basic reporting and visualisations.
 ![ngsEASY](https://github.com/KHP-Informatics/ngs/blob/dev2/figs/ngsEASY_component_visualisation.png "Dockerized NGS Pipeline")
 
 
-Dockerised NGSeasy
-==========================
-![docker](https://github.com/KHP-Informatics/ngs/blob/master/figs/Docker_container_engine_logo.png "Docker")  
-
-## Installing Docker
-
-Follow the simple instructions in the links provided below  
-
-- [Mac](https://docs.docker.com/installation/mac/)  
-- [Windows](https://docs.docker.com/installation/windows/)
-- [Ubuntu](https://docs.docker.com/installation/ubuntulinux/)
-
-A full set of instructions for multiple operating systems are available on the [Docker website](https://docs.docker.com/installation/).
-
 ****************
 
-## The NGSeasy Pipelines ##
+The Full NGSeasy pipeline
+=============================
 
-| Pipeline             | Short Description    |
-|----------------------|----------------------|
-| [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk) | fastq to recalibrated bam to vcf using GATK  |
-| [ngs_full_no_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_no_gatk)    | fastq to recalibrated bam to vcf  |
-
-gatk version includes indel realignment and base recalibration.  
-
-Non-academics/commercial groups need to pay for GATK.  
-
-Currently **ngs_full_gatk** pipeline is the most developed module.  
-
-The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK. Here BamUtil:recab is used to recalibrate base quality scores and freebayes/platypus are the variant callers of choice.
-****************
-
-## The "*_full_*" pipelines implement:   
+The NGSeasy pipelines implement the following :-   
 
 - **Quality control of raw fastq** files using **[FASTQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)**  
 
@@ -155,27 +128,24 @@ The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK.
     - **[PICARDTOOLS:CollectWgsMetrics](http://broadinstitute.github.io/picard/command-line-overview.html#CollectWgsMetrics)**    
     - **[PICARDTOOLS:CollectTargetedPcrMetrics](http://broadinstitute.github.io/picard/command-line-overview.html#CollectTargetedPcrMetrics)** (coming soon)    
 
-- **SNP and small INDEL** calling using one of 
+- **SNP and small INDEL** calling using one of the following or a combibation of these tools, if the `ensemble` method is called using **[bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation)**
     - **[FREEBAYES](https://github.com/ekg/freebayes)** 
     - **[PLATYPUS](http://www.well.ox.ac.uk/platypus)** 
     - **[GATK:UnifiedGenotyper](https://www.broadinstitute.org/gatk/guide/tooldocs/org_broadinstitute_gatk_tools_walkers_genotyper_UnifiedGenotyper.php)** 
     - **[GATK:HaplotypeCaller](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php)** 
-    - or a combibation of these tools, if the `ensemble` method is called using **[bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation)**
 
-- **Structural Variant (CNV)** calling using one of the following,
+- **Structural Variant (CNV)** calling using one of the following or or a combibation of if the `ensemble` methods are called:- 
     - **[DELLY](https://github.com/tobiasrausch/delly)** 
     - **[LUMPY](https://github.com/arq5x/lumpy-sv/)**
     - **[cn.MOPS](http://www.bioinf.jku.at/software/cnmops/)**
     - **[m-HMM](https://www.stt.msu.edu/users/hengwang/mHMM.html)**
     - **[ExomeDepth](http://cran.r-project.org/web/packages/ExomeDepth/index.html)**
-    - or a combibation of if the `ensemble` methods are called.
     - *[SLOPE](http://www-genepi.med.utah.edu/suppl/SLOPE/index.html) : COMING SOON!*
 
-- **Variant annotation** using using one 
+- **Variant annotation** using using one of the following or a combibation of if the `ensemble` methods are called. 
     - **[SnpEff](http://snpeff.sourceforge.net/)** 
     - **[ANNOVAR](http://www.openbioinformatics.org/annovar/)** 
     - **[VEP](http://www.ensembl.org/info/docs/tools/vep/index.html)**
-    - or a combibation of if the `ensemble` methods are called.  
 
 - **Variant reporting** using custom scripts
 
@@ -197,9 +167,7 @@ for base quality score recalibration.
     - **[freebayes](https://github.com/ekg/freebayes)**
     - **[platypus](http://www.well.ox.ac.uk/platypus)**
 
-
-****
-
+********
 ### Coming Soon
 - New Aligners:- [SNAP](http://snap.cs.berkeley.edu/), GSNAP, mr- and mrs-Fast,gem
 - https://github.com/amplab/snap
@@ -212,19 +180,29 @@ for base quality score recalibration.
 - biobambam https://github.com/gt1/biobambam  
 - bamaddrg https://github.com/ekg/bamaddrg  
 - bamtools https://github.com/ekg/bamtools  
+************
 
-***********
+Dockerised NGSeasy
+==========================
+![docker](https://github.com/KHP-Informatics/ngs/blob/master/figs/Docker_container_engine_logo.png "Docker")  
 
-Getting the Dockerised NGSeasy Pipeline(s) and Resources
-----------------------------------------------------------
+The following section describes getting the Dockerised NGSeasy Pipeline(s) and Resources, project set up and running NGSeasy.
 
-## NGSeasy Docker images
+## 1. Install Docker
 
-All Images can be pulled down from **[compbio Docker Hub](https://hub.docker.com/u/compbio/)** or using the script [get_NGSeasy.sh](https://github.com/KHP-Informatics/ngs/blob/master/bin/get_NGSeasy.sh)
+Follow the simple instructions in the links provided below  
 
-******** 
+- [Mac](https://docs.docker.com/installation/mac/)  
+- [Windows](https://docs.docker.com/installation/windows/)
+- [Ubuntu](https://docs.docker.com/installation/ubuntulinux/)
 
-## Dockerised and Automated Builds ##
+A full set of instructions for multiple operating systems are available on the [Docker website](https://docs.docker.com/installation/).
+
+## 2. Get NGSeasy Automated build Container Images
+
+All NGSeasy Docker images can be pulled down from **[compbio Docker Hub](https://hub.docker.com/u/compbio/)** or using the script [get_NGSeasy.sh](https://github.com/KHP-Informatics/ngs/blob/master/bin/get_NGSeasy.sh)
+
+### Dockerised and Automated Builds ##
 
 The following opensource tools are all provided as automated builds. 
 
@@ -255,17 +233,15 @@ docker pull compbio/ngseasy-${TOOL}
 ```
 ******** 
 
-## Dockerised and Manual Builds ##
+## 3. Manually Build required NGSeasy Container Images
+
 Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. 
 
 Some of the software has restrictions on use particularly for commercial 
 purposes. Therefore if you wish to use this for commercial purposes, then you 
 leagally have to approach the owners of the various components yourself!  
 
-### Software composing the pipeline requiring registration
-
-If you want to build the image from the Dockerfile then you need to get your 
-own versions of (below) in the build directory:
+**Software composing the pipeline requiring registration:-**  
 
    * novoalign http://www.novocraft.com/  
    * Stampy http://www.well.ox.ac.uk/project-stampy  
@@ -274,6 +250,8 @@ own versions of (below) in the build directory:
    * ANNOVAR http://www.openbioinformatics.org/annovar/  
 
 **These tools require manual download and registration with the proivder. For non-academics/commercial groups, you will need to pay for some of these tools.**
+
+### Dockerised and Manual Builds ##
 
 | Tool | Build |
 |-------------|----------------------|
@@ -291,13 +269,15 @@ docker build -t compbio/ngseasy-${TOOL} .
 ```
 ******** 
 
-### Large Variant Annotation Container Images
+## 4. Manually Build NGSeasy Variant Annotaion Container Images
 
 The tools used for variant annotation use large databases and the docker images exceed 10GB. Therefore, the user should manually build these container images prior to running the NGS pipelines.
 Docker build files ([Dockerfile](https://docs.docker.com/jsearch/?q=Dockerfile)) are available for 
 - [Annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar/Dockerfile)  
 - [VEP](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_vep/Dockerfile)   
 - [snpEff](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_snpeff/Dockerfile)  
+
+**Large Variant Annotation Container Images**
 
 | Tool | Build |
 |-------------|----------------------|
@@ -313,64 +293,89 @@ docker build -t compbio/ngseasy-${TOOL} .
 
 ***
 
-## NGSeasy Reasources
+## 5. Make NGS project directory
+The user needs to make the relevent directory structures on their local machine before starting an NGS run. 
 
+On our sysetm we typically set up a top-level driectory called **ngs_projects** within which we store output from all our individual NGS projects. 
+
+Here we are working from local top level directory called **media/**, but this can really be any folder on your local system ie your home directory **~/${USER}**.  
+
+Within this directory **media** we make the following folders: - 
+
+```bash
+ngs_projects  
+|  
+|__raw_fastq  
+|__config_files  
+|__reference_genomes_b37  
+|__gatk_resources  
+|__ngseasy
+```
+
+The following directories are obtained in **[6. Download NGSeasy Resources](https://github.com/KHP-Informatics/ngs/tree/dev2#6-download-ngseasy-resources)**
+**- reference_genomes_b37  **  
+**- gatk_resources **  
+
+
+```bash
+# Move to media/
+cd media
+
+# make toplevel NGS folder
+mkdir ngs_projects 
+
+# fastq staging area
+mkdir ngs_projects/fastq_raw 
+
+# config files
+mkdir ngs_projects/config_files 
+
+# NGSeasy scripts
+mkdir ngs_projects/ngseasy 
+```
+
+
+
+## 6. Download NGSeasy Resources
 Download the indexed reference genomes and example data for use with NGSeasy.
 
+**NGSeasy Resources:-**  
 - **reference_genomes_b37.tgz** b37 reference genomes indexed for use with all provided aligners (BWA, Bowtie2, Stampy, Novoalign) and annotation bed files for use with pipeline scripts
 - **gatk_resources.tar.gz** gatk resources bundle
 - **fastq_example.tgz** Example 75bp PE Illumina Whole Exome Sequence fastq data for **NA12878**
 - Annotation Databases Coming in the next update 
- 
-## FTP Login Details
 
+**Download the data to the top level directory**
+
+### FTP Details
+- **ftp:**  159.92.120.21  
+- **user:** compbio-public  
+- **pwd:**  compbio-public  
+- **port:** 21  
+
+### Move to top level directory
 ```bash
-ftp:  159.92.120.21
-user: compbio-public
-pwd:  compbio-public
-port: 21
+cd ngs_projects
+```
+
+### FTP
+```bash
+ftp 159.92.120.21
+```
+
+### mget resources
+```bash
+ftp> cd /Public/NGSeasy_Public_Resources
+ftp> prompt off
+ftp> mget *.gz
+ftp> exit
 ```
 
 I would recommend using a separate program like [FileZilla](https://filezilla-project.org/), which will make it much easier for you to set up and manage your file transfers
 
-[Back to The Begining](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngs-easy-v10)
 
-
-****************
-
-NGSeasy Project Set up
---------------------------
-
-The user needs to make the relevent directory structures on their local machine before starting and NGS run. 
-
-On our sysetm we typically set up a top-level driectory called `ngs_projects` within which we store output from all our individual NGS projects. 
-
-
-## Make top level directories 
-
-Here we are working from local top level directory called `media`. This can be any folder on your system ie `~/${USER}`.  
-
-Within this directory we make the following folders: - 
-
-```bash
-cd media
-
-mkdir ngs_projects # make toplevel NGS folder
-
-mkdir ngs_projects/fastq_raw # fastq staging area
-
-mkdir ngs_projects/config_files # config files
-
-mkdir ngs_projects/ngseasy # NGSeasy scripts
-
-mkdir ngs_projects/humandb # for annovar databses
-```
-
-We then need to get the latest NGSeasy scripts from [GitHub](https://github.com/KHP-Informatics/ngs) 
-
-## Get and PATH NGSeasy scripts
-
-The user is required to download the scripts to the `ngseasy` directory
+## 7. Get NGSeasy Sripts
+We then need to get the latest NGSeasy scripts from [GitHub](https://github.com/KHP-Informatics/ngs) . The user is required to download the scripts to the `ngseasy` directory
 
 **move to the `ngseasy` directory**
 
@@ -399,9 +404,7 @@ source ~/.bashrc
 
 **alternatively donwload the scripts from our [GitHub Release](https://github.com/KHP-Informatics/ngs)** 
 
-****
-
-## Set up NGS Project Working Directories
+## 8. Set up NGS Project Working Directories
 
 Running the script `ngseasy_initiate_project` ensures that all relevant directories are set up, and also enforces a clean structure to the NGS project.  
 
@@ -448,8 +451,32 @@ ngs_projects
 ```bash
 ngseasy_initiate_project -c config.file.tsv -d /media/ngs_projects
 ```
+****************
 
-## NGSeasy Project configuration file
+## The NGSeasy Pipelines ##
+
+| Pipeline             | Short Description    |
+|----------------------|----------------------|
+| [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk) | fastq to recalibrated bam to vcf using GATK  |
+| [ngs_full_no_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_no_gatk)    | fastq to recalibrated bam to vcf  |
+
+gatk version includes indel realignment and base recalibration.  
+
+Non-academics/commercial groups need to pay for GATK.  
+
+Currently **ngs_full_gatk** pipeline is the most developed module.  
+
+The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK. Here BamUtil:recab is used to recalibrate base quality scores and freebayes/platypus are the variant callers of choice.
+****************
+
+
+
+
+
+
+
+
+## 9. NGSeasy Project configuration file
 
 In Excel make config file and save as [TAB] Delimited file with ``.tsv`` extenstion.  
 See Example provided and [GoogleDoc](https://docs.google.com/spreadsheets/d/1kp1Nyw0x3zXqO2Wm2Z25ErJ0Z-Uoab8tjRPq9h4sonk/edit?usp=sharing). Remove the header from this file before running the pipeline. This sets up Information related to: Project Name, Sample Name, Library Type, Pipeline to call, NCPU.
