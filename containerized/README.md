@@ -186,6 +186,8 @@ Dockerised NGSeasy
 ==========================
 ![docker](https://github.com/KHP-Informatics/ngs/blob/master/figs/Docker_container_engine_logo.png "Docker")  
 
+The following section describes getting the Dockerised NGSeasy Pipeline(s) and Resources, project set up and running NGSeasy.
+
 ## 1. Install Docker
 
 Follow the simple instructions in the links provided below  
@@ -319,8 +321,7 @@ The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK.
 
 ***********
 
-Getting the Dockerised NGSeasy Pipeline(s) and Resources
-----------------------------------------------------------
+
 
 
 
