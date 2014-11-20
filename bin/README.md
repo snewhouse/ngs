@@ -440,15 +440,24 @@ ngs_projects
 	|__project_bams  
 	|__project_reports  
 	|
-	|__sample_id  
-		|  
-		|__fastq  
-		|__tmp  
-		|__alignments  
-		|__vcf  
-		|__reports  
-		|__config_files  
-
+	|__sample_id_1  
+	|	|  
+	|	|__fastq  
+	|	|__tmp  
+	|	|__alignments  
+	|	|__vcf  
+	|	|__reports  
+	|	|__config_files  
+	|
+	|
+	|__sample_id_n  
+	|	|  
+	|	|__fastq  
+	|	|__tmp  
+	|	|__alignments  
+	|	|__vcf  
+	|	|__reports  
+	|	|__config_files  
 ```
 
 
