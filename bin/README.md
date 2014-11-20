@@ -298,13 +298,23 @@ The user needs to make the relevent directory structures on their local machine 
 
 On our sysetm we typically set up a top-level driectory called **ngs_projects** within which we store output from all our individual NGS projects. 
 
-### Make top level directories 
+Here we are working from local top level directory called **media/**, but this can really be any folder on your local system ie your home directory **~/${USER}**.  
 
-Here we are working from local top level directory called **media/**. This can be any folder on your system ie **~/${USER}**.  
-
-Within this directory we make the following folders: - 
+Within this directory **media** we make the following folders: - 
 
 ```bash
+ngs_projects  
+|  
+|__raw_fastq  
+|__config_files  
+|__reference_genomes_b37  
+|__gatk_resources  
+|__ngseasy
+```
+
+
+```bash
+# Move to media/
 cd media
 
 # make toplevel NGS folder
