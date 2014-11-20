@@ -313,8 +313,8 @@ ngs_projects
 ```
 
 The following directories are obtained in **step 6. Download NGSeasy Resources**
-**|__reference_genomes_b37  **  
-**|__gatk_resources **  
+**- reference_genomes_b37  **  
+**- gatk_resources **  
 
 
 ```bash
