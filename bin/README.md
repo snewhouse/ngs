@@ -336,7 +336,7 @@ mkdir ngs_projects/config_files
 mkdir ngs_projects/ngseasy 
 ```
 
-
+*****
 
 ## 6. Download NGSeasy Resources
 Download the indexed reference genomes and example data for use with NGSeasy.
@@ -375,6 +375,7 @@ ftp> exit
 
 I would recommend using a separate program like [FileZilla](https://filezilla-project.org/), which will make it much easier for you to set up and manage your file transfers
 
+*****
 
 ## 7. Get NGSeasy Sripts
 We then need to get the latest NGSeasy scripts from [GitHub](https://github.com/KHP-Informatics/ngs) . The user is required to download the scripts to the `ngseasy` directory
@@ -405,6 +406,26 @@ source ~/.bashrc
 ```
 
 **alternatively donwload the scripts from our [GitHub Release](https://github.com/KHP-Informatics/ngs)** 
+
+### The NGSeasy Pipelines ##
+
+| Pipeline             | Short Description    |
+|----------------------|----------------------|
+| [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk) | fastq to recalibrated bam to vcf using GATK  |
+| [ngs_full_no_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_no_gatk)    | fastq to recalibrated bam to vcf  |
+
+gatk version includes indel realignment and base recalibration.  
+
+Non-academics/commercial groups need to pay for GATK.  
+
+Currently **ngs_full_gatk** pipeline is the most developed module.  
+
+The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK. Here BamUtil:recab is used to recalibrate base quality scores and freebayes/platypus are the variant callers of choice.
+
+****************
+
+
+*****
 
 ## 8. Set up NGS Project Working Directories
 
@@ -456,36 +477,13 @@ ngs_projects
 	|	|__config_files  
 ```
 
-
 **Running `ngseasy_initiate_project`**
 
 ```bash
 ngseasy_initiate_project -c config.file.tsv -d /media/ngs_projects
 ```
+
 ****************
-
-## The NGSeasy Pipelines ##
-
-| Pipeline             | Short Description    |
-|----------------------|----------------------|
-| [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk) | fastq to recalibrated bam to vcf using GATK  |
-| [ngs_full_no_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_no_gatk)    | fastq to recalibrated bam to vcf  |
-
-gatk version includes indel realignment and base recalibration.  
-
-Non-academics/commercial groups need to pay for GATK.  
-
-Currently **ngs_full_gatk** pipeline is the most developed module.  
-
-The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK. Here BamUtil:recab is used to recalibrate base quality scores and freebayes/platypus are the variant callers of choice.
-****************
-
-
-
-
-
-
-
 
 ## 9. NGSeasy Project configuration file
 
@@ -515,6 +513,17 @@ VERSION|number|NGSeasy Version |v0.9/v1.0|
 
 
 _coming soon_ options to add user email, specify non-gatk runs  
+
+*************
+
+
+
+
+
+
+
+
+
 
 ****
 
