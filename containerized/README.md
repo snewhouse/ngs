@@ -355,25 +355,39 @@ Download the indexed reference genomes and example data for use with NGSeasy.
 - **pwd:**  compbio-public  
 - **port:** 21  
 
-### Move to top level directory
+**Move to top level directory**
 ```bash
 cd ngs_projects
 ```
 
-### FTP
+**FTP NGSeasy Resources**
 ```bash
 ftp 159.92.120.21
 ```
 
-### mget resources
+**mget NGSeasy Resources**
 ```bash
 ftp> cd /Public/NGSeasy_Public_Resources
 ftp> prompt off
 ftp> mget *.gz
 ftp> exit
 ```
-
 I would recommend using a separate program like [FileZilla](https://filezilla-project.org/), which will make it much easier for you to set up and manage your file transfers
+
+**Extract NGSeasy Resources**
+```bash
+# Extract resources
+cd ngs_projects/
+tar xvf gatk_resources.tar.gz; 
+cd ngs_projects/gatk_resources
+gunzip *
+
+# Extract Reference Genomes
+cd ngs_projects/
+tar xvf reference_genomes_b37.tgz; 
+cd ngs_projects/reference_genomes_b37
+gunzip *
+```
 
 *****
 
@@ -423,9 +437,6 @@ Currently **ngs_full_gatk** pipeline is the most developed module.
 The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK. Here BamUtil:recab is used to recalibrate base quality scores and freebayes/platypus are the variant callers of choice.
 
 ****************
-
-
-*****
 
 ## 8. Set up NGS Project Working Directories
 
@@ -516,18 +527,7 @@ _coming soon_ options to add user email, specify non-gatk runs
 
 *************
 
-
-
-
-
-
-
-
-
-
-****
-
-## Copy Project Fastq files to relevent Project/Sample Directories
+## 10. Copy Project Fastq files to relevent Project/Sample Directories
 
 ```bash
 ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
@@ -535,7 +535,7 @@ ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
 
 ****
 
-## Start the NGSeasy Volume Contaier
+## 11. Start the NGSeasy Volume Contaier
 
 In the Docker container the project directory is mounted in `/home/pipeman/ngs_projects`
 
@@ -545,7 +545,7 @@ ngseasy_volumes_container -d /media/ngs_projects
 
 ****
 
-## Running a NGS full pipeline : from raw fastq to vcf calls
+## 12. Running a NGS full pipeline : from raw fastq to vcf calls
 
 See https://github.com/KHP-Informatics/ngs/tree/dev2/bin for dev functions (Still working on these). 
 Each of these will call a separate container and run a part of the NGS pipeline. Each step is usually 
@@ -554,57 +554,7 @@ and with the correct nameing conventions enforced by our pipeline to exist, befo
 
 A full pipeline is set out below :-  
 
-### make top level dirs 
 
-```bash
-cd media
-mkdir ngs_projects
-mkdir ngs_projects/fastq_raw # fastq staging area
-mkdir ngs_projects/config_files # config files
-mkdir ngs_projects/ngseasy # scripts
-mkdir ngs_projects/humandb # for annovar databses
-```
-
-****
-
-### Get NGSeasy resources
-
-### FTP Details
-- **ftp:**  159.92.120.21  
-- **user:** compbio-public  
-- **pwd:**  compbio-public  
-- **port:** 21  
-
-### FTP
-```bash
-ftp 159.92.120.21
-```
-
-### mget resources
-```bash
-cd ngs_projects
-ftp> cd /Public/NGSeasy_Public_Resources
-ftp> prompt off
-ftp> mget *.gz
-ftp> exit
-```
-****
-
-### Extract resources
-```bash
-# Extract resources
-cd ngs_projects/
-tar xvf gatk_resources.tar.gz; 
-cd ngs_projects/gatk_resources
-gunzip *
-
-# Extract Reference Genomes
-cd ngs_projects/
-tar xvf reference_genomes_b37.tgz; 
-cd ngs_projects/reference_genomes_b37
-gunzip *
-```
-****
 
 ### Get NGSeasy scripts
 
