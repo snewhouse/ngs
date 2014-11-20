@@ -106,16 +106,16 @@ A full set of instructions for multiple operating systems are available on the [
 | [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk) | fastq to recalibrated bam to vcf using GATK  |
 | [ngs_full_no_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_no_gatk)    | fastq to recalibrated bam to vcf  |
 
-gatk = indel realignment and base recalibration. Non-academics/commercial groups need to pay for GATK.  
+gatk version includes indel realignment and base recalibration.  
+
+Non-academics/commercial groups need to pay for GATK.  
 
 Currently **ngs_full_gatk** pipeline is the most developed module.  
 
-The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK.   
+The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK. Here BamUtil:recab is used to recalibrate base quality scores and freebayes/platypus are the variant callers of choice.
+****************
 
-Here BamUtil:recab is used to recalibrate base quality scores and freebayes/platypus are the variant callers of choice.
-
-
-### The "*_full_*" pipelines implement:   
+## The "*_full_*" pipelines implement:   
 
 - **Quality control of raw fastq** files using **[FASTQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)**  
 
@@ -186,16 +186,17 @@ Here BamUtil:recab is used to recalibrate base quality scores and freebayes/plat
 **We highly recommed read trimming prior to alignment.**
 We have noticed considerable speed-ups in alignmnet time and increased quality of SNP/INDEL calls using trimmed vs raw fastq.  
 
-For non-GATK users, use of variant callers that perform local re-aligmnet around candidate sites
-e.g. [freebayes](https://github.com/ekg/freebayes), [platypus](http://www.well.ox.ac.uk/platypus), mitigate the need for the indel realignment stages.  
-
 **Base quality score recalibration is also recommended.**  
-
-Non-GATK users are encouraged to use aligners such as [stampy](http://www.well.ox.ac.uk/project-stampy) and [novoalign](http://www.novocraft.com) that perform base quality score recal on the fly.  
-
-As an alternative to GATK, we will be testing and adding fucntionality for use of 
+As an alternative to GATK, we have added fucntionality for use of 
 **[BamUtil](https://github.com/statgen/bamUtil):[recab](http://genome.sph.umich.edu/wiki/BamUtil:_recab)** 
-for base quality score recalibration in the near future  
+for base quality score recalibration.
+
+**Non-GATK users** 
+- are encouraged to use aligners such as **[stampy](http://www.well.ox.ac.uk/project-stampy)** and **[novoalign](http://www.novocraft.com)** that perform base quality score recal on the fly.  
+- are encouraged to use variant callers that perform local re-aligmnet around candidate sites to mitigate the need for the indel realignment stages.  
+    - **[freebayes](https://github.com/ekg/freebayes)**
+    - **[platypus](http://www.well.ox.ac.uk/platypus)**
+
 
 ****
 
