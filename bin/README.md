@@ -213,24 +213,12 @@ for base quality score recalibration.
 - bamaddrg https://github.com/ekg/bamaddrg  
 - bamtools https://github.com/ekg/bamtools  
 
-*****
-
-## Useful Links 
-
-- https://bcbio.wordpress.com/  
-- https://basecallbio.wordpress.com/2013/04/23/base-quality-score-rebinning/  
-- https://github.com/statgen/bamUtil  
-- http://genome.sph.umich.edu/wiki/BamUtil:_recab  
-- https://github.com/chapmanb/bcbio.variation  
-- http://plagnol-lab.blogspot.co.uk/2013/11/faq-and-clarifications-for-exomedepth-r.html
-
-
 ***********
 
 Getting the Dockerised NGSeasy Pipeline(s) and Resources
 ----------------------------------------------------------
 
-## Getting All NGSeasy Docker images
+## NGSeasy Docker images
 
 All Images can be pulled down from **[compbio Docker Hub](https://hub.docker.com/u/compbio/)** or using the script [get_NGSeasy.sh](https://github.com/KHP-Informatics/ngs/blob/master/bin/get_NGSeasy.sh)
 
@@ -270,8 +258,7 @@ docker pull compbio/ngseasy-${TOOL}
 ## Dockerised and Manual Builds ##
 Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. 
 
-While the software used to build the image is composed of free software versions
-some of the software has restrictions on use particularly for commercial 
+Some of the software has restrictions on use particularly for commercial 
 purposes. Therefore if you wish to use this for commercial purposes, then you 
 leagally have to approach the owners of the various components yourself!  
 
@@ -875,4 +862,13 @@ EXCAVATOR: detecting copy number variants from whole-exome sequencing data @ htt
 
 >We developed a novel software tool, EXCAVATOR, for the detection of copy number variants (CNVs) from whole-exome sequencing data. EXCAVATOR combines a three-step normalization procedure with a novel heterogeneous hidden Markov model algorithm and a calling method that classifies genomic regions into five copy number states. We validate EXCAVATOR on three datasets and compare the results with three other methods. These analyses show that EXCAVATOR outperforms the other methods and is therefore a valuable tool for the investigation of CNVs in largescale projects, as well as in clinical research and diagnostics. EXCAVATOR is freely available at http://sourceforge.net/projects/excavatortool/ webcite.
 
-	
+*****
+
+## Useful Links 
+
+- https://bcbio.wordpress.com/  
+- https://basecallbio.wordpress.com/2013/04/23/base-quality-score-rebinning/  
+- https://github.com/statgen/bamUtil  
+- http://genome.sph.umich.edu/wiki/BamUtil:_recab  
+- https://github.com/chapmanb/bcbio.variation  
+- http://plagnol-lab.blogspot.co.uk/2013/11/faq-and-clarifications-for-exomedepth-r.html
