@@ -555,13 +555,13 @@ ngs_projects
 	|
 	|
 	|__sample_id_n  
-	|	|  
-	|	|__fastq  
-	|	|__tmp  
-	|	|__alignments  
-	|	|__vcf  
-	|	|__reports  
-	|	|__config_files  
+		|  
+		|__fastq  
+		|__tmp  
+		|__alignments  
+		|__vcf  
+		|__reports  
+		|__config_files  
 ```
 
 **Running `ngseasy_initiate_project`**
@@ -624,11 +624,6 @@ ngseasy_volumes_container -d /media/ngs_projects
 
 ## 12. Running an NGSeasy full pipeline : from raw fastq to vcf calls
 
-See https://github.com/KHP-Informatics/ngs/tree/dev2/bin for dev functions (Still working on these). 
-Each of these will call a separate container and run a part of the NGS pipeline. Each step is usually 
-dependent on the previous step(s) - in that they require certain data/input/output in the correct format 
-and with the correct nameing conventions enforced by our pipeline to exist, before executing.
-
 **run ngseay**
 
 ```bash
@@ -641,11 +636,11 @@ The pipeline is defined in the config file as **[ngs_full_gatk]**
 
 *****
 
-### ngs_full_gatk  
+## ngs_full_gatk  
 
-Each **pipeline** is a bash wrapper that calls the required image/container(s) 
+Each **pipeline** is a bash wrapper that calls a number of functions/steps set out in [The Full NGSeasy pipeline](https://github.com/KHP-Informatics/ngs#the-full-ngseasy-pipeline).
 
-Here  **[ngs_full_gatk]** is a wrapper/fucntion for calling an NGS pipeline:-  
+Here  **[ngs_full_gatk]** is a wrapper/fucntion for calling an NGS pipeline. The inside to this script is set out below:-  
 
 ```bash
 #!/bin/bash -x
@@ -707,6 +702,10 @@ fi
 ##################  
 # start pipeline #
 ##################
+
+# Each of these fucntions will call the required image/container(s) and run a part of the NGS pipeline. Each step is usually 
+# dependent on the previous step(s) - in that they require certain data/input/output in the correct format 
+# and with the correct nameing conventions enforced by our pipeline to exist, before executing.
 
 ngseasy_fastqc  -c ${config_tsv} -d ${project_directory}
 
