@@ -115,7 +115,7 @@ Currently **ngs_full_gatk** pipeline is the most developed module.
 The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK. Here BamUtil:recab is used to recalibrate base quality scores and freebayes/platypus are the variant callers of choice.
 ****************
 
-## The "*_full_*" pipelines implement:   
+## The "*_full_*" NGSeasy pipelines implement:   
 
 - **Quality control of raw fastq** files using **[FASTQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)**  
 
@@ -340,6 +340,13 @@ I would recommend using a separate program like [FileZilla](https://filezilla-pr
 
 NGSeasy Project Set up
 --------------------------
+
+### 1. Install Docker
+### 2. Get NGSeasy Automated build Container Images
+### 3. Manually Build required NGSeasy Container Images
+### 4. Manually Build NGSeasy Variant Annotaion Container Images
+### 5. Make NGS project directory
+### 6. Download NGSeasy Resources
 
 The user needs to make the relevent directory structures on their local machine before starting and NGS run. 
 
