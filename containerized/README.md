@@ -299,7 +299,7 @@ Its as easy as:-
 docker build -t compbio/ngseasy-${TOOL} .
 ```
 
-**The user needs to manually build the following annotation tools:-   **
+**The user needs to manually build the following annotation tools**:-  
 
 - Annovar
 - VEP
@@ -358,19 +358,30 @@ The following directories are obtained in **[6. Download NGSeasy Resources](http
 - **gatk_resources**  
 
 
+**Move to media**
 ```bash
 # Move to media/
 cd media
+```
 
+**make toplevel ngs_projects folder**
+```bash
 # make toplevel NGS folder
 mkdir ngs_projects 
+```
 
+**make fast_raw folder**
+```bash
 # fastq staging area
 mkdir ngs_projects/fastq_raw 
+```
 
+```bash
 # config files
 mkdir ngs_projects/config_files 
+```
 
+```bash
 # NGSeasy scripts
 mkdir ngs_projects/ngseasy 
 ```
