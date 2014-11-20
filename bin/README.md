@@ -82,9 +82,11 @@ structural variant calling, basic reporting and visualisations.
 
 ![ngsEASY](https://github.com/KHP-Informatics/ngs/blob/dev2/figs/ngsEASY_component_visualisation.png "Dockerized NGS Pipeline")
 
-*********
 
-## The Full NGSeasy pipeline
+****************
+
+The Full NGSeasy pipeline
+=============================
 
 The NGSeasy pipelines implement the following :-   
 
@@ -126,27 +128,24 @@ The NGSeasy pipelines implement the following :-
     - **[PICARDTOOLS:CollectWgsMetrics](http://broadinstitute.github.io/picard/command-line-overview.html#CollectWgsMetrics)**    
     - **[PICARDTOOLS:CollectTargetedPcrMetrics](http://broadinstitute.github.io/picard/command-line-overview.html#CollectTargetedPcrMetrics)** (coming soon)    
 
-- **SNP and small INDEL** calling using one of 
+- **SNP and small INDEL** calling using one of the following or a combibation of these tools, if the `ensemble` method is called using **[bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation)**
     - **[FREEBAYES](https://github.com/ekg/freebayes)** 
     - **[PLATYPUS](http://www.well.ox.ac.uk/platypus)** 
     - **[GATK:UnifiedGenotyper](https://www.broadinstitute.org/gatk/guide/tooldocs/org_broadinstitute_gatk_tools_walkers_genotyper_UnifiedGenotyper.php)** 
     - **[GATK:HaplotypeCaller](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php)** 
-    - or a combibation of these tools, if the `ensemble` method is called using **[bcbio.variation variant-ensemble](https://github.com/chapmanb/bcbio.variation)**
 
-- **Structural Variant (CNV)** calling using one of the following,
+- **Structural Variant (CNV)** calling using one of the following or or a combibation of if the `ensemble` methods are called:- 
     - **[DELLY](https://github.com/tobiasrausch/delly)** 
     - **[LUMPY](https://github.com/arq5x/lumpy-sv/)**
     - **[cn.MOPS](http://www.bioinf.jku.at/software/cnmops/)**
     - **[m-HMM](https://www.stt.msu.edu/users/hengwang/mHMM.html)**
     - **[ExomeDepth](http://cran.r-project.org/web/packages/ExomeDepth/index.html)**
-    - or a combibation of if the `ensemble` methods are called.
     - *[SLOPE](http://www-genepi.med.utah.edu/suppl/SLOPE/index.html) : COMING SOON!*
 
-- **Variant annotation** using using one 
+- **Variant annotation** using using one of the following or a combibation of if the `ensemble` methods are called. 
     - **[SnpEff](http://snpeff.sourceforge.net/)** 
     - **[ANNOVAR](http://www.openbioinformatics.org/annovar/)** 
     - **[VEP](http://www.ensembl.org/info/docs/tools/vep/index.html)**
-    - or a combibation of if the `ensemble` methods are called.  
 
 - **Variant reporting** using custom scripts
 
@@ -168,6 +167,7 @@ for base quality score recalibration.
     - **[freebayes](https://github.com/ekg/freebayes)**
     - **[platypus](http://www.well.ox.ac.uk/platypus)**
 
+********
 
 Dockerised NGSeasy
 ==========================
