@@ -439,7 +439,9 @@ cd ngs_projects/
 tar xvf gatk_resources.tar.gz; 
 cd ngs_projects/gatk_resources
 gunzip *
-
+```
+**Extract NGSeasy Reference Genomes**
+```bash
 # Extract Reference Genomes
 cd ngs_projects/
 tar xvf reference_genomes_b37.tgz; 
