@@ -221,6 +221,39 @@ docker pull compbio/ngseasy-${TOOL}
 
 ## 3. Manually Build required NGSeasy Container Images
 
+### Dockerised and Manual Builds ##
+Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. 
+
+Some of the software has restrictions on use particularly for commercial 
+purposes. Therefore if you wish to use this for commercial purposes, then you 
+leagally have to approach the owners of the various components yourself!  
+
+**Software composing the pipeline requiring registration:-**  
+
+   * novoalign http://www.novocraft.com/  
+   * Stampy http://www.well.ox.ac.uk/project-stampy  
+   * Platypus http://www.well.ox.ac.uk/platypus  
+   * GATK https://www.broadinstitute.org/gatk/  
+   * ANNOVAR http://www.openbioinformatics.org/annovar/  
+
+**These tools require manual download and registration with the proivder. For non-academics/commercial groups, you will need to pay for some of these tools.**
+
+| Tool | Build |
+|-------------|----------------------|
+|[novoalign](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_novoalign) | manual build |
+|[annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar) | manual build |
+|[stampy](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_stampy) | manual build |
+|[platypus](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/nsgeasy_platypus) | manual build |
+|[gatk](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_gatk) | manual build |
+
+Once you have paid/registered and downloaded the tool, we provide scripts and guidance for building these tools on your system.  
+
+Its as easy as:-  
+```{bash}
+docker build -t compbio/ngseasy-${TOOL} .
+```
+******** 
+
 ## 4. Manually Build NGSeasy Variant Annotaion Container Images
 
 ## 5. Make NGS project directory
@@ -270,41 +303,6 @@ Getting the Dockerised NGSeasy Pipeline(s) and Resources
 
 
 
-## Dockerised and Manual Builds ##
-Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. 
-
-Some of the software has restrictions on use particularly for commercial 
-purposes. Therefore if you wish to use this for commercial purposes, then you 
-leagally have to approach the owners of the various components yourself!  
-
-### Software composing the pipeline requiring registration
-
-If you want to build the image from the Dockerfile then you need to get your 
-own versions of (below) in the build directory:
-
-   * novoalign http://www.novocraft.com/  
-   * Stampy http://www.well.ox.ac.uk/project-stampy  
-   * Platypus http://www.well.ox.ac.uk/platypus  
-   * GATK https://www.broadinstitute.org/gatk/  
-   * ANNOVAR http://www.openbioinformatics.org/annovar/  
-
-**These tools require manual download and registration with the proivder. For non-academics/commercial groups, you will need to pay for some of these tools.**
-
-| Tool | Build |
-|-------------|----------------------|
-|[novoalign](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_novoalign) | manual build |
-|[annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar) | manual build |
-|[stampy](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_stampy) | manual build |
-|[platypus](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/nsgeasy_platypus) | manual build |
-|[gatk](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_gatk) | manual build |
-
-Once you have paid/registered and downloaded the tool, we provide scripts and guidance for building these tools on your system.  
-
-Its as easy as:-  
-```{bash}
-docker build -t compbio/ngseasy-${TOOL} .
-```
-******** 
 
 ### Large Variant Annotation Container Images
 
