@@ -322,23 +322,40 @@ mkdir ngs_projects/humandb # for annovar databses
 ## 6. Download NGSeasy Resources
 Download the indexed reference genomes and example data for use with NGSeasy.
 
+**NGSeasy Resources:-**  
 - **reference_genomes_b37.tgz** b37 reference genomes indexed for use with all provided aligners (BWA, Bowtie2, Stampy, Novoalign) and annotation bed files for use with pipeline scripts
 - **gatk_resources.tar.gz** gatk resources bundle
 - **fastq_example.tgz** Example 75bp PE Illumina Whole Exome Sequence fastq data for **NA12878**
 - Annotation Databases Coming in the next update 
- 
-## FTP Login Details
 
+**Download the data to the top level directory**
+
+### FTP Details
+- **ftp:**  159.92.120.21  
+- **user:** compbio-public  
+- **pwd:**  compbio-public  
+- **port:** 21  
+
+### Move to top level directory
 ```bash
-ftp:  159.92.120.21
-user: compbio-public
-pwd:  compbio-public
-port: 21
+cd ngs_projects
+```
+
+### FTP
+```bash
+ftp 159.92.120.21
+```
+
+### mget resources
+```bash
+ftp> cd /Public/NGSeasy_Public_Resources
+ftp> prompt off
+ftp> mget *.gz
+ftp> exit
 ```
 
 I would recommend using a separate program like [FileZilla](https://filezilla-project.org/), which will make it much easier for you to set up and manage your file transfers
 
-[Back to The Begining](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngs-easy-v10)
 
 ## 7. Get NGSeasy Sripts
 We then need to get the latest NGSeasy scripts from [GitHub](https://github.com/KHP-Informatics/ngs) . The user is required to download the scripts to the `ngseasy` directory
@@ -439,18 +456,10 @@ The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK.
 
 
 
-## NGSeasy Reasources
 
 
 
-****************
-
-
-
-
-
-
-## NGSeasy Project configuration file
+## 9. NGSeasy Project configuration file
 
 In Excel make config file and save as [TAB] Delimited file with ``.tsv`` extenstion.  
 See Example provided and [GoogleDoc](https://docs.google.com/spreadsheets/d/1kp1Nyw0x3zXqO2Wm2Z25ErJ0Z-Uoab8tjRPq9h4sonk/edit?usp=sharing). Remove the header from this file before running the pipeline. This sets up Information related to: Project Name, Sample Name, Library Type, Pipeline to call, NCPU.
