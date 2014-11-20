@@ -340,53 +340,8 @@ I would recommend using a separate program like [FileZilla](https://filezilla-pr
 
 [Back to The Begining](https://github.com/KHP-Informatics/ngs/blob/master/containerized/README.md#ngs-easy-v10)
 
-
-****************
-
-## The NGSeasy Pipelines ##
-
-| Pipeline             | Short Description    |
-|----------------------|----------------------|
-| [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk) | fastq to recalibrated bam to vcf using GATK  |
-| [ngs_full_no_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_no_gatk)    | fastq to recalibrated bam to vcf  |
-
-gatk version includes indel realignment and base recalibration.  
-
-Non-academics/commercial groups need to pay for GATK.  
-
-Currently **ngs_full_gatk** pipeline is the most developed module.  
-
-The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK. Here BamUtil:recab is used to recalibrate base quality scores and freebayes/platypus are the variant callers of choice.
-****************
-
-
-
-
-
-## NGSeasy Reasources
-
-
-
-****************
-
-NGSeasy Project Set up
---------------------------
-
-### 1. Install Docker
-
-
-### 2. Get NGSeasy Automated build Container Images
-### 3. Manually Build required NGSeasy Container Images
-### 4. Manually Build NGSeasy Variant Annotaion Container Images
-### 5. Make NGS project directory
-### 6. Download NGSeasy Resources
-
-
-We then need to get the latest NGSeasy scripts from [GitHub](https://github.com/KHP-Informatics/ngs) 
-
-## Get and PATH NGSeasy scripts
-
-The user is required to download the scripts to the `ngseasy` directory
+## 7. Get NGSeasy Sripts
+We then need to get the latest NGSeasy scripts from [GitHub](https://github.com/KHP-Informatics/ngs) . The user is required to download the scripts to the `ngseasy` directory
 
 **move to the `ngseasy` directory**
 
@@ -415,9 +370,7 @@ source ~/.bashrc
 
 **alternatively donwload the scripts from our [GitHub Release](https://github.com/KHP-Informatics/ngs)** 
 
-****
-
-## Set up NGS Project Working Directories
+## 8. Set up NGS Project Working Directories
 
 Running the script `ngseasy_initiate_project` ensures that all relevant directories are set up, and also enforces a clean structure to the NGS project.  
 
@@ -464,6 +417,38 @@ ngs_projects
 ```bash
 ngseasy_initiate_project -c config.file.tsv -d /media/ngs_projects
 ```
+****************
+
+## The NGSeasy Pipelines ##
+
+| Pipeline             | Short Description    |
+|----------------------|----------------------|
+| [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk) | fastq to recalibrated bam to vcf using GATK  |
+| [ngs_full_no_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_no_gatk)    | fastq to recalibrated bam to vcf  |
+
+gatk version includes indel realignment and base recalibration.  
+
+Non-academics/commercial groups need to pay for GATK.  
+
+Currently **ngs_full_gatk** pipeline is the most developed module.  
+
+The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK. Here BamUtil:recab is used to recalibrate base quality scores and freebayes/platypus are the variant callers of choice.
+****************
+
+
+
+
+
+## NGSeasy Reasources
+
+
+
+****************
+
+
+
+
+
 
 ## NGSeasy Project configuration file
 
