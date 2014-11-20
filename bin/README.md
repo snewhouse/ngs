@@ -202,7 +202,12 @@ A full set of instructions for multiple operating systems are available on the [
 
 ## 2. Get NGSeasy Automated build Container Images
 
-All NGSeasy Docker images can be pulled down from **[compbio Docker Hub](https://hub.docker.com/u/compbio/)** or using the script [get_NGSeasy.sh](https://github.com/KHP-Informatics/ngs/blob/master/bin/get_NGSeasy.sh)
+All NGSeasy Docker images can be pulled down from **[compbio Docker Hub](https://hub.docker.com/u/compbio/)** or using the script [get_containers.sh](https://github.com/KHP-Informatics/ngs/blob/master/bin/get_containers.sh)
+
+```bash
+# get images
+bash get_containers.sh v1.0
+```
 
 ### Dockerised and Automated Builds ##
 
@@ -233,6 +238,7 @@ Its as easy as: -
 ```bash
 docker pull compbio/ngseasy-${TOOL}
 ```
+
 ******** 
 
 ## 3. Manually Build required NGSeasy Container Images
@@ -560,43 +566,6 @@ and with the correct nameing conventions enforced by our pipeline to exist, befo
 
 A full pipeline is set out below :-  
 
-
-
-### Get NGSeasy scripts
-
-All scripts available at our [**NGSeasy GitHub Repo**](https://github.com/KHP-Informatics/ngs)
-
-### Git Clone
-```bash
-cd ngs_projects/nsgeasy
-git clone https://github.com/KHP-Informatics/ngs.git
-
-# update if needed
-cd ngs_projects/nsgeasy/ngs
-git pull
-```
-
-### Set Path
-```bash
-# set PATH 
-
-export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/bin
-
-# or add to global .bashrc
-
-echo "export PATH=$PATH:/media/ngs_projects/nsgeasy/ngs/bin" ~/.bashrc
-source ~/.bashrc
-```
-****
-
-### Get NGSeasy Tools and Container Images
-
-All tools available as automated builds can be downloaded/pulled from our (DockerHub)[]. Or the provided script `get_containers.sh ` can be used.
-
-```bash
-# get images
-bash get_containers.sh v1.0
-```
 
 ****
 
