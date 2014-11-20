@@ -576,6 +576,7 @@ CLEANUP|string|Clean Up Files (TRUE/FALSE)|TRUE/FALSE|
 NCPU|number|Number of cores to call|1..n|
 VERSION|number|NGSeasy Version |v0.9/v1.0|
 
+In the config file we set PIPELINE to call the pipeline **[ngs_full_gatk]** or **[ngs_full_no_gatk]**.   
 
 _coming soon_ options to add user email, specify non-gatk runs  
 
@@ -606,54 +607,23 @@ Each of these will call a separate container and run a part of the NGS pipeline.
 dependent on the previous step(s) - in that they require certain data/input/output in the correct format 
 and with the correct nameing conventions enforced by our pipeline to exist, before executing.
 
-A full pipeline is set out below :-  
-
-
-****
-
-### Build Annotation Container Images
-
-
-
-****
-
-### Build Licensed and Registered Container Images
-
-The user needs to manually build the following annotation tools:-   
-
-- GATK
-- Stampy
-- Platypus
-- Novoalign
-
-
-
-****
-
-### Set up project directories
-```bash
-ngseasy_initiate_project -c config.file.tsv -d /media/ngs_projects
-```
-
-### Copy fastq to project/sample directories
-```bash
-ngseasy_initiate_fastq -c config.file.tsv -d /media/ngs_projects
-```
-
-*** 
-
-### A pipeline is called using :-
+**run ngseay**
 
 ```bash
+
     ngseasy -c config.file.tsv -d /media/nsg_projects
-```
     
-In the config file we as to call the pipeline [ngs_full_gatk]. The pipeline is defined in the config file as [ngs_full_gatk].
-Here [ngs_full_gatk] is a wrapper/fucntion for calling an NGS pipeline.  
+```
 
-Each function is a bash wrapper for an image/container(s) e.g:-  
+The pipeline is defined in the config file as **[ngs_full_gatk]**
 
-**ngs_full_gatk**  
+*****
+
+### ngs_full_gatk ###  
+
+Each **pipeline** is a bash wrapper that calls the required image/container(s) 
+
+Here  **[ngs_full_gatk]** is a wrapper/fucntion for calling an NGS pipeline:-  
 
 ```bash
 #!/bin/bash -x
