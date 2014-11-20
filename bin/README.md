@@ -297,9 +297,41 @@ Docker build files ([Dockerfile](https://docs.docker.com/jsearch/?q=Dockerfile))
 Its as easy as:-  
 ```{bash}
 docker build -t compbio/ngseasy-${TOOL} .
+
+The user needs to manually build the following annotation tools:-   
+
+- Annovar
+- VEP
+- snpEff
+
+**Note** Annovar requires user registration.
+
+Once built on the user system, these container images can persist for as long as the user wants.
+
+### Build VEP
+```bash
+
+cd /media/ngs_projects/nsgeasy/ngs/containerized/ngs_docker_debian/ngseasy_vep
+
+sudo docker build -t compbio/ngseasy-vep:${VERSION} .
 ```
 
-***
+### Build Annovar
+
+```bash
+cd /media/ngs_projects/nsgeasy/ngs/containerized/ngs_docker_debian/ngseasy_annovar
+
+sudo docker build -t compbio/ngseasy-annovar:${VERSION} .
+```
+
+### Build snpEff
+```bash
+cd /media/ngs_projects/nsgeasy/ngs/containerized/ngs_docker_debian/ngseasy_snpeff
+
+sudo docker build -t compbio/ngseasy-snpeff:${VERSION} .
+```
+
+*******
 
 ## 5. Make NGS project directory
 The user needs to make the relevent directory structures on their local machine before starting an NGS run. 
@@ -571,43 +603,6 @@ A full pipeline is set out below :-
 
 ### Build Annotation Container Images
 
-The user needs to manually build the following annotation tools:-   
-
-- Annovar
-- VEP
-- snpEff
-
-**Note** Annovar requires user registration.
-
-Once built on the user system, these container images can persist for as long as the user wants.
-
-### Build VEP
-```bash
-cd /media/ngs_projects/nsgeasy/ngs/containerized/ngs_docker_debian/ngseasy_vep
-```
-
-```bash
-sudo docker build -t compbio/ngseasy-vep:${VERSION} .
-```
-
-### Build Annovar
-
-```bash
-cd /media/ngs_projects/nsgeasy/ngs/containerized/ngs_docker_debian/ngseasy_annovar
-```
-
-```bash
-sudo docker build -t compbio/ngseasy-annovar:${VERSION} .
-```
-
-### Build snpEff
-```bash
-cd /media/ngs_projects/nsgeasy/ngs/containerized/ngs_docker_debian/ngseasy_snpeff
-```
-
-```bash
-sudo docker build -t compbio/ngseasy-snpeff:${VERSION} .
-```
 
 
 ****
