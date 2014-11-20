@@ -297,8 +297,9 @@ Docker build files ([Dockerfile](https://docs.docker.com/jsearch/?q=Dockerfile))
 Its as easy as:-  
 ```{bash}
 docker build -t compbio/ngseasy-${TOOL} .
+```
 
-The user needs to manually build the following annotation tools:-   
+**The user needs to manually build the following annotation tools:-   **
 
 - Annovar
 - VEP
