@@ -334,7 +334,7 @@ sudo docker build -t compbio/ngseasy-snpeff:${VERSION} .
 
 *******
 
-## 5. Make NGS project directory
+## 5. Make NGSeasy project directory
 The user needs to make the relevent directory structures on their local machine before starting an NGS run. 
 
 On our sysetm we typically set up a top-level driectory called **ngs_projects** within which we store output from all our individual NGS projects. 
@@ -382,11 +382,13 @@ mkdir ngs_projects
 mkdir ngs_projects/fastq_raw 
 ```
 
+**make config_files folder**
 ```bash
 # config files
 mkdir ngs_projects/config_files 
 ```
 
+**make ngseasy folder**
 ```bash
 # NGSeasy scripts
 mkdir ngs_projects/ngseasy 
