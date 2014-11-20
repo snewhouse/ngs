@@ -190,18 +190,20 @@ Dockerised NGSeasy
 
 The following section describes getting the Dockerised NGSeasy Pipeline(s) and Resources, project set up and running NGSeasy in 12 easy steps.
 
-**1. Install Docker**
-**2. Get NGSeasy Automated build Container Images**
-**3. Manually Build required NGSeasy Container Images**
-**4. Manually Build NGSeasy Variant Annotaion Container Images**
-**5. Make NGSeasy project directory**
-**6. Download NGSeasy Resources**
-**7. Get NGSeasy Sripts**
-**8. Set up NGSeasy Project Working Directories**
-**9. NGSeasy Project configuration file**
-**10. Copy Project Fastq files to relevent Project/Sample Directories**
-**11. Start the NGSeasy Volume Contaier**
-**12. Running an NGSeasy full pipeline : from raw fastq to vcf calls**
+*****
+
+**1. Install Docker**  
+**2. Get NGSeasy Automated build Container Images**  
+**3. Manually Build required NGSeasy Container Images**  
+**4. Manually Build NGSeasy Variant Annotaion Container Images**  
+**5. Make NGSeasy project directory**  
+**6. Download NGSeasy Resources**  
+**7. Get NGSeasy Sripts**  
+**8. Set up NGSeasy Project Working Directories**  
+**9. NGSeasy Project configuration file**  
+**10. Copy Project Fastq files to relevent Project/Sample Directories**  
+**11. Start the NGSeasy Volume Contaier**  
+**12. Running an NGSeasy full pipeline : from raw fastq to vcf calls**  
 
 *****
 ## 1. Install Docker
