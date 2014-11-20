@@ -301,6 +301,10 @@ Docker build files ([Dockerfile](https://docs.docker.com/jsearch/?q=Dockerfile))
 - [VEP](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_vep/Dockerfile)   
 - [snpEff](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_snpeff/Dockerfile)  
 
+**Note** Annovar requires user registration.  
+
+**Once built on the user system, these container images can persist for as long as the user wants.**  
+
 **Large Variant Annotation Container Images**
 
 | Tool | Build |
@@ -314,16 +318,6 @@ Its as easy as:-
 ```{bash}
 docker build -t compbio/ngseasy-${TOOL} .
 ```
-
-**The user needs to manually build the following annotation tools**:-  
-
-- Annovar
-- VEP
-- snpEff
-
-**Note** Annovar requires user registration.
-
-Once built on the user system, these container images can persist for as long as the user wants.
 
 ### Build VEP
 ```bash
@@ -497,21 +491,6 @@ source ~/.bashrc
 
 **alternatively donwload the scripts from our [GitHub Release](https://github.com/KHP-Informatics/ngs)** 
 
-### The NGSeasy Pipelines ##
-
-| Pipeline             | Short Description    |
-|----------------------|----------------------|
-| [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk) | fastq to recalibrated bam to vcf using GATK  |
-| [ngs_full_no_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_no_gatk)    | fastq to recalibrated bam to vcf  |
-
-gatk version includes indel realignment and base recalibration.  
-
-Non-academics/commercial groups need to pay for GATK.  
-
-Currently **ngs_full_gatk** pipeline is the most developed module.  
-
-The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK. Here BamUtil:recab is used to recalibrate base quality scores and freebayes/platypus are the variant callers of choice.
-
 ****************
 
 ## 8. Set up NGSeasy Project Working Directories
@@ -635,6 +614,21 @@ ngseasy_volumes_container -d /media/ngs_projects
 The pipeline is defined in the config file as **[ngs_full_gatk]**
 
 *****
+
+## The NGSeasy Pipelines 
+
+| Pipeline             | Short Description    |
+|----------------------|----------------------|
+| [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk) | fastq to recalibrated bam to vcf using GATK  |
+| [ngs_full_no_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_no_gatk)    | fastq to recalibrated bam to vcf  |
+
+gatk version includes indel realignment and base recalibration.  
+
+Non-academics/commercial groups need to pay for GATK.  
+
+Currently **ngs_full_gatk** pipeline is the most developed module.  
+
+The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK. Here BamUtil:recab is used to recalibrate base quality scores and freebayes/platypus are the variant callers of choice.
 
 ## ngs_full_gatk  
 
