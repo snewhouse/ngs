@@ -185,62 +185,9 @@ A full set of instructions for multiple operating systems are available on the [
 
 ## 2. Get NGSeasy Automated build Container Images
 
-## 3. Manually Build required NGSeasy Container Images
+All NGSeasy Docker images can be pulled down from **[compbio Docker Hub](https://hub.docker.com/u/compbio/)** or using the script [get_NGSeasy.sh](https://github.com/KHP-Informatics/ngs/blob/master/bin/get_NGSeasy.sh)
 
-## 4. Manually Build NGSeasy Variant Annotaion Container Images
-
-## 5. Make NGS project directory
-
-## 6. Download NGSeasy Resources
-
-
-****************
-
-## The NGSeasy Pipelines ##
-
-| Pipeline             | Short Description    |
-|----------------------|----------------------|
-| [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk) | fastq to recalibrated bam to vcf using GATK  |
-| [ngs_full_no_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_no_gatk)    | fastq to recalibrated bam to vcf  |
-
-gatk version includes indel realignment and base recalibration.  
-
-Non-academics/commercial groups need to pay for GATK.  
-
-Currently **ngs_full_gatk** pipeline is the most developed module.  
-
-The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK. Here BamUtil:recab is used to recalibrate base quality scores and freebayes/platypus are the variant callers of choice.
-****************
-
-
-
-****
-
-### Coming Soon
-- New Aligners:- [SNAP](http://snap.cs.berkeley.edu/), GSNAP, mr- and mrs-Fast,gem
-- https://github.com/amplab/snap
-- [SLOPE (CNV fo targetted NSG)] ((http://www.biomedcentral.com/1471-2164/12/184)) 
-- Cancer Pipelines
-- Annotation Pipelines and Databases
-- Visualisation Pipelines
-- Var Callers:- VarScan2
-- SGE scripts and basic BASH scrips for running outside of Docker
-- biobambam https://github.com/gt1/biobambam  
-- bamaddrg https://github.com/ekg/bamaddrg  
-- bamtools https://github.com/ekg/bamtools  
-
-***********
-
-Getting the Dockerised NGSeasy Pipeline(s) and Resources
-----------------------------------------------------------
-
-## NGSeasy Docker images
-
-All Images can be pulled down from **[compbio Docker Hub](https://hub.docker.com/u/compbio/)** or using the script [get_NGSeasy.sh](https://github.com/KHP-Informatics/ngs/blob/master/bin/get_NGSeasy.sh)
-
-******** 
-
-## Dockerised and Automated Builds ##
+### Dockerised and Automated Builds ##
 
 The following opensource tools are all provided as automated builds. 
 
@@ -270,6 +217,58 @@ Its as easy as: -
 docker pull compbio/ngseasy-${TOOL}
 ```
 ******** 
+
+
+## 3. Manually Build required NGSeasy Container Images
+
+## 4. Manually Build NGSeasy Variant Annotaion Container Images
+
+## 5. Make NGS project directory
+
+## 6. Download NGSeasy Resources
+
+
+****************
+
+## The NGSeasy Pipelines ##
+
+| Pipeline             | Short Description    |
+|----------------------|----------------------|
+| [ngs_full_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_gatk) | fastq to recalibrated bam to vcf using GATK  |
+| [ngs_full_no_gatk](https://github.com/KHP-Informatics/ngs/blob/master/bin/ngs_full_no_gatk)    | fastq to recalibrated bam to vcf  |
+
+gatk version includes indel realignment and base recalibration.  
+
+Non-academics/commercial groups need to pay for GATK.  
+
+Currently **ngs_full_gatk** pipeline is the most developed module.  
+
+The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK. Here BamUtil:recab is used to recalibrate base quality scores and freebayes/platypus are the variant callers of choice.
+****************
+
+
+
+
+
+### Coming Soon
+- New Aligners:- [SNAP](http://snap.cs.berkeley.edu/), GSNAP, mr- and mrs-Fast,gem
+- https://github.com/amplab/snap
+- [SLOPE (CNV fo targetted NSG)] ((http://www.biomedcentral.com/1471-2164/12/184)) 
+- Cancer Pipelines
+- Annotation Pipelines and Databases
+- Visualisation Pipelines
+- Var Callers:- VarScan2
+- SGE scripts and basic BASH scrips for running outside of Docker
+- biobambam https://github.com/gt1/biobambam  
+- bamaddrg https://github.com/ekg/bamaddrg  
+- bamtools https://github.com/ekg/bamtools  
+
+***********
+
+Getting the Dockerised NGSeasy Pipeline(s) and Resources
+----------------------------------------------------------
+
+
 
 ## Dockerised and Manual Builds ##
 Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. 
