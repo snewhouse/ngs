@@ -168,6 +168,19 @@ for base quality score recalibration.
     - **[platypus](http://www.well.ox.ac.uk/platypus)**
 
 ********
+### Coming Soon
+- New Aligners:- [SNAP](http://snap.cs.berkeley.edu/), GSNAP, mr- and mrs-Fast,gem
+- https://github.com/amplab/snap
+- [SLOPE (CNV fo targetted NSG)] ((http://www.biomedcentral.com/1471-2164/12/184)) 
+- Cancer Pipelines
+- Annotation Pipelines and Databases
+- Visualisation Pipelines
+- Var Callers:- VarScan2
+- SGE scripts and basic BASH scrips for running outside of Docker
+- biobambam https://github.com/gt1/biobambam  
+- bamaddrg https://github.com/ekg/bamaddrg  
+- bamtools https://github.com/ekg/bamtools  
+************
 
 Dockerised NGSeasy
 ==========================
@@ -218,7 +231,6 @@ docker pull compbio/ngseasy-${TOOL}
 ```
 ******** 
 
-
 ## 3. Manually Build required NGSeasy Container Images
 
 Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. 
@@ -257,6 +269,28 @@ docker build -t compbio/ngseasy-${TOOL} .
 
 ## 4. Manually Build NGSeasy Variant Annotaion Container Images
 
+The tools used for variant annotation use large databases and the docker images exceed 10GB. Therefore, the user should manually build these container images prior to running the NGS pipelines.
+Docker build files ([Dockerfile](https://docs.docker.com/jsearch/?q=Dockerfile)) are available for 
+- [Annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar/Dockerfile)  
+- [VEP](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_vep/Dockerfile)   
+- [snpEff](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_snpeff/Dockerfile)  
+
+**Large Variant Annotation Container Images**
+
+| Tool | Build |
+|-------------|----------------------|
+|[annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar) | manual build |
+|[vep](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_vep) | manual build |
+|[snpeff](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_snpeff) | manual build |
+
+
+Its as easy as:-  
+```{bash}
+docker build -t compbio/ngseasy-${TOOL} .
+```
+
+***
+
 ## 5. Make NGS project directory
 
 ## 6. Download NGSeasy Resources
@@ -283,20 +317,6 @@ The **ngs_full_no_gatk** pipeline provides alternatives to processing with GATK.
 
 
 
-
-### Coming Soon
-- New Aligners:- [SNAP](http://snap.cs.berkeley.edu/), GSNAP, mr- and mrs-Fast,gem
-- https://github.com/amplab/snap
-- [SLOPE (CNV fo targetted NSG)] ((http://www.biomedcentral.com/1471-2164/12/184)) 
-- Cancer Pipelines
-- Annotation Pipelines and Databases
-- Visualisation Pipelines
-- Var Callers:- VarScan2
-- SGE scripts and basic BASH scrips for running outside of Docker
-- biobambam https://github.com/gt1/biobambam  
-- bamaddrg https://github.com/ekg/bamaddrg  
-- bamtools https://github.com/ekg/bamtools  
-
 ***********
 
 Getting the Dockerised NGSeasy Pipeline(s) and Resources
@@ -305,27 +325,7 @@ Getting the Dockerised NGSeasy Pipeline(s) and Resources
 
 
 
-### Large Variant Annotation Container Images
 
-The tools used for variant annotation use large databases and the docker images exceed 10GB. Therefore, the user should manually build these container images prior to running the NGS pipelines.
-Docker build files ([Dockerfile](https://docs.docker.com/jsearch/?q=Dockerfile)) are available for 
-- [Annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar/Dockerfile)  
-- [VEP](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_vep/Dockerfile)   
-- [snpEff](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_snpeff/Dockerfile)  
-
-| Tool | Build |
-|-------------|----------------------|
-|[annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar) | manual build |
-|[vep](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_vep) | manual build |
-|[snpeff](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_snpeff) | manual build |
-
-
-Its as easy as:-  
-```{bash}
-docker build -t compbio/ngseasy-${TOOL} .
-```
-
-***
 
 ## NGSeasy Reasources
 
