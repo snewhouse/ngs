@@ -445,6 +445,8 @@ Its as easy as:-
 docker build -t compbio/ngseasy-${TOOL} .
 ```
 
+******
+
 ### Building Stampy
 
 **resister at http://www.well.ox.ac.uk/project-stampy**  
@@ -470,6 +472,8 @@ cd ngs/ngs_docker_debian/ngseasy_stampy
 # build
 docker build -t compbio/ngseasy-stampy:v1.0 .
 ```
+******
+
 ### Building Platypus
 
 **resister at http://www.well.ox.ac.uk/platypus**
