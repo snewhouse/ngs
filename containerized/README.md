@@ -196,7 +196,6 @@ Getting all resources and building required tools will take a few hours dependin
 
 ## The 12 Easy Steps to NGS Freedom!
 
-
 **1. [Install Docker](https://github.com/KHP-Informatics/ngs#1-install-docker)**  
 **2. [Get NGSeasy Automated build Container Images](https://github.com/KHP-Informatics/ngs#2-get-ngseasy-automated-build-container-images)**  
 **3. [Make NGSeasy project directory](https://github.com/KHP-Informatics/ngs#3-make-ngseasy-project-directory)**  
