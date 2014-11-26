@@ -442,8 +442,18 @@ docker build -t compbio/ngseasy-${TOOL} .
 Download stampy to local directory and check version number. Edit the [Dockerfile](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_stampy/Dockerfile) if needed. 
 
 ```bash
+# on our local system we cd to media
+cd /media
 
-# move to stampy folder
+# them move to ngs_projects toplevel directory
+cd ngs_projects
+
+# and then the ngseasy folder with all our ngs scripts
+# git  clone https://github.com/KHP-Informatics/ngs.git
+# if you havent alreay
+cd ngseasy
+
+# move to ngseasy_stampy folder
 cd ngs/ngs_docker_debian/ngseasy_stampy
 
 # build
