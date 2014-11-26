@@ -32,31 +32,21 @@ EOF
 
 VERSION=${1}
 
-sudo docker pull compbio/ngseasy-fastx-toolkit:${VERSION}
+sudo docker pull compbio/ngseasy-base:latest
+sudo docker pull compbio/ngseasy-fastqc:${VERSION}
+sudo docker pull compbio/ngseasy-trimmomatic:${VERSION}
+sudo docker pull compbio/ngseasy-bwa:${VERSION}
+sudo docker pull compbio/ngseasy-bowtie:${VERSION}
+sudo docker pull compbio/ngseasy-picardtools:${VERSION}
+sudo docker pull compbio/ngseasy-samtools:${VERSION}
+sudo docker pull compbio/ngseasy-freebayes:${VERSION}
+sudo docker pull compbio/ngseasy-bedtools:${VERSION}
+sudo docker pull compbio/ngseasy-bcbiovar:${VERSION}
+sudo docker pull compbio/ngseasy-delly:${VERSION}
+sudo docker pull compbio/ngseasy-lumpy:${VERSION}
+sudo docker pull compbio/ngseasy-cnmops:${VERSION}
 sudo docker pull compbio/ngseasy-mhmm:${VERSION}
 sudo docker pull compbio/ngseasy-exomedepth:${VERSION}
-sudo docker pull compbio/ngseasy-cnmops:${VERSION}
-sudo docker pull compbio/ngseasy-gsnap:${VERSION}
-sudo docker pull compbio/ngseasy-gem:${VERSION}
-sudo docker pull compbio/ngseasy-annovar:${VERSION}
-sudo docker pull compbio/ngseasy-lumpy:${VERSION}
-sudo docker pull compbio/ngseasy-delly:${VERSION}
-sudo docker pull compbio/ngseasy-varscan2:${VERSION}
-sudo docker pull compbio/ngseasy-freebayes:${VERSION}
-sudo docker pull compbio/ngseasy-platypus:${VERSION}
-sudo docker pull compbio/ngseasy-novoalign:${VERSION}
-sudo docker pull compbio/ngseasy-stampy:${VERSION}
-sudo docker pull compbio/ngseasy-bowtie2:${VERSION}
-sudo docker pull compbio/ngseasy-vcftools:${VERSION}
-sudo docker pull compbio/ngseasy-bedtools:${VERSION}
-sudo docker pull compbio/ngseasy-seqtk:${VERSION}
-sudo docker pull compbio/ngseasy-samtools:${VERSION}
-sudo docker pull compbio/ngseasy-bwa:${VERSION}
-sudo docker pull compbio/ngseasy-picardtools:${VERSION}
-sudo docker pull compbio/ngseasy-gatk:${VERSION}
-sudo docker pull compbio/ngseasy-trimmomatic:${VERSION}
-sudo docker pull compbio/ngseasy-fastqc:${VERSION}
-sudo docker pull compbio/ngseasy-base:wheezy
-
+sudo docker pull compbio/ngseasy-bamutil:${VERSION}
 
 
