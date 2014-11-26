@@ -9,12 +9,12 @@ Release Version: 0.9.0
 
 ****************
 ### [A [Dockerized](https://www.docker.com/) NGS pipeline and tool-box] 
+****************
 
 **With NGSeasy you can now have full suite of NGS tools up and running on any high end workstation in an afternoon**
 
 **Getting started: [The 12 Easy Steps to NGS Freedom!](https://github.com/KHP-Informatics/ngs#the-12-easy-steps-to-ngs-freedom)**  
 
-****************
 
 **Note:** NGSeasy is under **heavy development** and the code and docs evolve quickly.  
 
