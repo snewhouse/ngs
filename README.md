@@ -534,8 +534,9 @@ novosortV1.03.01.Linux3.0.tar.gz
 novocraftV3.02.08.Linux3.0.tar.gz
 ```
 
-**build**
+**build novoalign**
 
+```bash
 # build
 docker build -t compbio/ngseasy-novoalign:v1.0 .
 ```
