@@ -549,8 +549,9 @@ docker build -t compbio/ngseasy-novoalign:v1.0 .
 
 ### 6.4 Building GATK
 
-You need to register and accept the GATK license agreement at https://www.broadinstitute.org/gatk/. Once done, 
-download GATK and place in the GTAK builf directory **ngs/ngs_docker_debian/ngseasy_gatk**.  
+You need to register and accept the GATK license agreement at https://www.broadinstitute.org/gatk/.  
+
+Once done, download GATK and place in the GTAK build directory **ngs/ngs_docker_debian/ngseasy_gatk**.  
 
 Edit the [Dockerfile](https://github.com/KHP-Informatics/ngs/blob/master/containerized/ngs_docker_debian/ngseasy_gatk/Dockerfile) to relfect
 the correct version of GATK.  
