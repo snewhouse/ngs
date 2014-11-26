@@ -709,6 +709,24 @@ In the Docker container the project directory is mounted in `/home/pipeman/ngs_p
 ngseasy_volumes_container -d /media/ngs_projects
 ```
 
+**inside ngseasy_volumes_container**. This is what it is calling. Note the directory names and mounts. 
+
+```bash
+
+# host_vol_dir = ngs_projects
+
+  docker run \
+  -d \
+  -P \
+  -v ${host_vol_dir}/fastq_raw:/home/pipeman/fastq_raw \
+  -v ${host_vol_dir}/reference_genomes_b37:/home/pipeman/reference_genomes_b37 \
+  -v ${host_vol_dir}/gatk_resources:/home/pipeman/gatk_resources \
+  -v ${host_vol_dir}:/home/pipeman/ngs_projects \
+  -v ${host_vol_dir}/ngseasy/ngs/bin:/home/pipeman/ngseasy_scripts \
+  --name volumes_container \
+  -t compbio/ngseasy-base:wheezy
+```
+
 ****
 
 ## 12. Running an NGSeasy full pipeline : from raw fastq to vcf calls
