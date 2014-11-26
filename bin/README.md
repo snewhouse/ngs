@@ -474,8 +474,8 @@ docker build -t compbio/ngseasy-stampy:v1.0 .
 
 **resister at http://www.well.ox.ac.uk/platypus**
 
-Download platypus to local directory and check version number. If this differs from the [Dockerfile](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_platypus/Dockerfile) build file, 
-then edit the [Dockerfile](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_platypus/Dockerfile) if needed. 
+Download platypus to local directory and check version number. If this differs from the [Dockerfile](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/nsgeasy_platypus/Dockerfile) build file, 
+then edit the [Dockerfile](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/nsgeasy_platypus/Dockerfile) if needed. 
 
 ```bash
 # on our local system we cd to media
