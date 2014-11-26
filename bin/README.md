@@ -188,17 +188,19 @@ Dockerised NGSeasy
 ==========================
 ![docker](https://github.com/KHP-Informatics/ngs/blob/master/figs/Docker_container_engine_logo.png "Docker")  
 
-The following section describes getting the Dockerised NGSeasy Pipeline(s) and Resources, project set up and running NGSeasy in 12 easy steps.
+The following section describes getting the Dockerised NGSeasy Pipeline(s) and Resources, project set up and running NGSeasy in 12 easy steps.  
+
+Getting all resources and building required tools will take a few hours depending on network connections and any random "ghosts in the machine".
 
 *****
 
 **1. [Install Docker](https://github.com/KHP-Informatics/ngs#1-install-docker)**  
 **2. [Get NGSeasy Automated build Container Images](https://github.com/KHP-Informatics/ngs#2-get-ngseasy-automated-build-container-images)**  
-**3. [Manually Build required NGSeasy Container Images](https://github.com/KHP-Informatics/ngs#3-manually-build-required-ngseasy-container-images)**  
-**4. [Manually Build NGSeasy Variant Annotaion Container Images](https://github.com/KHP-Informatics/ngs#4-manually-build-ngseasy-variant-annotaion-container-images)**  
-**5. [Make NGSeasy project directory](https://github.com/KHP-Informatics/ngs#5-make-ngseasy-project-directory)**  
-**6. [Download NGSeasy Resources](https://github.com/KHP-Informatics/ngs#6-download-ngseasy-resources)**  
-**7. [Get NGSeasy Sripts](https://github.com/KHP-Informatics/ngs#7-get-ngseasy-sripts)**  
+**3. [Make NGSeasy project directory](https://github.com/KHP-Informatics/ngs#3-make-ngseasy-project-directory)**  
+**4. [Download NGSeasy Resources](https://github.com/KHP-Informatics/ngs#4-download-ngseasy-resources)**  
+**5. [Get NGSeasy Sripts](https://github.com/KHP-Informatics/ngs#5-get-ngseasy-sripts)**  
+**6. [Manually Build required NGSeasy Container Images](https://github.com/KHP-Informatics/ngs#6-manually-build-required-ngseasy-container-images)**  
+**7. [Manually Build NGSeasy Variant Annotaion Container Images](https://github.com/KHP-Informatics/ngs#7-manually-build-ngseasy-variant-annotaion-container-images)**  
 **8. [Set up NGSeasy Project Working Directories](https://github.com/KHP-Informatics/ngs#8-set-up-ngseasy-project-working-directories)**  
 **9. [NGSeasy Project configuration file](https://github.com/KHP-Informatics/ngs#9-ngseasy-project-configuration-file)**  
 **10. [Copy Project Fastq files to relevent Project/Sample Directories](https://github.com/KHP-Informatics/ngs#10-copy-project-fastq-files-to-relevent-projectsample-directories)**  
