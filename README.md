@@ -440,7 +440,7 @@ docker build -t compbio/ngseasy-${TOOL} .
 
 ******
 
-### Building Stampy
+### 6.1 Building Stampy
 
 **resister at http://www.well.ox.ac.uk/project-stampy**  
 
@@ -468,7 +468,7 @@ docker build -t compbio/ngseasy-stampy:v1.0 .
 ```
 ******
 
-### Building Platypus
+### 6.2 Building Platypus
 
 **resister at http://www.well.ox.ac.uk/platypus**
 
@@ -497,7 +497,7 @@ docker build -t compbio/ngseasy-platypus:v1.0 .
 
 ******
 
-### Building NOVOALIGN
+### 6.3 Building NOVOALIGN
 
 **Download Novoalign from  http://www.novocraft.com/** into the local build directory **ngs/ngs_docker_debian/ngseasy_novoalign**. 
 Edit the [Dockerfile](https://github.com/KHP-Informatics/ngs/blob/master/containerized/ngs_docker_debian/ngseasy_novoalign/Dockerfile) to relfect
@@ -539,6 +539,16 @@ novocraftV3.02.08.Linux3.0.tar.gz
 ```bash
 # build
 docker build -t compbio/ngseasy-novoalign:v1.0 .
+```
+
+******
+
+### 6.4 Building GATK
+
+
+```bash
+# build
+docker build -t compbio/ngseasy-gatk:v1.0 .
 ```
 
 ******** 
