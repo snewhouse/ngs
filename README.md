@@ -523,7 +523,7 @@ cd ngs/ngs_docker_debian/ngseasy_novoalign
 
 # build
 docker build -t compbio/ngseasy-novoalign:v1.0 .
-
+```
 
 ******** 
 
