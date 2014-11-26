@@ -8,7 +8,7 @@ Authors: Stephen J Newhouse, Amos Folarin , Maximilian Kerz
 Release Version: 0.9.0  
 
 ****************
-**A [Dockerized](https://www.docker.com/) NGS pipeline and tool-box.** 
+### A [Dockerized](https://www.docker.com/) NGS pipeline and tool-box. 
 
 **With NGSeasy you can now have full suite of NGS tools up and running on any high end workstation in an afternoon**
 
