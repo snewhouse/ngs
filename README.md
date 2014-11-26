@@ -280,9 +280,15 @@ ngs_projects
 |__ngseasy
 ```
 
+<<<<<<< HEAD
+The following directories are obtained in **[6. Download NGSeasy Resources](https://github.com/KHP-Informatics/ngs/tree/master#6-download-ngseasy-resources)**.  
+**- reference_genomes_b37  **  
+**- gatk_resources **  
+=======
 The following directories are obtained in **[6. Download NGSeasy Resources](https://github.com/KHP-Informatics/ngs/tree/master#6-download-ngseasy-resources)**
 - **reference_genomes_b37**  
 - **gatk_resources**  
+>>>>>>> dev2
 
 
 **Move to media**
@@ -508,7 +514,6 @@ To use all novoalign fucntionality, you will need to **pay for a license**.
 
 Once you obtained your **novoalign.lic**, download this to the build directory **ngs/ngs_docker_debian/ngseasy_novoalign**, which now should contain your updated [Dockerfile](https://github.com/KHP-Informatics/ngs/blob/master/containerized/ngs_docker_debian/ngseasy_novoalign/Dockerfile).
 
-
 ```bash
 # on our local system we cd to media
 cd /media
@@ -523,6 +528,19 @@ cd ngseasy
 
 # move to ngseasy_stampy folder
 cd ngs/ngs_docker_debian/ngseasy_novoalign
+ls 
+``
+**the directory should contain the following:-**
+
+```
+Dockerfile
+novoalign.lic
+README.md
+novosortV1.03.01.Linux3.0.tar.gz
+novocraftV3.02.08.Linux3.0.tar.gz
+```
+
+**build**
 
 # build
 docker build -t compbio/ngseasy-novoalign:v1.0 .
