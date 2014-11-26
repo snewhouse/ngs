@@ -188,11 +188,13 @@ Dockerised NGSeasy
 ==========================
 ![docker](https://github.com/KHP-Informatics/ngs/blob/master/figs/Docker_container_engine_logo.png "Docker")  
 
-The following section describes getting the Dockerised NGSeasy Pipeline(s) and Resources, project set up and running NGSeasy in 12 easy steps.  
+The following section describes getting the Dockerised NGSeasy Pipeline(s) and Resources, project set up and running NGSeasy in **12 easy steps**.  
 
 Getting all resources and building required tools will take a few hours depending on network connections and any random "ghosts in the machine".
 
 *****
+
+## The 12 Easy Steps to NGS Freedom!
 
 **1. [Install Docker](https://github.com/KHP-Informatics/ngs#1-install-docker)**  
 **2. [Get NGSeasy Automated build Container Images](https://github.com/KHP-Informatics/ngs#2-get-ngseasy-automated-build-container-images)**  
