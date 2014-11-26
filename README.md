@@ -522,7 +522,8 @@ cd ngseasy
 # move to ngseasy_stampy folder
 cd ngs/ngs_docker_debian/ngseasy_novoalign
 ls 
-``
+```
+
 **the directory should contain the following:-**
 
 ```
