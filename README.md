@@ -499,7 +499,7 @@ docker build -t compbio/ngseasy-platypus:v1.0 .
 
 ### Building NOVOALIGN
 
-**Download Novoalign from  http://www.well.ox.ac.uk/platypus** into the local build directory **ngs/ngs_docker_debian/ngseasy_novoalign**. 
+**Download Novoalign from  http://www.novocraft.com/** into the local build directory **ngs/ngs_docker_debian/ngseasy_novoalign**. 
 Edit the [Dockerfile](https://github.com/KHP-Informatics/ngs/blob/master/containerized/ngs_docker_debian/ngseasy_novoalign/Dockerfile) to relfect
 the correct version of novoalign.  
 
