@@ -502,6 +502,34 @@ cd ngs/ngs_docker_debian/ngseasy_platypus
 docker build -t compbio/ngseasy-platypus:v1.0 .
 ```
 
+******
+
+### Building NOVOALIGN
+
+**Download Novoalign from  http://www.well.ox.ac.uk/platypus** into the local build directory **ngs/ngs_docker_debian/ngseasy_novoalign**. 
+Edit the [Dockerfile](https://github.com/KHP-Informatics/ngs/blob/master/containerized/ngs_docker_debian/ngseasy_novoalign/Dockerfile) to relfect
+the correct version of novoalign. To use all fucntionality, you will need to **pay for a license**. Once you obtained your **novoalign.lic**,
+download this the the build directory **ngs/ngs_docker_debian/ngseasy_novoalign**, which now should contain your updated [Dockerfile](https://github.com/KHP-Informatics/ngs/blob/master/containerized/ngs_docker_debian/ngseasy_novoalign/Dockerfile).
+
+
+```bash
+# on our local system we cd to media
+cd /media
+
+# them move to ngs_projects toplevel directory
+cd ngs_projects
+
+# and then the ngseasy folder with all our ngs scripts
+# git  clone https://github.com/KHP-Informatics/ngs.git
+# if you havent alreay
+cd ngseasy
+
+# move to ngseasy_stampy folder
+cd ngs/ngs_docker_debian/ngseasy_novoalign
+
+# build
+docker build -t compbio/ngseasy-novoalign:v1.0 .
+
 
 ******** 
 
