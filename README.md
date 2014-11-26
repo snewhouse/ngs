@@ -280,16 +280,9 @@ ngs_projects
 |__ngseasy
 ```
 
-<<<<<<< HEAD
-The following directories are obtained in **[6. Download NGSeasy Resources](https://github.com/KHP-Informatics/ngs/tree/master#6-download-ngseasy-resources)**.  
+**Note** The following directories are obtained in step **[4. Download NGSeasy Resources](https://github.com/KHP-Informatics/ngs/tree/master#4-download-ngseasy-resources)**.  
 **- reference_genomes_b37  **  
 **- gatk_resources **  
-=======
-The following directories are obtained in **[6. Download NGSeasy Resources](https://github.com/KHP-Informatics/ngs/tree/master#6-download-ngseasy-resources)**
-- **reference_genomes_b37**  
-- **gatk_resources**  
->>>>>>> dev2
-
 
 **Move to media**
 ```bash
