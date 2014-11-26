@@ -464,6 +464,31 @@ cd ngs/ngs_docker_debian/ngseasy_stampy
 # build
 docker build -t compbio/ngseasy-stampy:v1.0 .
 ```
+### Building Platypus
+
+**resister at http://www.well.ox.ac.uk/platypus**
+
+Download platypus to local directory and check version number. If this differs from the [Dockerfile](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_platypus/Dockerfile) build file, 
+then edit the [Dockerfile](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_platypus/Dockerfile) if needed. 
+
+```bash
+# on our local system we cd to media
+cd /media
+
+# them move to ngs_projects toplevel directory
+cd ngs_projects
+
+# and then the ngseasy folder with all our ngs scripts
+# git  clone https://github.com/KHP-Informatics/ngs.git
+# if you havent alreay
+cd ngseasy
+
+# move to ngseasy_stampy folder
+cd ngs/ngs_docker_debian/ngseasy_platypus
+
+# build
+docker build -t compbio/ngseasy-platypus:v1.0 .
+```
 
 
 ******** 
