@@ -235,7 +235,7 @@ The following opensource tools are all provided as automated builds.
 |[fastqc](https://registry.hub.docker.com/u/compbio/ngseasy-fastqc) | automated build |
 |[trimmomatic](https://registry.hub.docker.com/u/compbio/ngseasy-trimmomatic) | automated build |
 |[bwa](https://registry.hub.docker.com/u/compbio/ngseasy-bwa) | automated build |
-|[bowtie2](https://registry.hub.docker.com/u/compbio/ngseasybowtie-) | automated build |
+|[bowtie](https://registry.hub.docker.com/u/compbio/ngseasy-bowtie) | automated build |
 |[picardtools](https://registry.hub.docker.com/u/compbio/ngseasy-picardtools) | automated build |
 |[samtools](https://registry.hub.docker.com/u/compbio/ngseasy-samtools) | automated build |
 |[freebayes](https://registry.hub.docker.com/u/compbio/ngseasy-freebayes/) | automated build |
