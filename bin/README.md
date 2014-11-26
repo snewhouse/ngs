@@ -453,6 +453,7 @@ docker build -t compbio/ngseasy-${TOOL} .
 
 Download stampy to local directory and check version number. If this differs from the [Dockerfile](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_stampy/Dockerfile) build file, 
 then edit the [Dockerfile](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_stampy/Dockerfile) if needed. 
+You will be emailed a URL to download stampy. Insert this into the [Dockerfile](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_stampy/Dockerfile)
 
 ```bash
 # on our local system we cd to media
@@ -479,7 +480,8 @@ docker build -t compbio/ngseasy-stampy:v1.0 .
 **resister at http://www.well.ox.ac.uk/platypus**
 
 Download platypus to local directory and check version number. If this differs from the [Dockerfile](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/nsgeasy_platypus/Dockerfile) build file, 
-then edit the [Dockerfile](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/nsgeasy_platypus/Dockerfile) if needed. 
+then edit the [Dockerfile](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/nsgeasy_platypus/Dockerfile) if needed.  
+You will be emailed a URL to download stampy. Insert this into the [Dockerfile](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/nsgeasy_platypus/Dockerfile) 
 
 ```bash
 # on our local system we cd to media
