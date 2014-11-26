@@ -255,96 +255,9 @@ Its as easy as: -
 docker pull compbio/ngseasy-${TOOL}
 ```
 
-******** 
-
-## 3. Manually Build required NGSeasy Container Images
-
-Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. 
-
-Some of the software has restrictions on use particularly for commercial 
-purposes. Therefore if you wish to use this for commercial purposes, then you 
-leagally have to approach the owners of the various components yourself!  
-
-**Software composing the pipeline requiring registration:-**  
-
-   * novoalign http://www.novocraft.com/  
-   * Stampy http://www.well.ox.ac.uk/project-stampy  
-   * Platypus http://www.well.ox.ac.uk/platypus  
-   * GATK https://www.broadinstitute.org/gatk/  
-   * ANNOVAR http://www.openbioinformatics.org/annovar/  
-
-**These tools require manual download and registration with the proivder. For non-academics/commercial groups, you will need to pay for some of these tools.**
-
-### Dockerised and Manual Builds ##
-
-| Tool | Build |
-|-------------|----------------------|
-|[novoalign](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_novoalign) | manual build |
-|[annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar) | manual build |
-|[stampy](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_stampy) | manual build |
-|[platypus](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/nsgeasy_platypus) | manual build |
-|[gatk](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_gatk) | manual build |
-
-Once you have paid/registered and downloaded the tool, we provide scripts and guidance for building these tools on your system.  
-
-Its as easy as:-  
-```{bash}
-docker build -t compbio/ngseasy-${TOOL} .
-```
-******** 
-
-## 4. Manually Build NGSeasy Variant Annotaion Container Images
-
-The tools used for variant annotation use large databases and the docker images exceed 10GB. Therefore, the user should manually build these container images prior to running the NGS pipelines.
-Docker build files ([Dockerfile](https://docs.docker.com/jsearch/?q=Dockerfile)) are available for 
-- [Annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar/Dockerfile)  
-- [VEP](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_vep/Dockerfile)   
-- [snpEff](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_snpeff/Dockerfile)  
-
-**Note** Annovar requires user registration.  
-
-**Once built on the user system, these container images can persist for as long as the user wants.**  
-
-**Large Variant Annotation Container Images**
-
-| Tool | Build |
-|-------------|----------------------|
-|[annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar) | manual build |
-|[vep](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_vep) | manual build |
-|[snpeff](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_snpeff) | manual build |
-
-
-Its as easy as:-  
-```{bash}
-docker build -t compbio/ngseasy-${TOOL} .
-```
-
-### Build VEP
-```bash
-
-cd /media/ngs_projects/nsgeasy/ngs/containerized/ngs_docker_debian/ngseasy_vep
-
-sudo docker build -t compbio/ngseasy-vep:${VERSION} .
-```
-
-### Build Annovar
-
-```bash
-cd /media/ngs_projects/nsgeasy/ngs/containerized/ngs_docker_debian/ngseasy_annovar
-
-sudo docker build -t compbio/ngseasy-annovar:${VERSION} .
-```
-
-### Build snpEff
-```bash
-cd /media/ngs_projects/nsgeasy/ngs/containerized/ngs_docker_debian/ngseasy_snpeff
-
-sudo docker build -t compbio/ngseasy-snpeff:${VERSION} .
-```
-
 *******
 
-## 5. Make NGSeasy project directory
+## 3. Make NGSeasy project directory
 The user needs to make the relevent directory structures on their local machine before starting an NGS run. 
 
 On our sysetm we typically set up a top-level driectory called **ngs_projects** within which we store output from all our individual NGS projects. 
@@ -406,7 +319,7 @@ mkdir ngs_projects/ngseasy
 
 *****
 
-## 6. Download NGSeasy Resources
+## 4. Download NGSeasy Resources
 Download the indexed reference genomes and example data for use with NGSeasy.
 
 **NGSeasy Resources:-**  
@@ -461,7 +374,7 @@ gunzip *
 
 *****
 
-## 7. Get NGSeasy Sripts
+## 5. Get NGSeasy Sripts
 We then need to get the latest NGSeasy scripts from [GitHub](https://github.com/KHP-Informatics/ngs) . The user is required to download the scripts to the `ngseasy` directory
 
 **move to the `ngseasy` directory**
@@ -492,6 +405,109 @@ source ~/.bashrc
 **alternatively donwload the scripts from our [GitHub Release](https://github.com/KHP-Informatics/ngs)** 
 
 ****************
+
+## 6. Manually Build required NGSeasy Container Images
+
+Currently we are not able to automatically build some of the tools in pre-built docker containers due to licensing restrictions. 
+
+Some of the software has restrictions on use particularly for commercial 
+purposes. Therefore if you wish to use this for commercial purposes, then you 
+leagally have to approach the owners of the various components yourself!  
+
+**Software composing the pipeline requiring registration:-**  
+
+   * novoalign http://www.novocraft.com/  
+   * Stampy http://www.well.ox.ac.uk/project-stampy  
+   * Platypus http://www.well.ox.ac.uk/platypus  
+   * GATK https://www.broadinstitute.org/gatk/  
+   * ANNOVAR http://www.openbioinformatics.org/annovar/  
+
+**These tools require manual download and registration with the proivder. For non-academics/commercial groups, you will need to pay for some of these tools.**
+
+### Dockerised and Manual Builds ##
+
+| Tool | Build |
+|-------------|----------------------|
+|[novoalign](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_novoalign) | manual build |
+|[annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar) | manual build |
+|[stampy](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_stampy) | manual build |
+|[platypus](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/nsgeasy_platypus) | manual build |
+|[gatk](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_gatk) | manual build |
+
+Once you have paid/registered and downloaded the tool, we provide scripts and guidance for building these tools on your system.  
+
+Its as easy as:-  
+```{bash}
+docker build -t compbio/ngseasy-${TOOL} .
+```
+
+### Building Stampy
+
+**resister at http://www.well.ox.ac.uk/project-stampy**  
+
+Download stampy to local directory and check version number. Edit the [Dockerfile](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_stampy/Dockerfile) if needed. 
+
+```bash
+
+# move to stampy folder
+cd ngs/ngs_docker_debian/ngseasy_stampy
+
+# build
+docker build -t compbio/ngseasy-stampy:v1.0 .
+```
+
+
+******** 
+
+## 7. Manually Build NGSeasy Variant Annotaion Container Images
+
+The tools used for variant annotation use large databases and the docker images exceed 10GB. Therefore, the user should manually build these container images prior to running the NGS pipelines.
+Docker build files ([Dockerfile](https://docs.docker.com/jsearch/?q=Dockerfile)) are available for 
+- [Annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar/Dockerfile)  
+- [VEP](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_vep/Dockerfile)   
+- [snpEff](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_snpeff/Dockerfile)  
+
+**Note** Annovar requires user registration.  
+
+**Once built on the user system, these container images can persist for as long as the user wants.**  
+
+**Large Variant Annotation Container Images**
+
+| Tool | Build |
+|-------------|----------------------|
+|[annovar](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_annovar) | manual build |
+|[vep](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_vep) | manual build |
+|[snpeff](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_snpeff) | manual build |
+
+
+Its as easy as:-  
+```{bash}
+docker build -t compbio/ngseasy-${TOOL} .
+```
+
+### Build VEP
+```bash
+
+cd /media/ngs_projects/nsgeasy/ngs/containerized/ngs_docker_debian/ngseasy_vep
+
+sudo docker build -t compbio/ngseasy-vep:${VERSION} .
+```
+
+### Build Annovar
+
+```bash
+cd /media/ngs_projects/nsgeasy/ngs/containerized/ngs_docker_debian/ngseasy_annovar
+
+sudo docker build -t compbio/ngseasy-annovar:${VERSION} .
+```
+
+### Build snpEff
+```bash
+cd /media/ngs_projects/nsgeasy/ngs/containerized/ngs_docker_debian/ngseasy_snpeff
+
+sudo docker build -t compbio/ngseasy-snpeff:${VERSION} .
+```
+*******
 
 ## 8. Set up NGSeasy Project Working Directories
 
