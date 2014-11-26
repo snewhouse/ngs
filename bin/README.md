@@ -445,7 +445,8 @@ docker build -t compbio/ngseasy-${TOOL} .
 
 **resister at http://www.well.ox.ac.uk/project-stampy**  
 
-Download stampy to local directory and check version number. Edit the [Dockerfile](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_stampy/Dockerfile) if needed. 
+Download stampy to local directory and check version number. If this differs from the [Dockerfile](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_stampy/Dockerfile) build file, 
+then edit the [Dockerfile](https://github.com/KHP-Informatics/ngs/tree/master/containerized/ngs_docker_debian/ngseasy_stampy/Dockerfile) if needed. 
 
 ```bash
 # on our local system we cd to media
