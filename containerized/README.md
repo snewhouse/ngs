@@ -568,7 +568,7 @@ Its as easy as:-
 ```{bash}
 docker build -t compbio/ngseasy-${TOOL} .
 ```
-
+******** 
 ### Build VEP
 ```bash
 
@@ -576,7 +576,7 @@ cd /media/ngs_projects/nsgeasy/ngs/containerized/ngs_docker_debian/ngseasy_vep
 
 sudo docker build -t compbio/ngseasy-vep:${VERSION} .
 ```
-
+******** 
 ### Build Annovar
 
 ```bash
@@ -584,7 +584,7 @@ cd /media/ngs_projects/nsgeasy/ngs/containerized/ngs_docker_debian/ngseasy_annov
 
 sudo docker build -t compbio/ngseasy-annovar:${VERSION} .
 ```
-
+******** 
 ### Build snpEff
 ```bash
 cd /media/ngs_projects/nsgeasy/ngs/containerized/ngs_docker_debian/ngseasy_snpeff
