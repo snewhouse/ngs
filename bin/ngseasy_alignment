@@ -46,6 +46,7 @@ EOF
       esac
   done
 
+#-------------------------------------------------------------------#
 #check config file exists.
 if [ ! -e "${config_tsv}" ] 
 then
@@ -54,6 +55,7 @@ then
 	    exit 1;
 fi
 
+#-------------------------------------------------------------------#
 #check exists.
 if [ ! -d "${project_directory}" ]
   then
@@ -62,6 +64,7 @@ if [ ! -d "${project_directory}" ]
     exit 1;
 fi
 
+#-------------------------------------------------------------------#
 #Read config file 
 while read -r f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12 f13 f14 f15 f16
 do
@@ -83,21 +86,67 @@ do
   GTMODEGATK=$f13
   CLEANUP=$f14
   NCPU=$f15
-	VERSION=$f16
+  VERSION=$f16
 
-
+#-------------------------------------------------------------------#
 #Logfile 
 LOGFILE=${PROJECT_DIR}/${POJECT_ID}/run_logs/${SAMPLE_ID}.${DATE}
 
+#-------------------------------------------------------------------#
 #OUTPUT SAMPLE DIR 
 SOUT=${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}
 
+#-------------------------------------------------------------------#
+
 #set new names for copied fastq files
+# test for fomrat of suffix ie is it fastq or fq
+# or _R1.fastq _R1.fq
+
+if [[ "${FASTQ1}" == *_1.fastq.gz ]] 
+then
+
+  rawFASTQ1=`basename ${SOUT}/fastq/${FASTQ1} _1.fastq.gz`
+  rawFASTQ2=`basename ${SOUT}/fastq/${FASTQ2} _2.fastq.gz`
+  
+  fq1_suffix="1.fastq"
+  fq2_suffix="2.fastq"
+ 
+elif [[ "${FASTQ1}" == *_R1.fastq.gz ]] 
+then
+
+  rawFASTQ1=`basename ${SOUT}/fastq/${FASTQ1} _R1.fastq.gz`
+  rawFASTQ2=`basename ${SOUT}/fastq/${FASTQ2} _R2.fastq.gz`
+
+  fq1_suffix="R1.fastq"
+  fq2_suffix="R2.fastq"  
+  
+elif [[ "${FASTQ1}" == *_1.fq.gz ]] 
+then
+
   rawFASTQ1=`basename ${SOUT}/fastq/${FASTQ1} _1.fq.gz`
   rawFASTQ2=`basename ${SOUT}/fastq/${FASTQ2} _2.fq.gz`
+
+  fq1_suffix="1.fq"
+  fq2_suffix="2.fq"  
+  
+elif [[ "${FASTQ1}" == *_R1.fq.gz ]] 
+then
+
+  rawFASTQ1=`basename ${SOUT}/fastq/${FASTQ1} _R1.fq.gz`
+  rawFASTQ2=`basename ${SOUT}/fastq/${FASTQ2} _R2.fq.gz`
+  
+  fq1_suffix="R1.fq"
+  fq2_suffix="R2.fq"  
     
+else
+
+  logger_ngseasy " Fastq naming format not recognised : [$FASTQ1] : should be one of [_1.fastq.gz] [_1.fq.gz] [_R1.fastq.gz] [_R1.fq.gz]" ${LOGFILE} 
+  echo " Fastq naming format not recognised : [$FASTQ1] : should be one of [_1.fastq.gz] [_1.fq.gz] [_R1.fastq.gz] [_R1.fq.gz] "
+  exit 1
+fi     
 logger_ngseasy " NGSeasy: Fastq Basename : [$rawFASTQ1] " ${LOGFILE}
 
+#-------------------------------------------------------------------#
 #check local dir exists
 if [ ! -d "${PROJECT_DIR}/${POJECT_ID}/${SAMPLE_ID}" ]
 then
@@ -108,6 +157,7 @@ else
   logger_ngseasy " Setting OUTPUT directory [${SOUT}]" ${LOGFILE}
 fi
 
+#-------------------------------------------------------------------#
 #check for fastq files exist
 if [ ! -s "${SOUT}/fastq/${FASTQ1}" ] && [ ! -s "${SOUT}/fastq/${FASTQ2}" ]
 then
@@ -118,7 +168,7 @@ fi
 #-------------------------------------------------------------------#
 
 #check if qc'd data alread exists 
-if [ ! -s "${SOUT}/fastq/${rawFASTQ1}_1.filtered.fq.gz" ] && [ ! -s "${SOUT}/fastq/${rawFASTQ2}_2.filtered.fq.gz" ]
+if [ ! -s "${SOUT}/fastq/${rawFASTQ1}_1.filtered.fastq.gz" ] && [ ! -s "${SOUT}/fastq/${rawFASTQ2}_2.filtered.fastq.gz" ]
 then
   logger_ngseasy " Trimmed FastQC Data does not exsts" ${LOGFILE}
   exit 1
@@ -126,16 +176,19 @@ else
   logger_ngseasy " Trimmed FastQC Data exsts" ${LOGFILE}
 fi
 
-#------------------------Container I/O--------------------------------#
-#run compbio/ngseasy-fastq
+#-------------------------------------------------------------------#
 #Docker Output Dir: this is the mouned directory set by ngseasy_volumes_container
 DOCKERHOME="/home/pipeman/ngs_projects"
+
+#-------------------------------------------------------------------#
 #Docker OUTPUT SAMPLE DIR 
 SOUTDocker=${DOCKERHOME}/${POJECT_ID}/${SAMPLE_ID}
 
+#-------------------------------------------------------------------#
 #bamprefix
 BAM_PREFIX=${SAMPLE_ID}.${NGS_TYPE}.${NGS_PLATFORM}.${ALIGNER}
 
+#-------------------------------------------------------------------#
 # Trimmomatic paired output
   qcdPeFASTQ1=${SOUTDocker}/fastq/${rawFASTQ1}_1.filtered.fq.gz;
   qcdPeFASTQ2=${SOUTDocker}/fastq/${rawFASTQ2}_2.filtered.fq.gz;
