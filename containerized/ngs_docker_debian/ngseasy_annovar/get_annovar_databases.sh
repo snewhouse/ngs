@@ -15,7 +15,7 @@ do
 perl /usr/local/pipeline/annovar/annotate_variation.pl --buildver hg19 --downdb --webfrom annovar ${annovardatabase} /home/pipeman/ngs_projects/humandb ; 
 done
 
-
+# ucsc databases
 for annovardatabase in \
 targetScanS \
 tfbsConsSites \

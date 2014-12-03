@@ -28,8 +28,7 @@ COPY get_annovar_databases.sh /usr/local/pipeline/annovar/
 COPY get_annovar_gene_databases.sh /usr/local/pipeline/annovar/
 
 # RUN Them
-RUN bash /usr/local/pipeline/annovar/get_annovar_gene_databases.sh && \
-  bash /usr/local/pipeline/annovar/get_annovar_gene_databases.sh 
+RUN /bin/bash /usr/local/pipeline/annovar/get_annovar_gene_databases.sh && /bin/bash /usr/local/pipeline/annovar/get_annovar_gene_databases.sh 
   
 #-------------------------------PERMISSIONS--------------------------
 RUN chmod -R 776 /usr/local/pipeline/
