@@ -364,7 +364,7 @@ I would recommend using a separate program like [FileZilla](https://filezilla-pr
 ```bash
 # Extract resources
 cd ngs_projects/
-tar xvf gatk_resources.tar.gz; 
+tar xvf gatk_resources.tgz; 
 cd ngs_projects/gatk_resources
 gunzip *
 ```
