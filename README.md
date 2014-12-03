@@ -143,17 +143,17 @@ The NGSeasy pipelines implement the following :-
     - **[GATK:HaplotypeCaller](https://www.broadinstitute.org/gatk/gatkdocs/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php)** 
 
 - **Structural Variant (CNV)** calling using one of the following or or a combibation of if the `ensemble` methods are called:- 
-    - **[DELLY](https://github.com/tobiasrausch/delly)** 
-    - **[LUMPY](https://github.com/arq5x/lumpy-sv/)**
-    - **[cn.MOPS](http://www.bioinf.jku.at/software/cnmops/)**
-    - **[m-HMM](https://www.stt.msu.edu/users/hengwang/mHMM.html)**
-    - **[ExomeDepth](http://cran.r-project.org/web/packages/ExomeDepth/index.html)**
+    - **[DELLY](https://github.com/tobiasrausch/delly) : in Dev** 
+    - **[LUMPY](https://github.com/arq5x/lumpy-sv/): in Dev**
+    - **[cn.MOPS](http://www.bioinf.jku.at/software/cnmops/): in Dev**
+    - **[m-HMM](https://www.stt.msu.edu/users/hengwang/mHMM.html): in Dev**
+    - **[ExomeDepth](http://cran.r-project.org/web/packages/ExomeDepth/index.html): in Dev**
     - *[SLOPE](http://www-genepi.med.utah.edu/suppl/SLOPE/index.html) : COMING SOON!*
 
 - **Variant annotation** using using one of the following or a combibation of if the `ensemble` methods are called. 
-    - **[SnpEff](http://snpeff.sourceforge.net/)** 
-    - **[ANNOVAR](http://www.openbioinformatics.org/annovar/)** 
-    - **[VEP](http://www.ensembl.org/info/docs/tools/vep/index.html)**
+    - **[SnpEff](http://snpeff.sourceforge.net/): in Dev** 
+    - **[ANNOVAR](http://www.openbioinformatics.org/annovar/): in Dev** 
+    - **[VEP](http://www.ensembl.org/info/docs/tools/vep/index.html): in Dev**
 
 - **Variant reporting** using custom scripts
 
