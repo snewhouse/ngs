@@ -408,7 +408,7 @@ fi
 #  --name FindCoveredIntervals_${SAMPLE_ID} \
 #  --volumes-from volumes_container \
 #  -t compbio/ngseasy-gatk:${VERSION} \
-#  java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T FindCoveredIntervals -R ${REFGenomes}/human_g1k_v37.fasta \
+#  java -Xmx6g -Djava.io.tmpdir=${SOUTDocker}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar -T FindCoveredIntervals -R ${REFGenomes}/human_g1k_v37.fasta \
 #  -I ${bam_file}  \
 #  -o ${qc_file}_CoveredIntervals_x4.list \
 #  --coverage_threshold 4;

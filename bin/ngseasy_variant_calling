@@ -286,7 +286,7 @@ then
   --name UnifiedGenotyper_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-gatk:${VERSION} \
-  java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
+  java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar \
   -T UnifiedGenotyper \
   -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
   -nct ${NCPU} \
@@ -351,7 +351,7 @@ then
   --name HaplotypeCaller_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-gatk:${VERSION} \
-  java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
+  java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar \
   -T HaplotypeCaller \
   -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
   -nct ${NCPU} \
@@ -524,7 +524,7 @@ fi
 #  --name UnifiedGenotyper_${SAMPLE_ID} \
 #  --volumes-from volumes_container \
 #  -t compbio/ngseasy-gatk:${VERSION} \
-#  java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
+#  java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar \
 #  -T UnifiedGenotyper \
 #  -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
 #  -nct ${NCPU} \
@@ -584,7 +584,7 @@ fi
   --name HaplotypeCaller_${SAMPLE_ID} \
   --volumes-from volumes_container \
   -t compbio/ngseasy-gatk:${VERSION} \
-  java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar \
+  java -Xmx6g -Djava.io.tmpdir=${SOUT}/tmp -jar /usr/local/pipeline/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar \
   -T HaplotypeCaller \
   -R /home/pipeman/reference_genomes_b37/human_g1k_v37.fasta \
   -nct ${NCPU} \
