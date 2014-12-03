@@ -20,12 +20,16 @@ RUN apt-get update && \
 RUN wget -O /tmp/annovar.latest.tar.gz http://www.openbioinformatics.org/annovar/download/g4EUwyphi9/annovar.latest.tar.gz \
   && tar xzvf /tmp/annovar.latest.tar.gz -C /usr/local/pipeline/ \
   && sed -i '$aPATH=${PATH}:/usr/local/pipeline/annovar' /home/pipeman/.bashrc \
-  && echo "alias ngsSNPeff='/usr/local/pipeline/annovar'" >> /home/pipeman/.bashrc
+  && echo "alias ngsAnnovar='/usr/local/pipeline/annovar'" >> /home/pipeman/.bashrc
 
 #----------------------------------Basic Databases-----------------------------
-
+# COPY Files
 COPY get_annovar_databases.sh /usr/local/pipeline/annovar/
 COPY get_annovar_gene_databases.sh /usr/local/pipeline/annovar/
+
+# RUN Them
+RUN bash /usr/local/pipeline/annovar/get_annovar_gene_databases.sh && \
+  bash /usr/local/pipeline/annovar/get_annovar_gene_databases.sh 
   
 #-------------------------------PERMISSIONS--------------------------
 RUN chmod -R 776 /usr/local/pipeline/
