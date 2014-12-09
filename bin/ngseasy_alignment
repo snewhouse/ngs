@@ -285,7 +285,9 @@ then
    -r All \
    -i PE 300,150 \
    -c ${NCPU} \
-   -k -K ${SOUTDocker}/alignments/${BAM_PREFIX}.K.stats -o SAM > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.sam"
+   -k \
+   -K ${SOUTDocker}/alignments/${BAM_PREFIX}.K.stats \
+   -o SAM $'@RG\tID:${BAM_PREFIX}\tSM:${BAM_PREFIX}\tPU:${NGS_PLATFORM}\tLB:${DNA_PREP_LIBRARY_ID}' > ${SOUTDocker}/alignments/${BAM_PREFIX}.raw.sam"
 
   #log docker run 
     docker logs ${ALIGNER}_${SAMPLE_ID} >> ${LOGFILE}.log
