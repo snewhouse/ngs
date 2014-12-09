@@ -21,8 +21,8 @@ RUN curl -OL ftp://root.cern.ch/root/root_v5.34.20.source.tar.gz && \
   cd root && \
   ./configure && \
   make && \
-  cd .. && \
-  sudo mv root /usr/local && \
+  cd ../ && \
+  sudo mv -v root /usr/local/ && \
   echo "source /usr/local/root/bin/thisroot.sh" >> ~/.bashrc && \
   . ~/.bashrc
 
