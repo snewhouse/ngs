@@ -1,5 +1,6 @@
 **DEPRECATED**
-Note: links broken...
+Note: links broken...  
+Go to https://github.com/KHP-Informatics/ngseasy  
 
 NGSeasy (beta)
 ===================
