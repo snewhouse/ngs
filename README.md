@@ -1,5 +1,5 @@
 **DEPRECATED**
-Note links broken...
+Note: links broken...
 
 NGSeasy (beta)
 ===================
